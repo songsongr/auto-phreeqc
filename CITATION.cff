@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software in research, please cite the PHREEQC program itself and optionally this automation wrapper."
+title: "phreeqc-auto: Automated PHREEQC Geochemical Simulation Workflows"
+authors:
+  - family-names: "songsongr"
+    given-names: ""
+    orcid: ""
+version: 0.1.0
+date-released: 2026-06-18
+url: "https://github.com/songsongr/auto-phreeqc"
+preferred-citation:
+  type: software
+  title: "PHREEQC version 3 — A computer program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical calculations"
+  authors:
+    - family-names: "Parkhurst"
+      given-names: "David L."
+    - family-names: "Appelo"
+      given-names: "C.A.J."
+  year: 2013
+  publisher: "U.S. Geological Survey"
+  series-number: "TM 6-A43"

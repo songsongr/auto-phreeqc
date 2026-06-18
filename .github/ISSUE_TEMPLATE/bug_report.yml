@@ -1,0 +1,34 @@
+---
+name: Bug report
+about: Create a report to help us improve
+title: "[BUG] "
+labels: bug
+assignees: ''
+
+---
+
+**Describe the bug**
+A clear and concise description of what the bug is.
+
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Python script / coordinator code used
+2. Input parameters
+3. PHREEQC version and database
+
+**Expected behavior**
+A clear and concise description of what you expected to happen.
+
+**Error output**
+```
+Paste any error messages here
+```
+
+**Environment (please complete the following):**
+ - OS: [e.g. Windows 11, Ubuntu 22.04]
+ - Python version: [e.g. 3.10]
+ - PHREEQC version: [e.g. 3.8.6]
+ - Database: [e.g. phreeqc.dat]
+
+**Additional context**
+Add any other context about the problem here.

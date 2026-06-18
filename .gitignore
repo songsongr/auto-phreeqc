@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environment (uv / venv)
+.venv/
+venv/
+env/
+
+# uv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.claude/settings.local.json
+
+# Workspace output (generated simulation results)
+workspace/
+
+# Playwright MCP
+.playwright-mcp/
+
+# PDF manual (large file, copyright material)
+phreeqc-v3程序说明.pdf
+
+# Windows shortcut (local machine-specific)
+*.lnk
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
