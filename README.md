@@ -1,5 +1,9 @@
 # phreeqc-auto 🔬
 
+[![CI](https://github.com/songsongr/auto-phreeqc/actions/workflows/ci.yml/badge.svg)](https://github.com/songsongr/auto-phreeqc/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](pyproject.toml)
+
 **Automated geochemical simulation workflows for PHREEQC**, powered by Claude Code.
 
 > PHREEQC is a computer program for speciation, batch-reaction, one-dimensional transport,
