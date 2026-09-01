@@ -40,6 +40,10 @@ Thumbs.db
 /selected_output_*.txt
 /selected_output_*.sel
 
+# examples/ 子目录里的运行期产物（图表是二进制、日志是临时输出）
+/examples/**/phreeqc.log
+/examples/**/charts/
+
 # WebBench 运行期数据（每次启动自动重建）
 /workbench/workspace_workbench/
 /workbench/backend/services/__pycache__/
