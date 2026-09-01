@@ -1,0 +1,238 @@
+TITLE CO2 TRANSPORT + K-feldspar/Kaolinite (100C, 10 cells)
+
+RATES 1
+    K-feldspar
+    -start
+    10 rem Palandri & Kharaka (2004)
+    20 T = 298.15 + TC
+    30 T0 = 298.15
+    40 R = 8.314
+    50 k_neut_25 = 10^(-12.41)
+    60 Ea_neut = 38000
+    70 f_temp_neut = exp(Ea_neut / R * (1/T0 - 1/T))
+    80 k_acid_25 = 10^(-10.06)
+    90 Ea_acid = 51700
+    100 f_temp_acid = exp(Ea_acid / R * (1/T0 - 1/T))
+    110 act_H = ACT("H+")
+    120 if act_H <= 0 then act_H = 1e-14
+    130 k_neut = k_neut_25 * f_temp_neut
+    140 k_acid = k_acid_25 * f_temp_acid * act_H^0.5
+    150 gfm = 278.33
+    160 area = M * gfm * parm(1)
+    170 rate_kf = (k_neut + k_acid) * area * (1 - SR("K-feldspar"))
+    180 if rate_kf < 0 then rate_kf = 0
+    190 moles_kf = rate_kf * TIME
+    200 if moles_kf > M then moles_kf = M
+    210 SAVE moles_kf
+    -end
+    Kaolinite
+    -start
+    10 rem Kaolinite precipitation (Carroll & Walther 1990)
+    20 T = 298.15 + TC
+    30 T0 = 298.15
+    40 R = 8.314
+    50 k_25 = 10^(-13.18)
+    60 Ea = 66200
+    70 f_temp = exp(Ea / R * (1/T0 - 1/T))
+    80 k_kao = k_25 * f_temp
+    90 gfm = 258.16
+    100 area = M * gfm * parm(1)
+    110 sr_kao = SR("Kaolinite")
+    120 rate_kao = k_kao * area * (1 - sr_kao)
+    130 moles_kao = rate_kao * TIME
+    140 if moles_kao > M then moles_kao = M
+    150 if moles_kao < -M * 0.5 then moles_kao = -M * 0.5
+    160 SAVE moles_kao
+    -end
+
+SOLUTION 0
+    units mol/kgw
+    temp 100.0
+    pH 4.0
+    pe -4.0
+    density 1.0
+    C(4) 0.5
+    Na 0.043
+    Cl 0.028
+
+SOLUTION 1
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+SOLUTION 2
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+SOLUTION 3
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+SOLUTION 4
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+SOLUTION 5
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+SOLUTION 6
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+SOLUTION 7
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+SOLUTION 8
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+SOLUTION 9
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+SOLUTION 10
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+TRANSPORT
+    -cells 10
+    -length 1.0
+    -shifts 20
+    -time_step 182.625 day
+    -flow_direction forward
+    -dispersivity 0.02
+    -correct_disp true
+    -punch_cells 1 5 10
+    -punch_frequency 1
+    -print_cells 1 5 10
+    -print_frequency 5
+
+EQUILIBRIUM_PHASES 1
+    Calcite 0.0 10.0
+
+KINETICS 1
+    K-feldspar
+        -formula KAlSi3O8 1
+        -m 3.0
+        -m0 3.0
+        -parms 0.2
+        -step_divide 10
+        -cvode true
+    Kaolinite
+        -formula Al2Si2O5(OH)4 1
+        -m 0.5
+        -m0 0.5
+        -parms 10.0
+        -step_divide 10
+        -cvode true
+
+SELECTED_OUTPUT
+    -file selected_transport.txt
+    -reset true
+    -step true
+    -pH
+    -pe
+    -temperature
+    -equilibrium_phases Calcite
+    -si Calcite
+    -si K-feldspar
+    -si Kaolinite
+    -si Quartz
+    -totals Ca
+    -totals K
+    -totals Al
+    -totals Si
+    -totals C
+
+END

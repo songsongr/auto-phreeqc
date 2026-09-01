@@ -1,0 +1,64 @@
+TITLE Cd adsorption edge on Goethite + Birnessite (pH 3-9)
+
+SURFACE_MASTER_SPECIES
+    Gth_s   Gth_sOH
+    Mn_s   Mn_sOH
+    Mn_w   Mn_wOH
+
+SURFACE_SPECIES
+    Gth_sOH = Gth_sOH
+        log_k 0.0
+    Gth_sOH + H+ = Gth_sOH2+
+        log_k 9.0
+    Gth_sOH = Gth_sO- + H+
+        log_k -9.0
+    Gth_sOH + Cd+2 = Gth_sOCd+ + H+
+        log_k 1.0
+    Mn_sOH = Mn_sOH
+        log_k 0.0
+    Mn_sOH + H+ = Mn_sOH2+
+        log_k 2.5
+    Mn_sOH = Mn_sO- + H+
+        log_k -5.0
+    Mn_sOH + Cd+2 = Mn_sOCd+ + H+
+        log_k -1.0
+    Mn_wOH = Mn_wOH
+        log_k 0.0
+    Mn_wOH + H+ = Mn_wOH2+
+        log_k 2.5
+    Mn_wOH = Mn_wO- + H+
+        log_k -5.0
+    Mn_wOH + Cd+2 = Mn_wOCd+ + H+
+        log_k -2.5
+
+SOLUTION 1
+    units mol/kgw
+    -water 0.025
+    pH    3.0
+    pe    4.0
+    temp  25.0
+    Na    0.01
+    N(5)  0.01
+    Cd    8.9e-7
+
+SURFACE 1
+    Gth_sOH  5e-6  50  0.02
+    Mn_sOH  5e-6  600  0.02
+    Mn_wOH  2e-4
+
+REACTION 1
+    NaOH 1.0
+    0.00012 moles in 30 steps
+
+SELECTED_OUTPUT
+    -file selected_output.txt
+    -reset true
+    -pH
+    -totals Cd
+    -totals Na
+    -molalities Gth_sOCd+
+    -molalities Mn_sOCd+
+    -molalities Mn_wOCd+
+    -molalities Cd+2
+
+END

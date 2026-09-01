@@ -1,0 +1,162 @@
+# --- Custom As master species (conservative tracer) ---
+SOLUTION_MASTER_SPECIES
+    As    AsO4-3    0.0    As    74.9216
+
+SOLUTION_SPECIES
+    AsO4-3 = AsO4-3
+    log_k    0.0
+
+
+SOLUTION 0
+    units ppm
+    pH 7.0
+    pe 12.0
+    density 1.0
+    As 1.0
+    Na 10.0
+    Cl 15.0
+
+SOLUTION 1
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 2
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 3
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 4
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 5
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 6
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 7
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 8
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 9
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 10
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 11
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 12
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 13
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 14
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 15
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 16
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 17
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 18
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 19
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+SOLUTION 20
+    units mol/kgw
+    pH 7.0
+    pe 12.0
+    density 1.0
+
+TRANSPORT
+    -cells 20
+    -length 1.0
+    -shifts 100
+    -time_step 0.05 day
+    -flow_direction forward
+    -dispersivity 0.01
+    -correct_disp true
+    -punch_cells 20
+    -punch_frequency 1
+    -print_cells 1 10 20
+    -print_frequency 25
+
+SELECTED_OUTPUT
+    -file selected_output.txt
+    -reset true
+    -step true
+    -pH
+    -pe
+    -totals As
+    -totals Na
+    -totals Cl
+
+END

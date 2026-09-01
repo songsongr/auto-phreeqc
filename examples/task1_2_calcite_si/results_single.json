@@ -1,0 +1,139 @@
+{
+  "selected_output": {
+    "columns": [
+      "sim",
+      "state",
+      "soln",
+      "dist_x",
+      "time",
+      "step",
+      "pH",
+      "pe",
+      "reaction",
+      "temp",
+      "Alk",
+      "mu",
+      "mass_H2O",
+      "charge",
+      "pct_err",
+      "Ca",
+      "C",
+      "si_Calcite"
+    ],
+    "data": [],
+    "row_count": 0
+  },
+  "saturation_indices": [
+    {
+      "phase": "Aragonite",
+      "si": -0.07
+    },
+    {
+      "phase": "Calcite",
+      "si": 0.07
+    },
+    {
+      "phase": "CO2(g)",
+      "si": -1.82
+    },
+    {
+      "phase": "H2(g)",
+      "si": -22.45
+    },
+    {
+      "phase": "H2O(g)",
+      "si": -1.5
+    },
+    {
+      "phase": "O2(g)",
+      "si": -38.39
+    }
+  ],
+  "species_distribution": [
+    {
+      "species": "OH-",
+      "molality": 1.743e-07,
+      "activity": 1.604e-07
+    },
+    {
+      "species": "H+",
+      "molality": 6.792e-08,
+      "activity": 6.31e-08
+    },
+    {
+      "species": "H2O",
+      "molality": 55.51,
+      "activity": 0.9999
+    },
+    {
+      "species": "HCO3-",
+      "molality": 0.003955,
+      "activity": 0.003653
+    },
+    {
+      "species": "CO2",
+      "molality": 0.0005177,
+      "activity": 0.0005182
+    },
+    {
+      "species": "CaHCO3+",
+      "molality": 2.18e-05,
+      "activity": 2.016e-05
+    },
+    {
+      "species": "CaCO3",
+      "molality": 6.516e-06,
+      "activity": 6.525e-06
+    },
+    {
+      "species": "CO3-2",
+      "molality": 3.732e-06,
+      "activity": 2.715e-06
+    },
+    {
+      "species": "(CO2)2",
+      "molality": 4.922e-09,
+      "activity": 4.929e-09
+    },
+    {
+      "species": "Ca+2",
+      "molality": 0.001968,
+      "activity": 0.001431
+    },
+    {
+      "species": "CaHCO3+",
+      "molality": 2.18e-05,
+      "activity": 2.016e-05
+    },
+    {
+      "species": "CaCO3",
+      "molality": 6.516e-06,
+      "activity": 6.525e-06
+    },
+    {
+      "species": "CaOH+",
+      "molality": 4.084e-09,
+      "activity": 3.763e-09
+    },
+    {
+      "species": "H2",
+      "molality": 2.815e-26,
+      "activity": 2.818e-26
+    },
+    {
+      "species": "O2",
+      "molality": 0.0,
+      "activity": 0.0
+    }
+  ],
+  "element_molalities": {
+    "Alkalinity": 0.003997,
+    "Ca": 0.001997
+  },
+  "metadata": {
+    "task": "1.2",
+    "pH": 7.2,
+    "Ca_mg_L": 80,
+    "Alkalinity_as_CaCO3": 200
+  }
+}

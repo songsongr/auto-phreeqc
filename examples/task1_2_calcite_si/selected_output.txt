@@ -1,0 +1,2 @@
+         sim	       state	        soln	      dist_x	        time	        step	          pH	          pe	    reaction	        temp	         Alk	          mu	    mass_H2O	      charge	     pct_err	          Ca	           C	  si_Calcite	
+           1	      i_soln	           1	         -99	         -99	         -99	         7.2	           4	         -99	      25.000	  0.00399748	  0.00593251	           1	-4.34457e-06	  -0.0548482	  1.9966e-03	  4.5049e-03	      0.0693	

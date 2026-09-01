@@ -1,0 +1,188 @@
+   Input file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\ex13\input_a.pqi
+  Output file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\ex13\output_a.qpo
+Database file: C:\Program Files\USGS\phreeqc-3.8.6-17100-x64\database\phreeqc.dat
+
+------------------
+Reading data base.
+------------------
+
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	GAS_BINARY_PARAMETERS
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	MEAN_GAMMAS
+	RATES
+	END
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	SOLUTION 1
+	    units ppm
+	    pH 8.22
+	    pe 8.451
+	    density 1.023
+	    Ca 412.3
+	    Mg 1291.8
+	    Na 10768.0
+	    K 399.1
+	    Cl 19353.0
+	    Alkalinity 141.682
+	    S(6) 2712.0
+	SELECTED_OUTPUT
+	    file selected_output_a.txt
+	    reset true
+	    ph
+	    pe
+	    si Calcite
+	    si Dolomite
+	    si Aragonite
+	    si Gypsum
+	    si Halite
+	    si Brucite
+	    totals Ca
+	    totals Mg
+	    totals Na
+	    totals K
+	    totals Cl
+	    totals S
+	    totals C
+	END
+WARNING: Did not find phase, Brucite.
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 1.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Alkalinity        2.934e-03   2.934e-03
+	Ca                1.066e-02   1.066e-02
+	Cl                5.657e-01   5.657e-01
+	K                 1.058e-02   1.058e-02
+	Mg                5.507e-02   5.507e-02
+	Na                4.854e-01   4.854e-01
+	S(6)              2.926e-02   2.926e-02
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   8.220    
+                                       pe  =   8.451    
+      Specific Conductance (µS/cm,  25°C)  = 52855
+                          Density (g/cm³)  =   1.02329
+                               Volume (L)  =   1.01279
+                        Viscosity (mPa s)  =   0.96050
+                        Activity of water  =   0.981
+                 Ionic strength (mol/kgw)  =   6.704e-01
+                       Mass of water (kg)  =   1.000e+00
+                    Total carbon (mol/kg)  =   2.736e-03
+                       Total CO2 (mol/kg)  =   2.736e-03
+                         Temperature (°C)  =  25.00
+                  Electrical balance (eq)  =   2.690e-04
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.02
+                               Iterations  =   8
+                                  Total H  = 1.110150e+02
+                                  Total O  = 5.563145e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   OH-             2.703e-06   1.647e-06    -5.568    -5.783    -0.215     -2.63
+   H+              7.981e-09   6.026e-09    -8.098    -8.220    -0.122      0.00
+   H2O             5.551e+01   9.806e-01     1.744    -0.008     0.000     18.07
+C(4)          2.736e-03
+   HCO3-           1.884e-03   1.273e-03    -2.725    -2.895    -0.170     25.99
+   MgHCO3+         3.397e-04   2.138e-04    -3.469    -3.670    -0.201      5.82
+   NaHCO3          2.753e-04   3.749e-04    -3.560    -3.426     0.134     31.73
+   MgCO3           1.163e-04   1.357e-04    -3.935    -3.867     0.067    -17.09
+   CO3-2           4.755e-05   9.908e-06    -4.323    -5.004    -0.681     -0.52
+   CaCO3           3.552e-05   4.145e-05    -4.450    -4.382     0.067    -14.60
+   CaHCO3+         1.767e-05   1.223e-05    -4.753    -4.913    -0.160    122.92
+   CO2             1.588e-05   1.759e-05    -4.799    -4.755     0.044     34.43
+   KHCO3           3.631e-06   3.684e-06    -5.440    -5.434     0.006     41.03
+   (CO2)2          4.865e-12   5.677e-12   -11.313   -11.246     0.067     68.87
+Ca            1.066e-02
+   Ca+2            9.954e-03   2.490e-03    -2.002    -2.604    -0.602    -16.70
+   CaSO4           6.533e-04   7.624e-04    -3.185    -3.118     0.067      7.50
+   CaCO3           3.552e-05   4.145e-05    -4.450    -4.382     0.067    -14.60
+   CaHCO3+         1.767e-05   1.223e-05    -4.753    -4.913    -0.160    122.92
+   CaOH+           9.011e-08   6.726e-08    -7.045    -7.172    -0.127     (0)  
+   CaHSO4+         4.045e-11   3.020e-11   -10.393   -10.520    -0.127     (0)  
+Cl            5.657e-01
+   Cl-             5.657e-01   3.570e-01    -0.247    -0.447    -0.200     18.79
+   HCl             3.842e-10   7.411e-10    -9.415    -9.130     0.285     (0)  
+H(0)          5.521e-37
+   H2              2.760e-37   3.221e-37   -36.559   -36.492     0.067     28.61
+K             1.058e-02
+   K+              1.039e-02   6.478e-03    -1.984    -2.189    -0.205      9.66
+   KSO4-           1.873e-04   1.697e-04    -3.727    -3.770    -0.043     11.34
+   KHCO3           3.631e-06   3.684e-06    -5.440    -5.434     0.006     41.03
+Mg            5.507e-02
+   Mg+2            4.972e-02   1.435e-02    -1.303    -1.843    -0.540    -20.42
+   MgSO4           4.750e-03   6.468e-03    -2.323    -2.189     0.134     -7.92
+   MgHCO3+         3.397e-04   2.138e-04    -3.469    -3.670    -0.201      5.82
+   Mg(SO4)2-2      1.295e-04   3.668e-05    -3.888    -4.436    -0.548     32.91
+   MgCO3           1.163e-04   1.357e-04    -3.935    -3.867     0.067    -17.09
+   MgOH+           1.203e-05   8.479e-06    -4.920    -5.072    -0.152     (0)  
+Na            4.854e-01
+   Na+             4.712e-01   3.381e-01    -0.327    -0.471    -0.144     -0.51
+   NaSO4-          1.396e-02   9.475e-03    -1.855    -2.023    -0.168      8.22
+   NaHCO3          2.753e-04   3.749e-04    -3.560    -3.426     0.134     31.73
+O(0)          6.622e-20
+   O2              3.311e-20   3.864e-20   -19.480   -19.413     0.067     30.40
+S(6)          2.926e-02
+   NaSO4-          1.396e-02   9.475e-03    -1.855    -2.023    -0.168      8.22
+   SO4-2           9.443e-03   1.722e-03    -2.025    -2.764    -0.739     38.42
+   MgSO4           4.750e-03   6.468e-03    -2.323    -2.189     0.134     -7.92
+   CaSO4           6.533e-04   7.624e-04    -3.185    -3.118     0.067      7.50
+   KSO4-           1.873e-04   1.697e-04    -3.727    -3.770    -0.043     11.34
+   Mg(SO4)2-2      1.295e-04   3.668e-05    -3.888    -4.436    -0.548     32.91
+   HSO4-           1.351e-09   1.009e-09    -8.869    -8.996    -0.127     40.96
+   CaHSO4+         4.045e-11   3.020e-11   -10.393   -10.520    -0.127     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(298 K,   1 atm)
+
+  Anhydrite        -1.09     -5.37   -4.28  CaSO4
+  Aragonite         0.73     -7.61   -8.34  CaCO3
+  Arcanite         -5.26     -7.14   -1.88  K2SO4
+  Calcite           0.87     -7.61   -8.48  CaCO3
+  CO2(g)           -3.29     -4.75   -1.47  CO2
+  Dolomite          2.63    -14.45  -17.08  CaMg(CO3)2
+  Epsomite         -2.93     -4.67   -1.74  MgSO4:7H2O
+  Gypsum           -0.80     -5.38   -4.58  CaSO4:2H2O
+  H2(g)           -33.39    -36.49   -3.10  H2
+  H2O(g)           -1.51     -0.01    1.50  H2O
+  Halite           -2.49     -0.92    1.57  NaCl
+  Hexahydrite      -3.09     -4.66   -1.57  MgSO4:6H2O
+  Kieserite        -3.45     -4.62   -1.16  MgSO4:H2O
+  Mirabilite       -2.55     -3.79   -1.24  Na2SO4:10H2O
+  O2(g)           -16.52    -19.41   -2.89  O2
+  Sylvite          -3.54     -2.64    0.90  KCl
+  Thenardite       -3.41     -3.71   -0.30  Na2SO4
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+-------------------------------
+End of Run after 0.003 Seconds.
+-------------------------------
+

@@ -1,0 +1,191 @@
+{
+  "simulation": "exam_1.3_seawater_mixing",
+  "description": "500mL seawater + 500mL pure water mixing simulation",
+  "reference_seawater": {
+    "pH": 8.22,
+    "ionic_strength_mol_kgw": 0.6704,
+    "saturation_indices": [
+      {
+        "phase": "Anhydrite",
+        "si": -1.09
+      },
+      {
+        "phase": "Aragonite",
+        "si": 0.73
+      },
+      {
+        "phase": "Arcanite",
+        "si": -5.26
+      },
+      {
+        "phase": "Calcite",
+        "si": 0.87
+      },
+      {
+        "phase": "CO2(g)",
+        "si": -3.29
+      },
+      {
+        "phase": "Dolomite",
+        "si": 2.63
+      },
+      {
+        "phase": "Epsomite",
+        "si": -2.93
+      },
+      {
+        "phase": "Gypsum",
+        "si": -0.8
+      },
+      {
+        "phase": "H2(g)",
+        "si": -33.39
+      },
+      {
+        "phase": "H2O(g)",
+        "si": -1.51
+      },
+      {
+        "phase": "Halite",
+        "si": -2.49
+      },
+      {
+        "phase": "Hexahydrite",
+        "si": -3.09
+      },
+      {
+        "phase": "Kieserite",
+        "si": -3.45
+      },
+      {
+        "phase": "Mirabilite",
+        "si": -2.55
+      },
+      {
+        "phase": "O2(g)",
+        "si": -16.52
+      },
+      {
+        "phase": "Sylvite",
+        "si": -3.54
+      },
+      {
+        "phase": "Thenardite",
+        "si": -3.41
+      }
+    ],
+    "element_molalities": {
+      "Alkalinity": 0.002934,
+      "Ca": 0.01066,
+      "Cl": 0.5657,
+      "K": 0.01058,
+      "Mg": 0.05507,
+      "Na": 0.4854,
+      "S(6)": 0.02926
+    }
+  },
+  "mixed_solution": {
+    "pH": 8.32406,
+    "ionic_strength_mol_kgw": 0.3378,
+    "saturation_indices": [
+      {
+        "phase": "Anhydrite",
+        "si": -1.42
+      },
+      {
+        "phase": "Aragonite",
+        "si": 0.36
+      },
+      {
+        "phase": "Arcanite",
+        "si": -5.88
+      },
+      {
+        "phase": "Calcite",
+        "si": 0.5
+      },
+      {
+        "phase": "CH4(g)",
+        "si": -121.36
+      },
+      {
+        "phase": "CO2(g)",
+        "si": -3.62
+      },
+      {
+        "phase": "Dolomite",
+        "si": 1.86
+      },
+      {
+        "phase": "Epsomite",
+        "si": -3.25
+      },
+      {
+        "phase": "Gypsum",
+        "si": -1.12
+      },
+      {
+        "phase": "H2(g)",
+        "si": -35.92
+      },
+      {
+        "phase": "H2O(g)",
+        "si": -1.51
+      },
+      {
+        "phase": "H2S(g)",
+        "si": -121.36
+      },
+      {
+        "phase": "Halite",
+        "si": -3.05
+      },
+      {
+        "phase": "Hexahydrite",
+        "si": -3.42
+      },
+      {
+        "phase": "Kieserite",
+        "si": -3.8
+      },
+      {
+        "phase": "Mirabilite",
+        "si": -3.17
+      },
+      {
+        "phase": "O2(g)",
+        "si": -11.46
+      },
+      {
+        "phase": "Sulfur",
+        "si": -91.37
+      },
+      {
+        "phase": "Sylvite",
+        "si": -4.07
+      },
+      {
+        "phase": "Thenardite",
+        "si": -4.07
+      }
+    ],
+    "element_molalities": {
+      "C": 0.001368,
+      "Ca": 0.00533,
+      "Cl": 0.2829,
+      "K": 0.005289,
+      "Mg": 0.02753,
+      "Na": 0.2427,
+      "S": 0.01463
+    }
+  },
+  "comparison": {
+    "ph_change": 0.10405999999999871,
+    "ionic_strength_dilution_ratio": 0.5038782816229117,
+    "potential_precipitates": [
+      "Aragonite",
+      "Calcite",
+      "Dolomite"
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+RATES 1
+    Pyrite
+    -start
+    10 k = parm(1)
+    20 a0 = parm(2)
+    30 n2 = parm(3)
+    40 nH = parm(4)
+    50 mi = parm(5)
+    90 if M <= 0 then goto 200
+    100 a_now = a0 * (M/mi)^(2/3)
+    110 o2v = TOT("O(0)")
+    120 if o2v <= 0 then o2v = 1e-12
+    130 rate = k * a_now * o2v^n2 * ACT("H+")^(-nH)
+    140 delta = rate * TIME
+    150 if delta > M then delta = M
+    200 SAVE delta
+    -end
+
+SOLUTION 1
+    units mol/kgw
+    pH 7.0
+    pe 4.0
+    density 1.0
+    K 1e-4
+    Na 1e-4
+    Cl 1e-4
+
+EQUILIBRIUM_PHASES 1
+    O2(g) -0.68 10.0
+    Fe(OH)3(a) 0.0 0.0
+    Jarosite-K 0.0 0.0
+
+KINETICS 1
+    Pyrite
+        -formula FeS2 1.0
+        -m 0.5
+        -m0 0.5
+        -parms 1e-07 100.0 0.5 -0.11 0.5
+        -tol 1e-08
+        -steps 3600 7200 21600 86400 172800 259200 432000 604800 864000 1209600 1728000 2419200 3283200 4320000 5529600 6912000 8467200 8640000
+        -cvode true
+
+SELECTED_OUTPUT
+    -file selected.txt
+    -reset true
+    -step true
+    -pH
+    -pe
+    -equilibrium_phases Pyrite Fe(OH)3(a) Goethite Jarosite-K O2(g)
+    -si Pyrite
+    -si Fe(OH)3(a)
+    -si Goethite
+    -si Jarosite-K
+    -totals Fe
+    -totals S
+    -totals K
+
+END

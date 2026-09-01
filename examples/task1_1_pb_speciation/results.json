@@ -1,0 +1,197 @@
+{
+  "selected_output": {
+    "columns": [
+      "sim",
+      "state",
+      "soln",
+      "dist_x",
+      "time",
+      "step",
+      "pH",
+      "pe",
+      "reaction",
+      "temp",
+      "Alk",
+      "mu",
+      "mass_H2O",
+      "charge",
+      "pct_err",
+      "Pb",
+      "Na",
+      "Cl",
+      "m_Pb+2",
+      "m_PbOH+",
+      "m_Pb(OH)2",
+      "m_Pb(OH)3-",
+      "m_PbCl+",
+      "m_PbCl2",
+      "m_PbCl3-",
+      "m_PbCl4-2",
+      "m_PbHCO3+",
+      "m_PbCO3",
+      "m_Pb(CO3)2-2",
+      "m_PbO2",
+      "m_HPbO2-",
+      "si_Pb(OH)2",
+      "si_PbO",
+      "si_Cerussite",
+      "si_Anglesite",
+      "si_Galena"
+    ],
+    "data": [],
+    "row_count": 0
+  },
+  "saturation_indices": [
+    {
+      "phase": "H2(g)",
+      "si": -41.3
+    },
+    {
+      "phase": "H2O(g)",
+      "si": -1.5
+    },
+    {
+      "phase": "Halite",
+      "si": -5.66
+    },
+    {
+      "phase": "O2(g)",
+      "si": -0.68
+    },
+    {
+      "phase": "Pb(OH)2",
+      "si": -1.75
+    }
+  ],
+  "species_distribution": [
+    {
+      "species": "H+",
+      "molality": 1.095e-06,
+      "activity": 1e-06
+    },
+    {
+      "species": "OH-",
+      "molality": 1.124e-08,
+      "activity": 1.012e-08
+    },
+    {
+      "species": "H2O",
+      "molality": 55.51,
+      "activity": 0.9997
+    },
+    {
+      "species": "Cl-",
+      "molality": 0.01,
+      "activity": 0.00901
+    },
+    {
+      "species": "PbCl+",
+      "molality": 9.921e-07,
+      "activity": 8.947e-07
+    },
+    {
+      "species": "PbCl2",
+      "molality": 1.275e-08,
+      "activity": 1.278e-08
+    },
+    {
+      "species": "HCl",
+      "molality": 3.074e-09,
+      "activity": 3.104e-09
+    },
+    {
+      "species": "PbCl3-",
+      "molality": 1.014e-10,
+      "activity": 9.145e-11
+    },
+    {
+      "species": "PbCl4-2",
+      "molality": 5.962e-13,
+      "activity": 3.944e-13
+    },
+    {
+      "species": "H2",
+      "molality": 0.0,
+      "activity": 0.0
+    },
+    {
+      "species": "Na+",
+      "molality": 0.01001,
+      "activity": 0.009038
+    },
+    {
+      "species": "O2",
+      "molality": 0.000267,
+      "activity": 0.0002676
+    },
+    {
+      "species": "Pb+2",
+      "molality": 3.77e-06,
+      "activity": 2.494e-06
+    },
+    {
+      "species": "PbCl+",
+      "molality": 9.921e-07,
+      "activity": 8.947e-07
+    },
+    {
+      "species": "PbOH+",
+      "molality": 5.391e-08,
+      "activity": 4.862e-08
+    },
+    {
+      "species": "PbCl2",
+      "molality": 1.275e-08,
+      "activity": 1.278e-08
+    },
+    {
+      "species": "PbCl3-",
+      "molality": 1.014e-10,
+      "activity": 9.145e-11
+    },
+    {
+      "species": "Pb(OH)2",
+      "molality": 1.886e-11,
+      "activity": 1.891e-11
+    },
+    {
+      "species": "Pb2OH+3",
+      "molality": 6.879e-12,
+      "activity": 2.715e-12
+    },
+    {
+      "species": "PbCl4-2",
+      "molality": 5.962e-13,
+      "activity": 3.944e-13
+    },
+    {
+      "species": "Pb(OH)3-",
+      "molality": 2.406e-16,
+      "activity": 2.17e-16
+    },
+    {
+      "species": "Pb3(OH)4+2",
+      "molality": 3.088e-17,
+      "activity": 2.043e-17
+    },
+    {
+      "species": "Pb(OH)4-2",
+      "molality": 7.513e-22,
+      "activity": 4.97e-22
+    }
+  ],
+  "element_molalities": {
+    "Cl": 0.01001,
+    "Na": 0.01001,
+    "Pb": 4.829e-06
+  },
+  "metadata": {
+    "simulation": "Pb speciation",
+    "pH": 6.0,
+    "pe": 12.0,
+    "redox_couple": "O2(g) -0.68",
+    "NaCl": "10 mmol/L",
+    "Pb": "1 mg/L",
+    "database": "phreeqc.dat"
+  }
+}

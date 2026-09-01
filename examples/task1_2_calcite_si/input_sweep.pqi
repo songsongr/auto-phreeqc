@@ -1,0 +1,230 @@
+SOLUTION 1
+    units mg/L
+    pH 6.0
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_1.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END
+
+SOLUTION 1
+    units mg/L
+    pH 6.25
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_2.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END
+
+SOLUTION 1
+    units mg/L
+    pH 6.5
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_3.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END
+
+SOLUTION 1
+    units mg/L
+    pH 6.75
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_4.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END
+
+SOLUTION 1
+    units mg/L
+    pH 7.0
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_5.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END
+
+SOLUTION 1
+    units mg/L
+    pH 7.25
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_6.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END
+
+SOLUTION 1
+    units mg/L
+    pH 7.5
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_7.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END
+
+SOLUTION 1
+    units mg/L
+    pH 7.75
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_8.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END
+
+SOLUTION 1
+    units mg/L
+    pH 8.0
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_9.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END
+
+SOLUTION 1
+    units mg/L
+    pH 8.25
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_10.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END
+
+SOLUTION 1
+    units mg/L
+    pH 8.5
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file .\step_11.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Aragonite
+    -si Dolomite
+    -totals Ca
+    -totals C
+
+END

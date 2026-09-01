@@ -1,0 +1,2 @@
+         sim	       state	        soln	      dist_x	        time	        step	          pH	          pe	    reaction	        temp	         Alk	          mu	    mass_H2O	      charge	     pct_err	          Ca	           C	  si_Calcite	si_Aragonite	 si_Dolomite	
+           8	      i_soln	           1	         -99	         -99	         -99	        7.75	           4	         -99	      25.000	  0.00399748	  0.00589419	           1	-4.34456e-06	  -0.0552938	  1.9966e-03	  4.1052e-03	      0.6106	      0.4667	   -999.9990	

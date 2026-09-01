@@ -1,0 +1,39 @@
+TITLE Pb speciation -- pH 6.0, 10 mmol/L NaCl, 1 mg/L Pb, pe=12 O2(g) -0.68
+
+SOLUTION 1
+    units mg/L
+    pH 6.0
+    pe 12 O2(g) -0.68
+    density 1.0
+    Na 229.9
+    Cl 354.5
+    Pb 1.0
+
+SELECTED_OUTPUT
+    -file selected_output.txt
+    -reset true
+    -pH
+    -pe
+    -si Pb(OH)2
+    -si PbO
+    -si Cerussite
+    -si Anglesite
+    -si Galena
+    -totals Pb
+    -totals Na
+    -totals Cl
+    -molalities Pb+2
+    -molalities PbOH+
+    -molalities Pb(OH)2
+    -molalities Pb(OH)3-
+    -molalities PbCl+
+    -molalities PbCl2
+    -molalities PbCl3-
+    -molalities PbCl4-2
+    -molalities PbHCO3+
+    -molalities PbCO3
+    -molalities Pb(CO3)2-2
+    -molalities PbO2
+    -molalities HPbO2-
+
+END

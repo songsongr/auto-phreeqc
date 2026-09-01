@@ -1,0 +1,110 @@
+TITLE CO2 injection + K-feldspar/Kaolinite coupled kinetics (100C, 200 atm)
+
+RATES 1
+    K-feldspar
+    -start
+    10 rem Palandri & Kharaka (2004): k_neut + k_acid * aH+^0.5
+    20 T = 298.15 + TC
+    30 T0 = 298.15
+    40 R = 8.314
+    50 k_neut_25 = 10^(-12.41)
+    60 Ea_neut = 38000
+    70 f_temp_neut = exp(Ea_neut / R * (1/T0 - 1/T))
+    80 k_acid_25 = 10^(-10.06)
+    90 Ea_acid = 51700
+    100 f_temp_acid = exp(Ea_acid / R * (1/T0 - 1/T))
+    110 act_H = ACT("H+")
+    120 if act_H <= 0 then act_H = 1e-14
+    130 k_neut = k_neut_25 * f_temp_neut
+    140 k_acid = k_acid_25 * f_temp_acid * act_H^0.5
+    150 gfm = 278.33
+    160 sa_m2_per_g = parm(1)
+    170 area = M * gfm * sa_m2_per_g
+    180 rem SR() must be inline (BASIC parser quirk)
+    190 rate_kf = (k_neut + k_acid) * area * (1 - SR("K-feldspar"))
+    200 if rate_kf < 0 then rate_kf = 0
+    210 moles_kf = rate_kf * TIME
+    220 if moles_kf > M then moles_kf = M
+    230 SAVE moles_kf
+    -end
+    Kaolinite
+    -start
+    10 rem Kaolinite precipitation (Carroll & Walther 1990)
+    20 rem log_k = -13.18 (25C), Ea = 66.2 kJ/mol
+    30 T = 298.15 + TC
+    40 T0 = 298.15
+    50 R = 8.314
+    60 k_25 = 10^(-13.18)
+    70 Ea = 66200
+    80 f_temp = exp(Ea / R * (1/T0 - 1/T))
+    90 k_kao = k_25 * f_temp
+    100 gfm = 258.16
+    110 sa_m2_per_g = parm(1)
+    120 area = M * gfm * sa_m2_per_g
+    130 sr_kao = SR("Kaolinite")
+    140 rem Precipitation when SI > 0 (SR > 1)
+    150 rate_kao = k_kao * area * (1 - sr_kao)
+    160 rem Negative rate = precipitation (SAVE negative)
+    170 moles_kao = rate_kao * TIME
+    180 if moles_kao > M then moles_kao = M
+    190 rem Limit precipitation: don't exceed half current moles
+    200 if moles_kao < -M * 0.5 then moles_kao = -M * 0.5
+    210 SAVE moles_kao
+    -end
+
+SOLUTION 1
+    units mol/kgw
+    temp 100.0
+    pH 7.5
+    pe -4.0
+    density 1.0
+    Ca 0.01
+    C(4) 0.01
+    Na 0.043
+    Cl 0.028
+    K 0.0001
+    Si 0.0001
+
+GAS_PHASE 1
+    -fixed_pressure
+    -pressure 200.0
+    CO2(g) 0.0
+
+EQUILIBRIUM_PHASES 1
+    Calcite 0.0 10.0
+
+KINETICS 1
+    K-feldspar
+        -formula KAlSi3O8 1
+        -m 3.0
+        -m0 3.0
+        -parms 0.2
+        -cvode true
+    Kaolinite
+        -formula Al2Si2O5(OH)4 1
+        -m 0.5
+        -m0 0.5
+        -parms 10.0
+        -cvode true
+    -steps 315576000 in 20 steps
+
+SELECTED_OUTPUT
+    -file selected_output.txt
+    -reset true
+    -step true
+    -pH
+    -pe
+    -temperature
+    -equilibrium_phases Calcite
+    -si Calcite
+    -si K-feldspar
+    -si Kaolinite
+    -si Quartz
+    -si Gibbsite
+    -totals Ca
+    -totals K
+    -totals Al
+    -totals Si
+    -totals C
+
+END

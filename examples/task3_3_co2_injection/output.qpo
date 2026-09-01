@@ -1,0 +1,2875 @@
+   Input file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\task3_3_co2_injection\input.pqi
+  Output file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\task3_3_co2_injection\output.qpo
+Database file: C:\Program Files\USGS\phreeqc-3.8.6-17100-x64\database\phreeqc.dat
+
+------------------
+Reading data base.
+------------------
+
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	GAS_BINARY_PARAMETERS
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	MEAN_GAMMAS
+	RATES
+	END
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	TITLE Supercritical CO2 injection into Ca-bearing sandstone (100��C, 200 atm)
+	RATES 1
+	    K-feldspar
+	    start
+	    10 rem Palandri & Kharaka (2004) parameters
+	    20 rem Neutral: log_k=-12.41, Ea=38 kJ/mol
+	    30 rem Acid: log_k=-10.06, Ea=51.7 kJ/mol, a(H+)^0.5
+	    40 T = 298.15 + TC
+	    50 T0 = 298.15
+	    60 R = 8.314
+	    70 k_neut_25 = 10^(-12.41)
+	    80 Ea_neut = 38000
+	    90 f_temp_neut = exp(Ea_neut / R * (1/T0 - 1/T))
+	    100 k_acid_25 = 10^(-10.06)
+	    110 Ea_acid = 51700
+	    120 f_temp_acid = exp(Ea_acid / R * (1/T0 - 1/T))
+	    130 act_H = ACT("H+")
+	    140 if act_H <= 0 then act_H = 1e-14
+	    150 k_neut = k_neut_25 * f_temp_neut
+	    160 k_acid = k_acid_25 * f_temp_acid * act_H^0.5
+	    170 gfm = 278.33
+	    180 sa_m2_per_g = parm(1)
+	    190 area = M * gfm * sa_m2_per_g
+	    200 rem Use SR() inline only (parser bug: SR() cannot be sole RHS)
+	    210 rate = (k_neut + k_acid) * area * (1 - SR("K-feldspar"))
+	    220 if rate < 0 then rate = 0
+	    230 moles = rate * TIME
+	    240 if moles > M then moles = M
+	    250 SAVE moles
+	    end
+	SOLUTION 1
+	    units mol/kgw
+	    temp 100.0
+	    pH 7.5
+	    pe -4.0
+	    density 1.0
+	    Ca 0.01
+	    C(4) 0.01
+	    Na 0.043
+	    Cl 0.028
+	    K 0.0001
+	    Si 0.0001
+	GAS_PHASE 1
+	    fixed_pressure
+	    pressure 200.0
+	    CO2(g) 0.0
+	EQUILIBRIUM_PHASES 1
+	    Calcite 0.0 10.0
+	KINETICS 1
+	    K-feldspar
+	        formula KAlSi3O8 1
+	        m 3.0
+	        m0 3.0
+	        parms 0.2
+	        steps 315576000 in 20 steps
+	        cvode true
+	SELECTED_OUTPUT
+	    file selected_output.txt
+	    reset true
+	    step true
+	    ph
+	    pe
+	    temperature
+	    equilibrium_phases Calcite
+	    si Calcite
+	    si K-feldspar
+	    si Kaolinite
+	    si Quartz
+	    totals Ca
+	    totals K
+	    totals Al
+	    totals Si
+	    totals C
+	END
+-----
+TITLE
+-----
+
+ Supercritical CO2 injection into Ca-bearing sandstone (100��C, 200 atm)
+
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 1.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	C(4)              1.000e-02   1.000e-02
+	Ca                1.000e-02   1.000e-02
+	Cl                2.800e-02   2.800e-02
+	K                 1.000e-04   1.000e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.000e-04   1.000e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.500    
+                                       pe  =  -4.000    
+      Specific Conductance (µS/cm, 100°C)  = 12510
+                          Density (g/cm³)  =   0.96053
+                               Volume (L)  =   1.04421
+                        Viscosity (mPa s)  =   0.29003
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   5.490e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.015e-02
+                       Total CO2 (mol/kg)  =   1.000e-02
+                         Temperature (°C)  = 100.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  26.50
+                               Iterations  =   8
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.553620e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   OH-             2.349e-05   1.824e-05    -4.629    -4.739    -0.110     -5.43
+   H+              3.816e-08   3.162e-08    -7.418    -7.500    -0.082      0.00
+   H2O             5.551e+01   9.985e-01     1.744    -0.001     0.000     18.80
+C(4)          1.000e-02
+   HCO3-           6.518e-03   5.200e-03    -2.186    -2.284    -0.098     24.14
+   CaHCO3+         1.678e-03   1.349e-03    -2.775    -2.870    -0.095    123.76
+   NaHCO3          8.095e-04   8.302e-04    -3.092    -3.081     0.011     30.34
+   CaCO3           5.296e-04   5.363e-04    -3.276    -3.271     0.005    -14.43
+   CO2             4.361e-04   4.398e-04    -3.360    -3.357     0.004     38.89
+   CO3-2           2.839e-05   1.150e-05    -4.547    -4.939    -0.392     -7.26
+   KHCO3           4.753e-07   4.759e-07    -6.323    -6.323     0.001     42.26
+   (CO2)2          1.773e-08   1.795e-08    -7.751    -7.746     0.005     77.78
+Ca            1.000e-02
+   Ca+2            7.792e-03   3.157e-03    -2.108    -2.501    -0.392    -18.67
+   CaHCO3+         1.678e-03   1.349e-03    -2.775    -2.870    -0.095    123.76
+   CaCO3           5.296e-04   5.363e-04    -3.276    -3.271     0.005    -14.43
+   CaOH+           2.102e-08   1.654e-08    -7.677    -7.781    -0.104     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.184e-02    -1.553    -1.661    -0.108     16.57
+   HCl             1.416e-10   1.494e-10    -9.849    -9.826     0.023     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.898e-11   -10.415   -10.409     0.005     28.57
+K             1.000e-04
+   K+              9.952e-05   7.744e-05    -4.002    -4.111    -0.109     10.35
+   KHCO3           4.753e-07   4.759e-07    -6.323    -6.323     0.001     42.26
+Na            4.300e-02
+   Na+             4.219e-02   3.340e-02    -1.375    -1.476    -0.101      0.62
+   NaHCO3          8.095e-04   8.302e-04    -3.092    -3.081     0.011     30.34
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.229   -52.224     0.005     33.90
+Si            1.000e-04
+   H4SiO4          9.685e-05   9.809e-05    -4.014    -4.008     0.005     48.82
+   H3SiO4-         3.146e-06   2.462e-06    -5.502    -5.609    -0.106     26.76
+   H2SiO4-2        3.021e-10   1.224e-10    -9.520    -9.912    -0.392     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K,   1 atm)
+
+  Aragonite         1.73     -7.44   -9.17  CaCO3
+  Calcite           2.17     -7.44   -9.61  CaCO3
+  Chalcedony       -1.15     -4.01   -2.86  SiO2
+  CO2(g)           -1.38     -3.36   -1.98  CO2
+  H2(g)            -7.31    -10.41   -3.10  H2
+  H2O(g)           -0.01     -0.00    0.00  H2O
+  Halite           -4.76     -3.14    1.62  NaCl
+  O2(g)           -49.11    -52.22   -3.11  O2
+  Quartz           -0.91     -4.01   -3.10  SiO2
+  SiO2(a)          -1.79     -4.01   -2.22  SiO2
+  Sylvite          -6.97     -5.77    1.20  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+-----------------------------------------
+Beginning of batch-reaction calculations.
+-----------------------------------------
+
+Reaction step 1.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 1.57788e+07 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.638e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.638e-04   3.638e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.638e-04   4.638e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 914 (2341 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.638e-04
+   Al(OH)4-        3.453e-04   2.758e-04    -3.462    -3.559    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.466e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.994e-06   3.225e-06    -5.399    -5.491    -0.093     (0)  
+   AlOH+2          1.478e-08   6.281e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.569e-11   9.096e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.935e-07   6.942e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.392e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.892e-11   -10.415   -10.410     0.005     28.48
+K             4.638e-04
+   K+              4.631e-04   3.655e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.935e-07   6.942e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.924    -2.920     0.005     48.88
+   H3SiO4-         1.373e-06   1.089e-06    -5.862    -5.963    -0.100     27.31
+   H2SiO4-2        4.768e-12   2.026e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.14      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 2.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 3.15576e+07 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.639e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.639e-04   3.639e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.639e-04   4.639e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.192e-03   1.192e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.980e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 1018 (2459 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.639e-04
+   Al(OH)4-        3.454e-04   2.759e-04    -3.462    -3.559    -0.098     (0)  
+   Al(OH)3         1.450e-05   1.466e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.996e-06   3.226e-06    -5.398    -5.491    -0.093     (0)  
+   AlOH+2          1.479e-08   6.284e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.571e-11   9.100e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.937e-07   6.944e-07    -6.159    -6.158     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.392e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.697e-11
+   H2              3.849e-11   3.892e-11   -10.415   -10.410     0.005     28.48
+K             4.639e-04
+   K+              4.632e-04   3.657e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.937e-07   6.944e-07    -6.159    -6.158     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.192e-03
+   H4SiO4          1.190e-03   1.204e-03    -2.924    -2.919     0.005     48.88
+   H3SiO4-         1.373e-06   1.090e-06    -5.862    -5.963    -0.100     27.31
+   H2SiO4-2        4.770e-12   2.027e-12   -11.321   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.09     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.14      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.06    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 3.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 4.73364e+07 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.638e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.638e-04   3.638e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.638e-04   4.638e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 913 (2228 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.638e-04
+   Al(OH)4-        3.453e-04   2.758e-04    -3.462    -3.559    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.466e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.995e-06   3.225e-06    -5.399    -5.491    -0.093     (0)  
+   AlOH+2          1.478e-08   6.282e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.569e-11   9.097e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.935e-07   6.942e-07    -6.159    -6.158     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.392e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.638e-04
+   K+              4.631e-04   3.656e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.935e-07   6.942e-07    -6.159    -6.158     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.204e-03    -2.924    -2.920     0.005     48.88
+   H3SiO4-         1.373e-06   1.089e-06    -5.862    -5.963    -0.100     27.31
+   H2SiO4-2        4.769e-12   2.026e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.09     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.14      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 4.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 6.31152e+07 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.636e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite          -0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.636e-04   3.636e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.636e-04   4.636e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 582 (1444 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.636e-04
+   Al(OH)4-        3.451e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.093e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.636e-04
+   K+              4.629e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.766e-12   2.025e-12   -11.322   -11.694    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite          -0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 5.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 7.8894e+07 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.637e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.637e-04   3.637e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.637e-04   4.637e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 638 (1654 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.637e-04
+   Al(OH)4-        3.452e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.093e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.933e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.892e-11   -10.415   -10.410     0.005     28.48
+K             4.637e-04
+   K+              4.630e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.933e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.767e-12   2.025e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 6.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 9.46728e+07 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.637e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.637e-04   3.637e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.637e-04   4.637e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 611 (1599 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.637e-04
+   Al(OH)4-        3.452e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.093e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.933e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.892e-11   -10.415   -10.410     0.005     28.48
+K             4.637e-04
+   K+              4.630e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.933e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.767e-12   2.025e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 7.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 1.10452e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.638e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.638e-04   3.638e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.638e-04   4.638e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 1059 (2558 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.638e-04
+   Al(OH)4-        3.453e-04   2.758e-04    -3.462    -3.559    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.466e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.995e-06   3.225e-06    -5.399    -5.491    -0.093     (0)  
+   AlOH+2          1.478e-08   6.281e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.569e-11   9.097e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.841e-15
+   CH4             1.841e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.935e-07   6.942e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.392e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.638e-04
+   K+              4.631e-04   3.655e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.935e-07   6.942e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.924    -2.920     0.005     48.88
+   H3SiO4-         1.373e-06   1.089e-06    -5.862    -5.963    -0.100     27.31
+   H2SiO4-2        4.768e-12   2.026e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.09     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.14      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 8.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 1.2623e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.637e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.637e-04   3.637e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.637e-04   4.637e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 635 (1569 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.637e-04
+   Al(OH)4-        3.452e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.094e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.933e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.892e-11   -10.415   -10.410     0.005     28.48
+K             4.637e-04
+   K+              4.630e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.933e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.767e-12   2.025e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 9.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 1.42009e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.636e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.636e-04   3.636e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.636e-04   4.636e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 615 (1539 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.636e-04
+   Al(OH)4-        3.451e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.093e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.636e-04
+   K+              4.629e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.766e-12   2.025e-12   -11.322   -11.694    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 10.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 1.57788e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.638e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.638e-04   3.638e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.638e-04   4.638e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 1079 (2624 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.638e-04
+   Al(OH)4-        3.453e-04   2.757e-04    -3.462    -3.559    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.466e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.994e-06   3.225e-06    -5.399    -5.491    -0.093     (0)  
+   AlOH+2          1.478e-08   6.281e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.569e-11   9.096e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.934e-07   6.942e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.638e-04
+   K+              4.631e-04   3.655e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.934e-07   6.942e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.924    -2.920     0.005     48.88
+   H3SiO4-         1.373e-06   1.089e-06    -5.862    -5.963    -0.100     27.31
+   H2SiO4-2        4.768e-12   2.026e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.14      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 11.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 1.73567e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.637e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.637e-04   3.637e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.637e-04   4.637e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 813 (1833 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.637e-04
+   Al(OH)4-        3.452e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.568e-11   9.094e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.841e-15
+   CH4             1.841e-15   1.862e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.933e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.699e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.637e-04
+   K+              4.630e-04   3.655e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.933e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.862    -5.963    -0.100     27.31
+   H2SiO4-2        4.767e-12   2.026e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 12.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 1.89346e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.636e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.636e-04   3.636e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.636e-04   4.636e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 616 (1526 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.636e-04
+   Al(OH)4-        3.451e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.093e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.636e-04
+   K+              4.629e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.766e-12   2.025e-12   -11.322   -11.694    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 13.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 2.05124e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.637e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.637e-04   3.637e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.637e-04   4.637e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 882 (2142 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.637e-04
+   Al(OH)4-        3.452e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.994e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.280e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.568e-11   9.095e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.933e-07   6.941e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.892e-11   -10.415   -10.410     0.005     28.48
+K             4.637e-04
+   K+              4.630e-04   3.655e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.933e-07   6.941e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.373e-06   1.089e-06    -5.862    -5.963    -0.100     27.31
+   H2SiO4-2        4.767e-12   2.026e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 14.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 2.20903e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.636e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.636e-04   3.636e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.636e-04   4.636e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 580 (1476 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.636e-04
+   Al(OH)4-        3.452e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.093e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.636e-04
+   K+              4.630e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.767e-12   2.025e-12   -11.322   -11.694    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 15.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 2.36682e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.637e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.637e-04   3.637e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.637e-04   4.637e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 1072 (2591 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.637e-04
+   Al(OH)4-        3.452e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.994e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.280e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.568e-11   9.095e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.841e-15
+   CH4             1.841e-15   1.862e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.934e-07   6.941e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.637e-04
+   K+              4.630e-04   3.655e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.934e-07   6.941e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.373e-06   1.089e-06    -5.862    -5.963    -0.100     27.31
+   H2SiO4-2        4.767e-12   2.026e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 16.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 2.52461e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.636e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.636e-04   3.636e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.636e-04   4.636e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 566 (1460 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.636e-04
+   Al(OH)4-        3.451e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.093e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.860e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.697e-11
+   H2              3.849e-11   3.892e-11   -10.415   -10.410     0.005     28.48
+K             4.636e-04
+   K+              4.629e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.766e-12   2.025e-12   -11.322   -11.694    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 17.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 2.6824e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.636e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite          -0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.636e-04   3.636e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.636e-04   4.636e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 562 (1396 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.636e-04
+   Al(OH)4-        3.451e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.093e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.841e-15
+   CH4             1.841e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.698e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.636e-04
+   K+              4.629e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.766e-12   2.025e-12   -11.322   -11.694    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite          -0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 18.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 2.84018e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.639e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite          -0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.639e-04   3.639e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.639e-04   4.639e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.192e-03   1.192e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.980e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 1087 (2609 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.639e-04
+   Al(OH)4-        3.454e-04   2.759e-04    -3.462    -3.559    -0.098     (0)  
+   Al(OH)3         1.450e-05   1.466e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.996e-06   3.226e-06    -5.398    -5.491    -0.093     (0)  
+   AlOH+2          1.479e-08   6.284e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.571e-11   9.100e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.861e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.937e-07   6.944e-07    -6.159    -6.158     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.392e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.697e-11
+   H2              3.849e-11   3.892e-11   -10.415   -10.410     0.005     28.48
+K             4.639e-04
+   K+              4.632e-04   3.657e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.937e-07   6.944e-07    -6.159    -6.158     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.192e-03
+   H4SiO4          1.190e-03   1.204e-03    -2.924    -2.919     0.005     48.88
+   H3SiO4-         1.373e-06   1.090e-06    -5.862    -5.963    -0.100     27.31
+   H2SiO4-2        4.770e-12   2.027e-12   -11.321   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite          -0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.09     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.14      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.06    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 19.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 2.99797e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.636e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.636e-04   3.636e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.636e-04   4.636e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 534 (1412 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.636e-04
+   Al(OH)4-        3.451e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.093e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.840e-15
+   CH4             1.840e-15   1.860e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.697e-11
+   H2              3.849e-11   3.892e-11   -10.415   -10.410     0.005     28.48
+K             4.636e-04
+   K+              4.629e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.932e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.766e-12   2.025e-12   -11.322   -11.694    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Reaction step 20.
+
+Using solution 1.	
+Using pure phase assemblage 1.	
+Using gas phase 1.	
+Using kinetics 1.	
+
+Kinetics 1.	
+
+	Time step: 3.15576e+08 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	K-feldspar       -3.637e-04   3.000e+00   KAlSi3O8                  1
+
+----------------Fixed-pressure gas phase 1 dissolved completely----------------
+
+-------------------------------Phase assemblage--------------------------------
+
+                                                      Moles in assemblage
+Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
+
+Calcite           0.00    -9.45     -9.45    1.000e+01   1.000e+01   3.812e-03
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Al                3.637e-04   3.637e-04
+	C                 6.188e-03   6.188e-03
+	Ca                6.188e-03   6.188e-03
+	Cl                2.800e-02   2.800e-02
+	K                 4.637e-04   4.637e-04
+	Na                4.300e-02   4.300e-02
+	Si                1.191e-03   1.191e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   5.996      Charge balance
+                                       pe  =  -2.536      Adjusted to redox equilibrium
+      Specific Conductance (µS/cm, 100°C)  = 11683
+                          Density (g/cm³)  =   0.96960
+                               Volume (L)  =   1.03416
+                        Viscosity (mPa s)  =   0.29207
+                        Activity of water  =   0.999
+                 Ionic strength (mol/kgw)  =   4.888e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   3.979e-03
+                       Total CO2 (mol/kg)  =   6.188e-03
+                         Temperature (°C)  = 100.00
+                           Pressure (atm)  = 200.00
+                  Electrical balance (eq)  =   2.495e-02
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  29.08
+                               Iterations  = 1034 (2539 overall)
+                                  Total H  = 1.110219e+02
+                                  Total O  = 5.552768e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.207e-06   1.009e-06    -5.918    -5.996    -0.078      0.00
+   OH-             8.531e-07   6.722e-07    -6.069    -6.172    -0.103     -6.32
+   H2O             5.551e+01   9.986e-01     1.744    -0.001     0.000     18.62
+Al            3.637e-04
+   Al(OH)4-        3.452e-04   2.757e-04    -3.462    -3.560    -0.098     (0)  
+   Al(OH)3         1.449e-05   1.465e-05    -4.839    -4.834     0.005     (0)  
+   Al(OH)2+        3.993e-06   3.224e-06    -5.399    -5.492    -0.093     (0)  
+   AlOH+2          1.478e-08   6.279e-09    -7.830    -8.202    -0.372    -28.83
+   Al+3            4.567e-11   9.094e-12   -10.340   -11.041    -0.701    -44.58
+C(-4)         1.841e-15
+   CH4             1.841e-15   1.862e-15   -14.735   -14.730     0.005     40.83
+C(4)          6.188e-03
+   CO2             3.645e-03   3.672e-03    -2.438    -2.435     0.003     38.34
+   HCO3-           2.072e-03   1.673e-03    -2.684    -2.777    -0.093     25.19
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   (CO2)2          1.238e-06   1.252e-06    -5.907    -5.903     0.005     76.68
+   KHCO3           6.933e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+   CO3-2           3.321e-07   1.411e-07    -6.479    -6.850    -0.372     -5.02
+Ca            6.188e-03
+   Ca+2            5.981e-03   2.541e-03    -2.223    -2.595    -0.372    -17.35
+   CaHCO3+         2.019e-04   1.641e-04    -3.695    -3.785    -0.090    124.05
+   CaCO3           4.936e-06   4.992e-06    -5.307    -5.302     0.005    -13.28
+   CaOH+           5.278e-10   4.207e-10    -9.278    -9.376    -0.098     (0)  
+Cl            2.800e-02
+   Cl-             2.800e-02   2.215e-02    -1.553    -1.655    -0.102     16.78
+   HCl             5.140e-09   5.393e-09    -8.289    -8.268     0.021     (0)  
+H(0)          7.699e-11
+   H2              3.849e-11   3.893e-11   -10.415   -10.410     0.005     28.48
+K             4.637e-04
+   K+              4.630e-04   3.654e-04    -3.334    -3.437    -0.103     10.73
+   KHCO3           6.933e-07   6.940e-07    -6.159    -6.159     0.000     42.08
+Na            4.300e-02
+   Na+             4.274e-02   3.426e-02    -1.369    -1.465    -0.096      1.17
+   NaHCO3          2.607e-04   2.666e-04    -3.584    -3.574     0.010     30.55
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -52.377   -52.372     0.005     33.27
+Si            1.191e-03
+   H4SiO4          1.190e-03   1.203e-03    -2.925    -2.920     0.005     48.88
+   H3SiO4-         1.372e-06   1.089e-06    -5.863    -5.963    -0.100     27.31
+   H2SiO4-2        4.767e-12   2.025e-12   -11.322   -11.693    -0.372     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(373 K, 200 atm)
+
+  Al(OH)3(a)        0.08      6.95    6.86  Al(OH)3
+  Albite            0.12    -13.78  -13.90  NaAlSi3O8
+  Anorthite         1.97    -15.55  -17.52  CaAl2Si2O8
+  Aragonite        -0.44     -9.45   -9.01  CaCO3
+  Ca-Montmorillonite   4.43    -31.42  -35.85  Ca0.165Al2.33Si3.67O10(OH)2
+  Calcite           0.00     -9.45   -9.45  CaCO3
+  CH4(g)          -11.61    -14.73   -3.12  CH4
+  Chalcedony       -0.10     -2.92   -2.82  SiO2
+  CO2(g)           -0.35     -2.44   -2.09  CO2
+  Gibbsite          2.13      6.95    4.81  Al(OH)3
+  H2(g)            -7.23    -10.41   -3.18  H2
+  H2O(g)            0.05     -0.00   -0.05  H2O
+  Halite           -4.76     -3.12    1.64  NaCl
+  K-feldspar        0.00    -15.75  -15.75  KAlSi3O8
+  K-mica           10.75     14.64    3.89  KAl3Si3O10(OH)2
+  Kaolinite         5.62      8.05    2.44  Al2Si2O5(OH)4
+  O2(g)           -49.16    -52.37   -3.21  O2
+  Quartz            0.15     -2.92   -3.07  SiO2
+  SiO2(a)          -0.67     -2.92   -2.25  SiO2
+  Sylvite          -6.32     -5.09    1.23  KCl
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+-------------------------------
+End of Run after 1.217 Seconds.
+-------------------------------
+

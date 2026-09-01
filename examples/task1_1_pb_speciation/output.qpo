@@ -1,0 +1,161 @@
+   Input file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\pb_speciation_001\input.pqi
+  Output file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\pb_speciation_001\output.qpo
+Database file: C:\Program Files\USGS\phreeqc-3.8.6-17100-x64\database\phreeqc.dat
+
+------------------
+Reading data base.
+------------------
+
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	GAS_BINARY_PARAMETERS
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	MEAN_GAMMAS
+	RATES
+	END
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	TITLE Pb speciation -- pH 6.0, 10 mmol/L NaCl, 1 mg/L Pb, pe=12 O2(g) -0.68
+	SOLUTION 1
+	    units mg/L
+	    pH 6.0
+	    pe 12 O2(g) -0.68
+	    density 1.0
+	    Na 229.9
+	    Cl 354.5
+	    Pb 1.0
+	SELECTED_OUTPUT
+	    file selected_output.txt
+	    reset true
+	    ph
+	    pe
+	    si Pb(OH)2
+	    si PbO
+	    si Cerussite
+	    si Anglesite
+	    si Galena
+	    totals Pb
+	    totals Na
+	    totals Cl
+	    molalities Pb+2
+	    molalities PbOH+
+	    molalities Pb(OH)2
+	    molalities Pb(OH)3-
+	    molalities PbCl+
+	    molalities PbCl2
+	    molalities PbCl3-
+	    molalities PbCl4-2
+	    molalities PbHCO3+
+	    molalities PbCO3
+	    molalities Pb(CO3)2-2
+	    molalities PbO2
+	    molalities HPbO2-
+	END
+-----
+TITLE
+-----
+
+ Pb speciation -- pH 6.0, 10 mmol/L NaCl, 1 mg/L Pb, pe=12 O2(g) -0.68
+
+WARNING: Did not find species, PbO2.
+WARNING: Did not find species, HPbO2-.
+WARNING: Did not find phase, PbO.
+WARNING: Did not find phase, Galena.
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 1.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Cl                1.001e-02   1.001e-02
+	Na                1.001e-02   1.001e-02
+	Pb                4.829e-06   4.829e-06
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   6.000    
+                                       pe  =  14.627      Equilibrium with O2(g)
+      Specific Conductance (µS/cm,  25°C)  = 1179
+                          Density (g/cm³)  =   0.99746
+                               Volume (L)  =   1.00314
+                        Viscosity (mPa s)  =   0.89124
+                        Activity of water  =   1.000
+                 Ionic strength (mol/kgw)  =   1.001e-02
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =  -1.033e-06
+                         Temperature (°C)  =  25.00
+                  Electrical balance (eq)  =   1.163e-05
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.06
+                               Iterations  =   4
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550675e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+              1.095e-06   1.000e-06    -5.961    -6.000    -0.039      0.00
+   OH-             1.124e-08   1.012e-08    -7.949    -7.995    -0.046     -4.03
+   H2O             5.551e+01   9.997e-01     1.744    -0.000     0.000     18.07
+Cl            1.001e-02
+   Cl-             1.000e-02   9.010e-03    -2.000    -2.045    -0.045     18.14
+   PbCl+           9.921e-07   8.947e-07    -6.003    -6.048    -0.045      8.00
+   PbCl2           1.275e-08   1.278e-08    -7.895    -7.894     0.001     34.97
+   HCl             3.074e-09   3.104e-09    -8.512    -8.508     0.004     (0)  
+   PbCl3-          1.014e-10   9.145e-11    -9.994   -10.039    -0.045     66.02
+   PbCl4-2         5.962e-13   3.944e-13   -12.225   -12.404    -0.179    101.61
+H(0)          0.000e+00
+   H2              0.000e+00   0.000e+00   -44.405   -44.404     0.001     28.61
+Na            1.001e-02
+   Na+             1.001e-02   9.038e-03    -2.000    -2.044    -0.044     -1.38
+O(0)          5.341e-04
+   O2              2.670e-04   2.676e-04    -3.573    -3.572     0.001     30.40
+Pb            4.829e-06
+   Pb+2            3.770e-06   2.494e-06    -5.424    -5.603    -0.179    -15.33
+   PbCl+           9.921e-07   8.947e-07    -6.003    -6.048    -0.045      8.00
+   PbOH+           5.391e-08   4.862e-08    -7.268    -7.313    -0.045     (0)  
+   PbCl2           1.275e-08   1.278e-08    -7.895    -7.894     0.001     34.97
+   PbCl3-          1.014e-10   9.145e-11    -9.994   -10.039    -0.045     66.02
+   Pb(OH)2         1.886e-11   1.891e-11   -10.724   -10.723     0.001     (0)  
+   Pb2OH+3         6.879e-12   2.715e-12   -11.163   -11.566    -0.404     (0)  
+   PbCl4-2         5.962e-13   3.944e-13   -12.225   -12.404    -0.179    101.61
+   Pb(OH)3-        2.406e-16   2.170e-16   -15.619   -15.664    -0.045     (0)  
+   Pb3(OH)4+2      3.088e-17   2.043e-17   -16.510   -16.690    -0.179     (0)  
+   Pb(OH)4-2       7.513e-22   4.970e-22   -21.124   -21.304    -0.179     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(298 K,   1 atm)
+
+  H2(g)           -41.30    -44.40   -3.10  H2
+  H2O(g)           -1.50     -0.00    1.50  H2O
+  Halite           -5.66     -4.09    1.57  NaCl
+  O2(g)            -0.68     -3.57   -2.89  O2	 Pressure   0.2 atm, phi 1.000
+  Pb(OH)2          -1.75      6.40    8.15  Pb(OH)2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+-------------------------------
+End of Run after 0.031 Seconds.
+-------------------------------
+

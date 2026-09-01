@@ -1,0 +1,40 @@
+EXCHANGE 1
+    X 0.05
+    -equilibrate with solution 1
+
+SOLUTION 1
+    units ppm
+    pH 7.2
+    pe 4.0
+    density 1.0
+    Ca 80.0
+    Mg 24.0
+    Na 23.0
+    K 3.0
+    Alkalinity 200 as CaCO3
+    Cl 35.0
+    S(6) 50.0
+    Fe 0.1
+    Mn 0.05
+
+REACTION 1
+    NaCl 1.0
+    0.3 moles in 30 steps
+
+SELECTED_OUTPUT
+    -file selected_output.txt
+    -reset true
+    -step true
+    -pH
+    -pe
+    -si Calcite
+    -si Dolomite
+    -si Gypsum
+    -si Halite
+    -totals Ca
+    -totals Mg
+    -totals Na
+    -totals K
+    -totals Cl
+
+END

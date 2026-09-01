@@ -1,0 +1,144 @@
+SOLUTION_RAW                 3 
+  -temp                      25
+  -pressure                  1
+  -potential                 0
+  -total_h                   2.7753135725445
+  -total_o                   1.3884054174096
+  -cb                        2.7822253342071e-06
+  -density                   0.99761043647285
+  -viscosity                 0.89073159456972
+  -viscos_0                  0.89002391814698
+  -totals
+    Cd                       2.225e-08
+    H(0)                     3.5315418224536e-21
+    N(5)                     0.00025
+    Na                       0.00025
+  -pH                        4
+  -pe                        4
+  -mu                        0.010056505651251
+  -ah2o                      0.99965812345916
+  -mass_water                0.025
+  -soln_vol                  0.025081187476389
+  -total_alkalinity          -2.7377253342072e-06
+  -activities
+    Cd                       -6.2375202542012
+    E                        -4
+    H(0)                     -19.15
+    N(5)                     -2.046547041838
+    Na                       -2.044261992611
+    O(0)                     -54.080297000962
+  -gammas
+EQUILIBRIUM_PHASES_RAW       3 
+  # EXCHANGE_MODIFY candidates; use new_def=true #
+  -new_def                   0
+  -component                 Fix_H+
+      # EQUILIBRIUM_PHASES_MODIFY candidate identifiers #
+      -si                    -4
+      -moles                 10
+      -force_equality        0
+      -dissolve_only         0
+      -precipitate_only      0
+      # PPassemblage workspace variables #
+      -si_org                -4
+      -delta                 0
+      -initial_moles         0
+      -totals                
+  -eltList                   # List of all elements in phases and alternate reactions
+    H                        1
+  # PPassemblage workspace variables #
+  -assemblage_totals
+SURFACE_RAW                  3 
+  # SURFACE_MODIFY candidate identifiers #
+  -type                      2
+  -dl_type                   0
+  -only_counter_ions         0
+  -correct_D                0
+  -thickness                 1e-08
+  -debye_lengths             0
+  -DDL_viscosity             1
+  -DDL_limit                 0.8
+  -component                 Gth_sOH
+    # SURFACE_MODIFY candidate identifiers #
+    -formula_z               0
+    -moles                   5e-06
+    -la                      0
+    -charge_balance          0
+    -phase_proportion        0
+    -Dw                      0
+    -charge_name             Gth
+    -master_element          Gth_s
+    -totals
+      Gth_s                  5e-06
+      H                      5e-06
+      O                      5e-06
+  -component                 Mn_sOH
+    # SURFACE_MODIFY candidate identifiers #
+    -formula_z               0
+    -moles                   5e-06
+    -la                      0
+    -charge_balance          0
+    -phase_proportion        0
+    -Dw                      0
+    -charge_name             Mn
+    -master_element          Mn_s
+    -totals
+      H                      5e-06
+      Mn_s                   5e-06
+      O                      5e-06
+  -component                 Mn_wOH
+    # SURFACE_MODIFY candidate identifiers #
+    -formula_z               0
+    -moles                   0.0002
+    -la                      0
+    -charge_balance          0
+    -phase_proportion        0
+    -Dw                      0
+    -charge_name             Mn
+    -master_element          Mn_w
+    -totals
+      H                      0.0002
+      Mn_w                   0.0002
+      O                      0.0002
+  -charge_component          Gth
+    # SURFACE_MODIFY candidate identifiers #
+    -specific_area           50
+    -grams                   0.02
+    -charge_balance          0
+    -mass_water              0
+    -f_free                  0
+    -ddl_viscosity           0
+    -la_psi                  0
+    -capacitance0            1
+    -capacitance1            5
+    -diffuse_layer_totals
+    # Surface workspace variables #
+    -sigma0                  0
+    -sigma1                  0
+    -sigma2                  0
+    -sigmaddl                0
+  -charge_component          Mn
+    # SURFACE_MODIFY candidate identifiers #
+    -specific_area           600
+    -grams                   0.02
+    -charge_balance          0
+    -mass_water              0
+    -f_free                  0
+    -ddl_viscosity           0
+    -la_psi                  0
+    -capacitance0            1
+    -capacitance1            5
+    -diffuse_layer_totals
+    # Surface workspace variables #
+    -sigma0                  0
+    -sigma1                  0
+    -sigma2                  0
+    -sigmaddl                0
+  # SURFACE_MODIFY candidates with new_def=true #
+  -new_def                   1
+  -tidied                   1
+  -sites_units               0
+  -solution_equilibria       0
+  -n_solution                -999
+  # Surface workspace variables #
+  -transport                 0
+  -totals                    

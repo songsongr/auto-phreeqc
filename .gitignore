@@ -9,14 +9,12 @@ build/
 .eggs/
 *.egg
 
-# Virtual environment (uv / venv)
+# Virtual environment
 .venv/
 venv/
 env/
 
-# uv
-
-# IDE
+# IDE / 编辑器
 .vscode/
 .idea/
 *.swp
@@ -26,23 +24,33 @@ env/
 .DS_Store
 Thumbs.db
 
-# Claude Code
+# Claude Code 本机设置
 .claude/settings.local.json
 
-# Workspace output (generated simulation results)
-workspace/
-
-# Playwright MCP
+# Playwright MCP 调试残留
 .playwright-mcp/
 
-# PDF manual (large file, copyright material)
-phreeqc-v3程序说明.pdf
-
-# Windows shortcut (local machine-specific)
+# 用户本机私有文件
 *.lnk
+/phreeqc-v3程序说明.pdf
 
-# Logs
-*.log
+# 根目录命令行临时输出
+/phreeqc.log
+/selected_output.txt
+/selected_output_*.txt
+/selected_output_*.sel
 
-# Temporary files
+# WebBench 运行期数据（每次启动自动重建）
+/workbench/workspace_workbench/
+/workbench/backend/services/__pycache__/
+
+# 临时 / 测试 workspace 变体（examples/ 不受影响）
+/workspace/
+/workspace_e2e/
+/workspace_workbench/
+/workspace_workbench_test/
+/workspace_workbench_v*/
+/test_selected_output_001/
+
+# 临时目录
 tmp/

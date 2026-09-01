@@ -1,0 +1,43 @@
+TITLE Task 2.2: AMD Neutralization with Calcite (Limestone Powder)
+
+SOLUTION 1
+    units mg/L
+    pH 2.0
+    pe 4.0
+    density 1.0
+    Fe(2) 500
+    Fe(3) 50
+    Al 200
+    Mn 50
+    S(6) 2600
+
+EQUILIBRIUM_PHASES 1
+    Gypsum 0.0 0.0
+    Fe(OH)3(a) 0.0 0.0
+    Gibbsite 0.0 0.0
+    CO2(g) -3.4 10.0
+    Calcite 0.0 0.0
+
+REACTION 1
+    Calcite 1.0
+    0.05 moles in 100 steps
+
+SELECTED_OUTPUT
+    -file selected_output.txt
+    -reset false
+    -step true
+    -pH
+    -pe
+    -equilibrium_phases Gypsum Fe(OH)3(a) Gibbsite Calcite
+    -si Calcite
+    -si Gypsum
+    -si Fe(OH)3(a)
+    -si Gibbsite
+    -totals Ca
+    -totals S
+    -totals Fe
+    -totals Al
+    -totals Mn
+    -totals C(4)
+
+END

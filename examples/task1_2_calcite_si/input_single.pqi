@@ -1,0 +1,18 @@
+SOLUTION 1
+    units mg/L
+    pH 7.2
+    pe 4.0
+    density 1.0
+    Ca 80
+    Alkalinity 200 as CaCO3
+
+SELECTED_OUTPUT
+    -file selected_output.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -totals Ca
+    -totals C
+
+END

@@ -1,0 +1,321 @@
+{
+  "metadata": {
+    "task": "2.2",
+    "title": "AMD Neutralization with Calcite (Limestone)",
+    "initial_pH": 2.0,
+    "target_pH": 7.0,
+    "amd_composition": {
+      "Fe(2)": "500 mg/L",
+      "Fe(3)": "50 mg/L",
+      "Al": "200 mg/L",
+      "Mn": "50 mg/L",
+      "S(6)": "2600 mg/L"
+    },
+    "calcite_total": 0.05,
+    "steps": 100,
+    "step_size_mol": 0.0005,
+    "co2_system": "open (log PCO2 = -3.4)"
+  },
+  "key_results": {
+    "step_at_ph7": 44,
+    "calcite_to_ph7_mol": 0.022,
+    "calcite_to_ph7_g": 2.20198,
+    "final_pH": 7.70023,
+    "final_calcite_added_mol": 0.0505
+  },
+  "selected_output": {
+    "columns": [
+      "step",
+      "pH",
+      "pe",
+      "Ca",
+      "S",
+      "Fe",
+      "Al",
+      "Mn",
+      "C(4)",
+      "Gypsum",
+      "d_Gypsum",
+      "Fe(OH)3(a)",
+      "d_Fe(OH)3(a)",
+      "Gibbsite",
+      "d_Gibbsite",
+      "Calcite",
+      "d_Calcite",
+      "si_Calcite",
+      "si_Gypsum",
+      "si_Fe(OH)3(a)",
+      "si_Gibbsite"
+    ],
+    "row_count": 101
+  },
+  "final_state": {
+    "saturation_indices": [
+      {
+        "phase": "Al(OH)3(a)",
+        "si": -2.69
+      },
+      {
+        "phase": "Anhydrite",
+        "si": -0.3
+      },
+      {
+        "phase": "Aragonite",
+        "si": -0.14
+      },
+      {
+        "phase": "Calcite",
+        "si": 0.0
+      },
+      {
+        "phase": "CH4(g)",
+        "si": -18.21
+      },
+      {
+        "phase": "CO2(g)",
+        "si": -3.4
+      },
+      {
+        "phase": "Fe(OH)3(a)",
+        "si": 0.0
+      },
+      {
+        "phase": "FeS(ppt)",
+        "si": -7.78
+      },
+      {
+        "phase": "Gibbsite",
+        "si": 0.0
+      },
+      {
+        "phase": "Goethite",
+        "si": 5.89
+      },
+      {
+        "phase": "Gypsum",
+        "si": 0.0
+      },
+      {
+        "phase": "H2(g)",
+        "si": -10.18
+      },
+      {
+        "phase": "H2O(g)",
+        "si": -1.5
+      },
+      {
+        "phase": "H2S(g)",
+        "si": -16.6
+      },
+      {
+        "phase": "Hausmannite",
+        "si": -15.35
+      },
+      {
+        "phase": "Hematite",
+        "si": 13.79
+      },
+      {
+        "phase": "Mackinawite",
+        "si": -7.04
+      },
+      {
+        "phase": "Manganite",
+        "si": -8.42
+      },
+      {
+        "phase": "Melanterite",
+        "si": -2.6
+      },
+      {
+        "phase": "O2(g)",
+        "si": -62.92
+      },
+      {
+        "phase": "Pyrite",
+        "si": -7.62
+      },
+      {
+        "phase": "Pyrochroite",
+        "si": -3.35
+      },
+      {
+        "phase": "Pyrolusite",
+        "si": -19.4
+      },
+      {
+        "phase": "Rhodochrosite",
+        "si": 1.43
+      },
+      {
+        "phase": "Siderite",
+        "si": 2.19
+      },
+      {
+        "phase": "Sulfur",
+        "si": -12.34
+      }
+    ],
+    "species_distribution": [
+      {
+        "species": "OH-",
+        "molality": 6.348e-07,
+        "activity": 5.072e-07
+      },
+      {
+        "species": "H+",
+        "molality": 2.356e-08,
+        "activity": 1.994e-08
+      },
+      {
+        "species": "H2O",
+        "molality": 55.51,
+        "activity": 0.9994
+      },
+      {
+        "species": "Al(OH)4-",
+        "molality": 1.724e-07,
+        "activity": 1.396e-07
+      },
+      {
+        "species": "Al(OH)3",
+        "molality": 1.457e-09,
+        "activity": 1.478e-09
+      },
+      {
+        "species": "Al(OH)2+",
+        "molality": 2.446e-10,
+        "activity": 2.001e-10
+      },
+      {
+        "species": "AlOH+2",
+        "molality": 1.136e-12,
+        "activity": 5.096e-13
+      },
+      {
+        "species": "AlSO4+",
+        "molality": 2.245e-14,
+        "activity": 1.818e-14
+      },
+      {
+        "species": "Al+3",
+        "molality": 4.593e-15,
+        "activity": 1.024e-15
+      },
+      {
+        "species": "Al(SO4)2-",
+        "molality": 3.988e-15,
+        "activity": 3.229e-15
+      },
+      {
+        "species": "AlHSO4+2",
+        "molality": 7.442e-23,
+        "activity": 3.215e-23
+      },
+      {
+        "species": "CH4",
+        "molality": 9.548e-22,
+        "activity": 9.68e-22
+      },
+      {
+        "species": "HCO3-",
+        "molality": 0.000369,
+        "activity": 0.0003019
+      },
+      {
+        "species": "FeHCO3+",
+        "molality": 0.0001036,
+        "activity": 8.399e-05
+      },
+      {
+        "species": "FeCO3",
+        "molality": 4.673e-05,
+        "activity": 4.738e-05
+      },
+      {
+        "species": "MnCO3",
+        "molality": 1.565e-05,
+        "activity": 1.587e-05
+      },
+      {
+        "species": "CO2",
+        "molality": 1.342e-05,
+        "activity": 1.355e-05
+      },
+      {
+        "species": "MnHCO3+",
+        "molality": 9.293e-06,
+        "activity": 7.57e-06
+      },
+      {
+        "species": "CaHCO3+",
+        "molality": 6.594e-06,
+        "activity": 5.432e-06
+      },
+      {
+        "species": "CaCO3",
+        "molality": 5.487e-06,
+        "activity": 5.563e-06
+      },
+      {
+        "species": "CO3-2",
+        "molality": 1.583e-06,
+        "activity": 7.1e-07
+      },
+      {
+        "species": "(CO2)2",
+        "molality": 3.322e-12,
+        "activity": 3.368e-12
+      },
+      {
+        "species": "Ca+2",
+        "molality": 0.01035,
+        "activity": 0.004664
+      },
+      {
+        "species": "CaSO4",
+        "molality": 0.004594,
+        "activity": 0.004658
+      },
+      {
+        "species": "CaHCO3+",
+        "molality": 6.594e-06,
+        "activity": 5.432e-06
+      },
+      {
+        "species": "CaCO3",
+        "molality": 5.487e-06,
+        "activity": 5.563e-06
+      },
+      {
+        "species": "CaOH+",
+        "molality": 4.784e-08,
+        "activity": 3.879e-08
+      },
+      {
+        "species": "CaHSO4+",
+        "molality": 7.531e-10,
+        "activity": 6.106e-10
+      },
+      {
+        "species": "Fe+2",
+        "molality": 0.006042,
+        "activity": 0.002782
+      },
+      {
+        "species": "FeSO4",
+        "molality": 0.00274,
+        "activity": 0.002778
+      }
+    ],
+    "element_molalities": {
+      "Al": 1.741e-07,
+      "C": 0.0005713,
+      "Ca": 0.01496,
+      "Fe": 0.008987,
+      "Mn": 0.0009135,
+      "S": 0.02044
+    },
+    "ionic_strength": 0.05994
+  }
+}

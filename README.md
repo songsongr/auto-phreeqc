@@ -105,45 +105,59 @@ plot_si_vs_ph(si_data, "Calcite")
 ## 📁 Project Structure
 
 ```
-.claude/skills/phreeqc-auto/
-├── SKILL.md                          # Claude Code skill definition
-├── scripts/
-│   ├── generate_input.py             # PHREEQC input file generation
-│   ├── run_phreeqc.py                # PHREEQC runner
-│   ├── parse_output.py               # Output parser
-│   └── visualize.py                  # Visualization tools
-└── references/
-    ├── coordinator_template.py       # Coordinator script template
-    ├── pb_speciation_example.md      # Example: Pb speciation
-    ├── calcite_si_example.md         # Example: Calcite saturation index
-    ├── seawater_mixing_example.md    # Example: Seawater + pure water mixing
-    ├── cd_adsorption_edge_example.md # Example: Cd adsorption on Fe-Mn oxides
-    ├── amd_neutralization_example.md # Example: Acid mine drainage neutralization
-    ├── cation_exchange_example.md    # Example: Cation exchange in seawater intrusion
-    ├── pyrite_kinetics_example.md    # Example: Pyrite oxidation kinetics
-    ├── arsenic_transport_example.md  # Example: 1D As reactive transport
-    ├── extreme_co2_injection_example.md  # Example: Supercritical CO₂ injection
-    ├── cd_music_modeling_guide.md    # CD-MUSIC surface complexation modeling
-    └── goethite_birnessite_surface_params.md  # Surface parameters reference
+.                                       # repo root
+├── README.md / CLAUDE.md / LICENSE     # project metadata
+├── pyproject.toml / uv.lock            # Python package definition + lockfile
+├── start.unix.sh                       # launcher for macOS / Linux / Git Bash
+├── start.windows.bat                   # launcher for Windows cmd
+├── .gitignore
+│
+├── .claude/skills/phreeqc-auto/        # Claude Code skill (see SKILL.md)
+├── .github/                            # CI workflows, Pages, Discussions
+├── docs/                               # long-form docs (GitHub Pages site)
+│
+├── workbench/                          # PHREEQC Web Workbench (zero-dep, stdlib only)
+│   ├── start.unix.sh / start.windows.bat
+│   ├── backend/app.py                  # stdlib HTTP server (REST + SSE)
+│   ├── backend/services/               # locator, registry, runner, storage, templates, importer
+│   ├── frontend/                       # React via CDN + ECharts
+│   └── workspace_workbench/            # runtime-generated runs (gitignored)
+│
+├── examples/                           # curated reference simulations (one per task)
+│   ├── task1_1_pb_speciation/
+│   ├── task1_2_calcite_si/
+│   ├── task1_3_SimpleMix/
+│   ├── task2_1_cd_adsorption/
+│   ├── task2_2_amd_neutralization/
+│   ├── task2_3_cation_exchange/
+│   ├── task3_1_pyrite_kinetics/
+│   ├── task3_2_as_transport/
+│   ├── task3_3_co2_extended/
+│   └── task3_3_co2_injection/
+│
+└── external_runs/                      # default watch dir for WebBench external-run importer
 ```
 
 ---
 
 ## 📚 Examples
 
-Nine benchmark examples across three difficulty levels are documented in `references/`:
+Nine benchmark examples across three difficulty levels are documented in `references/`.
+Each example also ships a ready-to-run folder under `examples/` (one subdirectory per
+task), so you can `cd examples/task1_1_pb_speciation/` and re-run the simulation with
+your local PHREEQC install.
 
-| Level | Example | Description |
-|-------|---------|-------------|
-| 🟢 L1 | Pb speciation | Pb species distribution in NaCl solution |
-| 🟢 L1 | Calcite SI | Saturation index vs pH sensitivity analysis |
-| 🟢 L1 | Seawater mixing | Simple dilution of seawater with pure water |
-| 🟡 L2 | Cd adsorption | Surface complexation on Fe-Mn oxides |
-| 🟡 L2 | AMD neutralization | Acid mine drainage + limestone treatment |
-| 🟡 L2 | Cation exchange | Seawater intrusion ion exchange |
-| 🔴 L3 | Pyrite kinetics | Mineral dissolution kinetics |
-| 🔴 L3 | As transport | 1D reactive transport with adsorption |
-| 🔴 L3 | CO₂ injection | Supercritical CO₂ multiphase evolution |
+| Level | Example | `examples/` folder | Description |
+|-------|---------|--------------------|-------------|
+| 🟢 L1 | Pb speciation | `task1_1_pb_speciation/` | Pb species distribution in NaCl solution |
+| 🟢 L1 | Calcite SI | `task1_2_calcite_si/` | Saturation index vs pH sensitivity analysis |
+| 🟢 L1 | Seawater mixing | `task1_3_SimpleMix/` | Simple dilution of seawater with pure water |
+| 🟡 L2 | Cd adsorption | `task2_1_cd_adsorption/` | Surface complexation on Fe-Mn oxides |
+| 🟡 L2 | AMD neutralization | `task2_2_amd_neutralization/` | Acid mine drainage + limestone treatment |
+| 🟡 L2 | Cation exchange | `task2_3_cation_exchange/` | Seawater intrusion ion exchange |
+| 🔴 L3 | Pyrite kinetics | `task3_1_pyrite_kinetics/` | Mineral dissolution kinetics |
+| 🔴 L3 | As transport | `task3_2_as_transport/` | 1D reactive transport with adsorption |
+| 🔴 L3 | CO₂ injection | `task3_3_co2_injection/` | Supercritical CO₂ multiphase evolution |
 
 ---
 
@@ -161,6 +175,30 @@ pip install -e .[dev]
 # Run tests
 pytest .claude/skills/phreeqc-auto/scripts/test_scripts.py
 ```
+
+---
+
+## 🖥 WebUI Workbench
+
+A self-hosted browser UI is included under [`workbench/`](workbench/)
+that wraps the skill with a REST + SSE API and an ECharts-powered
+result inspector.  No new Python packages are added — the backend is
+built on the standard library, and the frontend loads React/ECharts
+from a CDN.  See [`workbench/README.md`](workbench/README.md) for
+architecture, API conventions, and the full list of 9 built-in
+templates.
+
+Quick start:
+
+```bash
+# Windows  (cmd.exe / Windows Terminal / PowerShell)
+.\start.windows.bat
+
+# macOS / Linux / Git Bash on Windows
+./start.unix.sh        # or: bash workbench/start.unix.sh
+```
+
+Then open <http://127.0.0.1:8765/>.
 
 ---
 

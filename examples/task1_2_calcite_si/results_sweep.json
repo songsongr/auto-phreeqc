@@ -1,0 +1,336 @@
+{
+  "pH_values": [
+    6.0,
+    6.25,
+    6.5,
+    6.75,
+    7.0,
+    7.25,
+    7.5,
+    7.75,
+    8.0,
+    8.25,
+    8.5
+  ],
+  "steps": [
+    {
+      "pH": 6.0,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": -1.27
+        },
+        {
+          "phase": "Calcite",
+          "si": -1.13
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -0.62
+        },
+        {
+          "phase": "H2(g)",
+          "si": -20.05
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -43.19
+        }
+      ]
+    },
+    {
+      "pH": 6.25,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": -1.02
+        },
+        {
+          "phase": "Calcite",
+          "si": -0.88
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -0.87
+        },
+        {
+          "phase": "H2(g)",
+          "si": -20.55
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -42.19
+        }
+      ]
+    },
+    {
+      "pH": 6.5,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": -0.77
+        },
+        {
+          "phase": "Calcite",
+          "si": -0.63
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -1.12
+        },
+        {
+          "phase": "H2(g)",
+          "si": -21.05
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -41.19
+        }
+      ]
+    },
+    {
+      "pH": 6.75,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": -0.52
+        },
+        {
+          "phase": "Calcite",
+          "si": -0.38
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -1.37
+        },
+        {
+          "phase": "H2(g)",
+          "si": -21.55
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -40.19
+        }
+      ]
+    },
+    {
+      "pH": 7.0,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": -0.27
+        },
+        {
+          "phase": "Calcite",
+          "si": -0.13
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -1.62
+        },
+        {
+          "phase": "H2(g)",
+          "si": -22.05
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -39.19
+        }
+      ]
+    },
+    {
+      "pH": 7.25,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": -0.03
+        },
+        {
+          "phase": "Calcite",
+          "si": 0.12
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -1.87
+        },
+        {
+          "phase": "H2(g)",
+          "si": -22.55
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -38.19
+        }
+      ]
+    },
+    {
+      "pH": 7.5,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": 0.22
+        },
+        {
+          "phase": "Calcite",
+          "si": 0.37
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -2.12
+        },
+        {
+          "phase": "H2(g)",
+          "si": -23.05
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -37.19
+        }
+      ]
+    },
+    {
+      "pH": 7.75,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": 0.47
+        },
+        {
+          "phase": "Calcite",
+          "si": 0.61
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -2.37
+        },
+        {
+          "phase": "H2(g)",
+          "si": -23.55
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -36.19
+        }
+      ]
+    },
+    {
+      "pH": 8.0,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": 0.71
+        },
+        {
+          "phase": "Calcite",
+          "si": 0.85
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -2.63
+        },
+        {
+          "phase": "H2(g)",
+          "si": -24.05
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -35.19
+        }
+      ]
+    },
+    {
+      "pH": 8.25,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": 0.94
+        },
+        {
+          "phase": "Calcite",
+          "si": 1.09
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -2.89
+        },
+        {
+          "phase": "H2(g)",
+          "si": -24.55
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -34.19
+        }
+      ]
+    },
+    {
+      "pH": 8.5,
+      "saturation_indices": [
+        {
+          "phase": "Aragonite",
+          "si": 1.17
+        },
+        {
+          "phase": "Calcite",
+          "si": 1.31
+        },
+        {
+          "phase": "CO2(g)",
+          "si": -3.16
+        },
+        {
+          "phase": "H2(g)",
+          "si": -25.05
+        },
+        {
+          "phase": "H2O(g)",
+          "si": -1.5
+        },
+        {
+          "phase": "O2(g)",
+          "si": -33.19
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+SOLUTION 1
+    units ppm
+    pH 8.22
+    pe 8.451
+    density 1.023
+    Ca 412.3
+    Mg 1291.8
+    Na 10768.0
+    K 399.1
+    Cl 19353.0
+    Alkalinity 141.682
+    S(6) 2712.0
+
+SELECTED_OUTPUT
+    -file selected_output_a.txt
+    -reset true
+    -pH
+    -pe
+    -si Calcite
+    -si Dolomite
+    -si Aragonite
+    -si Gypsum
+    -si Halite
+    -si Brucite
+    -totals Ca
+    -totals Mg
+    -totals Na
+    -totals K
+    -totals Cl
+    -totals S
+    -totals C
+
+END
