@@ -30,6 +30,21 @@ const API = {
   del(path)      { return this.request("DELETE", path); },
 };
 
+function parseSseEvents(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (typeof payload !== "string") return [];
+  return payload.split(/\n\n+/).flatMap((block) => {
+    const data = block.split("\n").find((line) => line.startsWith("data:"));
+    if (!data) return [];
+    try {
+      const event = JSON.parse(data.slice(5).trim());
+      return event && !Array.isArray(event) && typeof event === "object" &&
+        typeof event.ts === "number" && typeof event.kind === "string" ? [event] : [];
+    }
+    catch (e) { return []; }
+  });
+}
+
 // ---------- i18n -------------------------------------------------------
 // Two-language UI (zh / en).  PHREEQC input keywords (SOLUTION,
 // SELECTED_OUTPUT, EQUILIBRIUM_PHASES, …) are emitted by the backend
@@ -116,6 +131,8 @@ const I18N = {
     settings_active: "当前生效",
     settings_use: "使用此路径",
     settings_test: "测试可及性",
+    settings_auto: "自动配置环境",
+    settings_configuring: "正在自动配置…",
     settings_save: "保存设置",
     settings_testing: "测试中…",
     settings_path_label: "PHREEQC 可执行文件",
@@ -124,6 +141,11 @@ const I18N = {
     settings_test_passed: "✓ 可用",
     settings_test_failed: "✗ 失败",
     settings_clear: "清除",
+    settings_version: "版本",
+    settings_auto_done: "已自动配置并通过可及性测试。",
+    settings_override_notice: "这会覆盖已自动配置的 PHREEQC 路径和数据库。",
+    settings_override_cancel: "取消",
+    settings_override_confirm: "仍然保存",
     tpl_btn_detail: "详情",
     tpl_btn_start: "启动模拟 →",
     tpl_edit_title: "参数编辑",
@@ -146,11 +168,68 @@ const I18N = {
     tpl_param_other: "其他",
     tpl_add: "+ 添加",
     tpl_remove: "×",
+    custom_entry_title: "自定义模拟",
+    custom_entry_summary: "从计算类型开始，按需组合溶液、反应、相平衡、气相与运移模块。",
+    custom_entry_action: "开始配置 →",
+    custom_title: "创建自定义模拟",
+    custom_subtitle: "先选择计算类型，再按需添加模块；表单与 JSON 共用同一份场景定义。",
+    custom_choose_type: "选择计算类型",
+    custom_choose_type_help: "系统会载入一个最小可运行骨架；之后可以自由添加或移除允许的模块。",
+    custom_change_type: "更换计算类型",
+    custom_name: "模拟名称",
+    custom_name_placeholder: "例如：石灰石中和试验",
+    custom_modules: "参数模块",
+    custom_add_module: "+ 添加模块",
+    custom_add_solution: "+ 添加溶液",
+    custom_remove_module: "移除模块",
+    custom_required_module: "必需",
+    custom_validate: "检查输入",
+    custom_validating: "检查中…",
+    custom_validation_ok: "场景结构检查通过。",
+    custom_validation_errors: "请先修复以下问题：",
+    custom_validation_warnings: "请留意：",
+    custom_preview: "预览 PHREEQC 输入",
+    custom_previewing: "生成预览中…",
+    custom_save_template: "保存为模板",
+    custom_saving_template: "保存中…",
+    custom_template_saved: "已保存为自定义模板。",
+    custom_start: "启动模拟",
+    custom_starting: "创建运行中…",
+    custom_preview_title: "PHREEQC 输入预览",
+    custom_no_preview: "点击“预览 PHREEQC 输入”生成预览。",
+    custom_load_error: "无法载入自定义模拟类型",
+    custom_unknown_module: "高级参数",
+    custom_json_help: "可编辑完整 Scenario JSON；切回表单前需要保持 JSON 有效。",
+    custom_saved_title: "已保存的自定义模板",
+    custom_saved_empty: "还没有保存的自定义模板。",
+    custom_load: "载入",
+    custom_delete: "删除",
+    custom_overwrite_hint: "再次保存会覆盖当前载入的模板。",
+    custom_modules_help: "按需增删模块；“必需”模块不可移除。",
+    custom_add_module_hint: "添加模块",
+    mod_solutions: "溶液 (SOLUTION)",
+    mod_initial_cell_solution: "初始单元溶液",
+    mod_equilibrium_phases: "平衡相 (EQUILIBRIUM_PHASES)",
+    mod_reaction: "反应 (REACTION)",
+    mod_mix: "混合 (MIX)",
+    mod_gas_phase: "气相 (GAS_PHASE)",
+    mod_transport: "运移 (TRANSPORT)",
+    mod_selected_output: "选定输出 (SELECTED_OUTPUT)",
     abort_btn: "中止计算",
     abort_title: "中止该模拟？",
     abort_body: "正在运行的 PHREEQC 进程会被立即终止，已生成的文件保留在 workspace 中。",
     abort_confirm: "中止",
     status_aborted: "已中止",
+    run_failed_artifacts: "该运行在生成全部结果文件前失败。请查看运行日志；仅已生成的文件会显示为可用标签。",
+    failure_summary: "失败摘要",
+    failure_stage: "失败位置",
+    failure_exit_code: "退出码",
+    failure_error_code: "错误码",
+    failure_output: "关键输出",
+    failure_environment: "运行环境",
+    failure_copy: "复制错误信息",
+    failure_copied: "已复制，可直接粘贴给 agent。",
+    failure_no_output: "未提取到错误输出，请查看下方原始日志。",
   },
   en: {
     workbench: "PHREEQC Workbench",
@@ -200,6 +279,8 @@ const I18N = {
     settings_active: "Currently in use",
     settings_use: "Use this",
     settings_test: "Test reachability",
+    settings_auto: "Auto-configure environment",
+    settings_configuring: "Auto-configuring…",
     settings_save: "Save settings",
     settings_testing: "Testing…",
     settings_path_label: "PHREEQC executable",
@@ -208,6 +289,11 @@ const I18N = {
     settings_test_passed: "✓ OK",
     settings_test_failed: "✗ failed",
     settings_clear: "Clear",
+    settings_version: "Version",
+    settings_auto_done: "Auto-configured and reachability-tested.",
+    settings_override_notice: "This will replace the auto-configured PHREEQC path and database.",
+    settings_override_cancel: "Cancel",
+    settings_override_confirm: "Save anyway",
     tpl_btn_detail: "Details",
     tpl_btn_start: "Start →",
     tpl_edit_title: "Parameter editor",
@@ -230,11 +316,68 @@ const I18N = {
     tpl_param_other: "Other",
     tpl_add: "+ Add",
     tpl_remove: "×",
+    custom_entry_title: "Custom simulation",
+    custom_entry_summary: "Start from a calculation type and compose solutions, reactions, phases, gas, and transport as needed.",
+    custom_entry_action: "Configure →",
+    custom_title: "Create custom simulation",
+    custom_subtitle: "Choose a calculation type, add modules as needed, and edit one shared scenario in either form or JSON.",
+    custom_choose_type: "Choose calculation type",
+    custom_choose_type_help: "A minimal runnable skeleton is loaded first; you can then add or remove permitted modules.",
+    custom_change_type: "Change calculation type",
+    custom_name: "Simulation name",
+    custom_name_placeholder: "For example: Calcite neutralization test",
+    custom_modules: "Parameter modules",
+    custom_add_module: "+ Add module",
+    custom_add_solution: "+ Add solution",
+    custom_remove_module: "Remove module",
+    custom_required_module: "Required",
+    custom_validate: "Check input",
+    custom_validating: "Checking…",
+    custom_validation_ok: "Scenario structure check passed.",
+    custom_validation_errors: "Fix these issues before running:",
+    custom_validation_warnings: "Please note:",
+    custom_preview: "Preview PHREEQC input",
+    custom_previewing: "Generating preview…",
+    custom_save_template: "Save as template",
+    custom_saving_template: "Saving…",
+    custom_template_saved: "Saved as a custom template.",
+    custom_start: "Start simulation",
+    custom_starting: "Creating run…",
+    custom_preview_title: "PHREEQC input preview",
+    custom_no_preview: "Click “Preview PHREEQC input” to generate a preview.",
+    custom_load_error: "Unable to load custom simulation types",
+    custom_unknown_module: "Advanced parameters",
+    custom_json_help: "Edit the complete Scenario JSON; it must be valid before returning to the form.",
+    custom_saved_title: "Saved custom templates",
+    custom_saved_empty: "No custom templates saved yet.",
+    custom_load: "Load",
+    custom_delete: "Delete",
+    custom_overwrite_hint: "Saving again overwrites the template currently loaded.",
+    custom_modules_help: "Add or remove modules as needed; required modules cannot be removed.",
+    custom_add_module_hint: "Add module",
+    mod_solutions: "Solutions (SOLUTION)",
+    mod_initial_cell_solution: "Initial cell solution",
+    mod_equilibrium_phases: "Equilibrium phases (EQUILIBRIUM_PHASES)",
+    mod_reaction: "Reaction (REACTION)",
+    mod_mix: "Mix (MIX)",
+    mod_gas_phase: "Gas phase (GAS_PHASE)",
+    mod_transport: "Transport (TRANSPORT)",
+    mod_selected_output: "Selected output (SELECTED_OUTPUT)",
     abort_btn: "Abort",
     abort_title: "Abort this simulation?",
     abort_body: "The running PHREEQC process will be terminated. Generated files are kept in the workspace.",
     abort_confirm: "Abort",
     status_aborted: "aborted",
+    run_failed_artifacts: "This run failed before all result files were generated. Check the run log; only available artifacts are shown as tabs.",
+    failure_summary: "Failure summary",
+    failure_stage: "Failed at",
+    failure_exit_code: "Exit code",
+    failure_error_code: "Error code",
+    failure_output: "Key output",
+    failure_environment: "Runtime environment",
+    failure_copy: "Copy error details",
+    failure_copied: "Copied — ready to paste to an agent.",
+    failure_no_output: "No error output was extracted. See the raw log below.",
   },
 };
 
@@ -308,9 +451,20 @@ function ParamText({ value, onChange }) {
 }
 
 // A key/value pair editor for dicts like `components: {Na: 10, Cl: 10}`.
+// Both columns stay editable: PHREEQC identifiers (element, species, phase
+// names) are typed in by the user, so a fixed key column would leave newly
+// added rows unnamed.
 function DictEditor({ value, onChange, label }) {
   const { t } = useLang();
   const entries = Object.entries(value || {});
+  const rename = (k, newKey) => {
+    if (newKey === k) return;
+    const next = {};
+    for (const [existing, v] of Object.entries(value || {})) {
+      next[existing === k ? newKey : existing] = v;
+    }
+    onChange(next);
+  };
   const set = (k, v) => {
     const next = { ...value };
     if (v === "" || v === null) delete next[k];
@@ -325,7 +479,7 @@ function DictEditor({ value, onChange, label }) {
     <div className="kv-list-edit">
       {entries.map(([k, v]) => (
         <div key={k} className="row">
-          <input value={k} disabled style={{ background: "var(--surface-2)" }} />
+          <input value={k} onChange={(e) => rename(k, e.target.value)} />
           <input value={v} onChange={(e) => set(k, e.target.value)} />
           <button className="btn sm" onClick={() => remove(k)}>{t("tpl_remove")}</button>
         </div>
@@ -743,6 +897,551 @@ function TemplateDetailPage({ templateId, onCreate, onBack }) {
   );
 }
 
+// ---------- Custom scenario page ---------------------------------------
+// The custom editor owns exactly one Scenario v1 document.  Validation,
+// input preview, saving and the run itself all round-trip through the
+// backend, so the form, the JSON tab and the runner cannot disagree about
+// what a module means.
+
+const SOLUTION_UNITS = [
+  "mol/kgw", "mmol/kgw", "umol/kgw",
+  "mol/l", "mmol/l", "umol/l",
+  "mg/l", "ug/l", "ppm", "ppb",
+];
+
+const MODULE_LABEL = {
+  solutions: "mod_solutions",
+  initial_cell_solution: "mod_initial_cell_solution",
+  equilibrium_phases: "mod_equilibrium_phases",
+  reaction: "mod_reaction",
+  mix: "mod_mix",
+  gas_phase: "mod_gas_phase",
+  transport: "mod_transport",
+  selected_output: "mod_selected_output",
+};
+
+function LabeledField({ label, children }) {
+  return <div className="kv-input"><label>{label}</label>{children}</div>;
+}
+
+function UnitSelect({ value, onChange }) {
+  // Keep an unrecognised unit visible instead of silently rewriting it, so a
+  // hand-edited JSON value is never lost just by switching to the form tab.
+  const units = !value || SOLUTION_UNITS.includes(value)
+    ? SOLUTION_UNITS
+    : [value, ...SOLUTION_UNITS];
+  return (
+    <select value={value || "mol/kgw"} onChange={(e) => onChange(e.target.value)}>
+      {units.map((unit) => <option key={unit} value={unit}>{unit}</option>)}
+    </select>
+  );
+}
+
+// One widget per value type, shared by every module editor.
+function FieldInput({ value, onChange }) {
+  if (typeof value === "boolean") {
+    return (
+      <label style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+        <input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} />
+        <span style={{ fontSize: 12, color: "var(--text-2)" }}>{String(value)}</span>
+      </label>
+    );
+  }
+  if (typeof value === "number") return <ParamNumber value={value} onChange={onChange} />;
+  if (Array.isArray(value)) {
+    if (value.length && value[0] !== null && typeof value[0] === "object") {
+      // Not reachable for the modules shipped today; the JSON tab is the
+      // authority for shapes this form has no widget for.
+      return <pre className="code" style={{ fontSize: 11 }}>{JSON.stringify(value, null, 2)}</pre>;
+    }
+    return <ListEditor value={value} onChange={onChange} itemType={typeof value[0]} />;
+  }
+  if (value !== null && typeof value === "object") {
+    return <DictEditor value={value} onChange={onChange} />;
+  }
+  return <ParamText value={value} onChange={onChange} />;
+}
+
+function SolutionEditor({ value, onChange, withId }) {
+  const { t } = useLang();
+  const solution = value || {};
+  const set = (key, next) => onChange({ ...solution, [key]: next });
+  return (
+    <div>
+      <div className="param-grid">
+        {withId && (
+          <LabeledField label="id">
+            <ParamNumber value={solution.id} onChange={(x) => set("id", x)} step="1" />
+          </LabeledField>
+        )}
+        <LabeledField label="units">
+          <UnitSelect value={solution.units} onChange={(x) => set("units", x)} />
+        </LabeledField>
+        <LabeledField label="temp (°C)">
+          <ParamNumber value={solution.temp} onChange={(x) => set("temp", x)} />
+        </LabeledField>
+        <LabeledField label="pH">
+          <ParamNumber value={solution.pH} onChange={(x) => set("pH", x)} step="0.1" />
+        </LabeledField>
+        <LabeledField label="pe">
+          <ParamNumber value={solution.pe} onChange={(x) => set("pe", x)} step="0.1" />
+        </LabeledField>
+        <LabeledField label="density">
+          <ParamNumber value={solution.density} onChange={(x) => set("density", x)} step="0.001" />
+        </LabeledField>
+      </div>
+      <div style={{ fontSize: 11, color: "var(--text-2)", margin: "10px 0 4px" }}>
+        {t("tpl_param_components")}
+      </div>
+      <DictEditor value={solution.components} onChange={(x) => set("components", x)} />
+    </div>
+  );
+}
+
+function SolutionsEditor({ value, onChange }) {
+  const { t } = useLang();
+  const list = Array.isArray(value) ? value : [];
+  const update = (index, next) => onChange(list.map((item, i) => (i === index ? next : item)));
+  const remove = (index) => onChange(list.filter((_, i) => i !== index));
+  const add = () => {
+    const ids = list.map((item) => item && item.id).filter((id) => typeof id === "number");
+    const nextId = ids.length ? Math.max(...ids) + 1 : 1;
+    onChange([...list, {
+      id: nextId, units: "mol/kgw", temp: 25.0, pH: 7.0, pe: 4.0, density: 1.0, components: {},
+    }]);
+  };
+  return (
+    <div>
+      {list.map((solution, index) => (
+        <div key={index} style={{ marginBottom: 12, paddingBottom: 10, borderBottom: "1px dashed var(--border)" }}>
+          <div className="row" style={{ justifyContent: "space-between", marginBottom: 6 }}>
+            <span style={{ fontSize: 11, color: "var(--text-2)" }}>
+              SOLUTION {solution.id ?? index + 1}
+            </span>
+            <button className="btn sm" onClick={() => remove(index)}>{t("tpl_remove")}</button>
+          </div>
+          <SolutionEditor value={solution} withId onChange={(next) => update(index, next)} />
+        </div>
+      ))}
+      <button className="btn sm ghost" onClick={add}>{t("custom_add_solution")}</button>
+    </div>
+  );
+}
+
+function ModuleEditor({ name, value, onChange }) {
+  if (name === "solutions") {
+    return <SolutionsEditor value={value} onChange={onChange} />;
+  }
+  if (name === "initial_cell_solution") {
+    return <SolutionEditor value={value} withId={false} onChange={onChange} />;
+  }
+  if (name === "equilibrium_phases") {
+    // Phase entries are [saturation_index, moles] pairs; the generic dict
+    // field would flatten them into a single text value.
+    return <EqPhasesEditor value={value} onChange={onChange} />;
+  }
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {Object.entries(value || {}).map(([field, fieldValue]) => (
+        <div key={field}>
+          <div style={{ fontSize: 11, color: "var(--text-2)", marginBottom: 3 }}>{field}</div>
+          <FieldInput value={fieldValue}
+                      onChange={(next) => onChange({ ...value, [field]: next })} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CustomScenarioPage({ onCreate, onBack }) {
+  const { t, locale } = useLang();
+  const [registry, setRegistry] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+  const [typeId, setTypeId] = useState("");
+  const [scenario, setScenario] = useState(null);
+  const [mode, setMode] = useState("form"); // "form" | "json"
+  const [jsonText, setJsonText] = useState("");
+  const [jsonError, setJsonError] = useState(null);
+  const [validation, setValidation] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [busy, setBusy] = useState("");
+  const [notice, setNotice] = useState("");
+  const [savedTemplates, setSavedTemplates] = useState([]);
+  const [savedId, setSavedId] = useState(null);
+
+  const refreshSaved = useCallback(() => {
+    API.get("/api/v1/scenarios/templates")
+      .then((d) => setSavedTemplates(d.templates || []))
+      .catch(() => setSavedTemplates([]));
+  }, []);
+
+  useEffect(() => {
+    API.get("/api/v1/scenarios/types")
+      .then((d) => {
+        setRegistry(d);
+        const first = (d.types || [])[0];
+        if (first) {
+          setTypeId(first.id);
+          setScenario(first.default_scenario);
+          setJsonText(JSON.stringify(first.default_scenario, null, 2));
+        }
+      })
+      .catch((e) => setLoadError(e.message));
+    refreshSaved();
+  }, [refreshSaved]);
+
+  // The form is the source of truth; the JSON tab is regenerated from it.
+  useEffect(() => {
+    if (mode === "json") return;
+    setJsonText(JSON.stringify(scenario, null, 2));
+  }, [scenario, mode]);
+
+  const apply = useCallback((next) => {
+    setScenario(next);
+    setValidation(null);
+    setPreview(null);
+    setNotice("");
+  }, []);
+
+  const types = (registry && registry.types) || [];
+  const typeEntry = types.find((item) => item.id === typeId) || null;
+  const modules = (scenario && scenario.modules) || {};
+  const present = Object.keys(modules);
+  const required = (typeEntry && typeEntry.required_modules) || [];
+  const allowed = (typeEntry && typeEntry.allowed_modules) || [];
+  const addable = allowed.filter((name) => present.indexOf(name) === -1);
+
+  const typeLabel = (entry) => (locale === "en" && entry.label_en ? entry.label_en : entry.label);
+  const typeDescription = (entry) =>
+    (locale === "en" && entry.description_en ? entry.description_en : entry.description);
+  const moduleLabel = (name) => t(MODULE_LABEL[name] || "custom_unknown_module");
+
+  const chooseType = (id) => {
+    const entry = types.find((item) => item.id === id);
+    if (!entry) return;
+    setTypeId(id);
+    setSavedId(null);
+    setJsonError(null);
+    apply(entry.default_scenario);
+  };
+
+  const handleJsonChange = (text) => {
+    setJsonText(text);
+    try {
+      apply(JSON.parse(text));
+      setJsonError(null);
+    } catch (e) {
+      setJsonError(e.message);
+    }
+  };
+
+  const switchMode = (next) => {
+    if (next === "json") {
+      setJsonText(JSON.stringify(scenario, null, 2));
+      setJsonError(null);
+    } else if (next === "form") {
+      try {
+        apply(JSON.parse(jsonText));
+        setJsonError(null);
+      } catch (e) {
+        setJsonError(e.message);
+        return;
+      }
+    }
+    setMode(next);
+  };
+
+  const moduleDefault = (name) => {
+    const entry = ((registry && registry.modules) || []).find((item) => item.id === name);
+    return entry ? JSON.parse(JSON.stringify(entry.default)) : {};
+  };
+  const addModule = (name) =>
+    apply({ ...scenario, modules: { ...modules, [name]: moduleDefault(name) } });
+  const removeModule = (name) => {
+    const next = { ...modules };
+    delete next[name];
+    apply({ ...scenario, modules: next });
+  };
+  const setModule = (name, value) =>
+    apply({ ...scenario, modules: { ...modules, [name]: value } });
+  const setScenarioName = (nextName) => apply({ ...scenario, name: nextName });
+
+  const checkInput = async () => {
+    setBusy("validate");
+    try {
+      const result = await API.post("/api/v1/scenarios/validate", { scenario });
+      setValidation(result);
+      setPreview(null);
+    } catch (e) {
+      setValidation({ valid: false, errors: [{ path: "$", message: e.message }], warnings: [] });
+    }
+    setBusy("");
+  };
+
+  const runPreview = async () => {
+    setBusy("preview");
+    try {
+      const result = await API.post("/api/v1/scenarios/preview", { scenario });
+      setValidation(result);
+      setPreview(result.valid ? { text: result.input } : null);
+    } catch (e) {
+      setPreview({ error: e.message });
+    }
+    setBusy("");
+  };
+
+  const saveTemplate = async () => {
+    setBusy("save");
+    try {
+      const body = { scenario };
+      if (savedId) body.template_id = savedId;
+      const record = await API.post("/api/v1/scenarios/templates", body);
+      setSavedId(record.id);
+      setNotice(t("custom_template_saved"));
+      refreshSaved();
+    } catch (e) {
+      setValidation({ valid: false, errors: [{ path: "$", message: e.message }], warnings: [] });
+    }
+    setBusy("");
+  };
+
+  const startRun = async () => {
+    setBusy("start");
+    try {
+      const run = await API.post("/api/v1/runs", { scenario });
+      await API.post("/api/v1/runs/" + run.run_id + "/start");
+      onCreate(run.run_id);
+    } catch (e) {
+      setNotice(e.message);
+      await checkInput();
+    }
+    setBusy("");
+  };
+
+  const loadSaved = async (id) => {
+    try {
+      const record = await API.get("/api/v1/scenarios/templates/" + id);
+      setSavedId(record.id);
+      setTypeId(record.scenario.scenario_type);
+      setMode("form");
+      setJsonError(null);
+      apply(record.scenario);
+    } catch (e) {
+      setNotice(e.message);
+    }
+  };
+
+  const deleteSaved = async (id) => {
+    try {
+      await API.del("/api/v1/scenarios/templates/" + id);
+      if (savedId === id) setSavedId(null);
+      refreshSaved();
+    } catch (e) {
+      setNotice(e.message);
+    }
+  };
+
+  if (loadError) {
+    return (
+      <div>
+        <div className="page-header"><h1>{t("custom_title")}</h1></div>
+        <div className="card">{t("custom_load_error")}: {loadError}</div>
+        <div className="action-row" style={{ marginTop: 12 }}>
+          <button className="btn ghost" onClick={onBack}>← {t("btn_back")}</button>
+        </div>
+      </div>
+    );
+  }
+  if (!scenario || !typeEntry) return <div className="empty">Loading…</div>;
+
+  const chipStyle = {
+    display: "inline-flex", alignItems: "center", gap: 6,
+    padding: "3px 8px", border: "1px solid var(--border)", borderRadius: 999, fontSize: 12,
+  };
+  const blocked = busy !== "" || !!jsonError;
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1>{t("custom_title")}</h1>
+          <div className="subtitle">{t("custom_subtitle")}</div>
+        </div>
+        <button className="btn ghost" onClick={onBack}>← {t("btn_back")}</button>
+      </div>
+
+      <div className="card" style={{ marginBottom: 12 }}>
+        <div className="param-grid">
+          <LabeledField label={t("custom_choose_type")}>
+            <select value={typeId} onChange={(e) => chooseType(e.target.value)}>
+              {types.map((entry) => (
+                <option key={entry.id} value={entry.id}>{typeLabel(entry)}</option>
+              ))}
+            </select>
+          </LabeledField>
+          <LabeledField label={t("custom_name")}>
+            <input type="text" value={scenario.name || ""}
+                   placeholder={t("custom_name_placeholder")}
+                   onChange={(e) => setScenarioName(e.target.value)} />
+          </LabeledField>
+        </div>
+        <div style={{ fontSize: 12, color: "var(--text-2)", marginTop: 8 }}>
+          {typeDescription(typeEntry)}
+        </div>
+        <div style={{ fontSize: 11, color: "var(--text-2)", marginTop: 4 }}>
+          {t("custom_choose_type_help")}
+        </div>
+      </div>
+
+      <div className="card" style={{ marginBottom: 12 }}>
+        <div className="page-header" style={{ marginBottom: 8 }}>
+          <h3 style={{ fontSize: 14 }}>{t("custom_modules")}</h3>
+          <span style={{ fontSize: 11, color: "var(--text-2)" }}>{t("custom_modules_help")}</span>
+        </div>
+        <div className="action-row" style={{ flexWrap: "wrap", gap: 6 }}>
+          {present.map((name) => (
+            <span key={name} style={chipStyle}>
+              <span>{moduleLabel(name)}</span>
+              {required.indexOf(name) !== -1
+                ? <span style={{ opacity: 0.6 }}>{t("custom_required_module")}</span>
+                : <button className="btn sm ghost" style={{ padding: "0 4px" }}
+                          onClick={() => removeModule(name)}>{t("tpl_remove")}</button>}
+            </span>
+          ))}
+        </div>
+        {addable.length > 0 && (
+          <div className="action-row" style={{ flexWrap: "wrap", gap: 6, marginTop: 10 }}>
+            <span style={{ fontSize: 11, color: "var(--text-2)" }}>{t("custom_add_module_hint")}</span>
+            {addable.map((name) => (
+              <button key={name} className="btn sm" onClick={() => addModule(name)}>
+                + {moduleLabel(name)}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="card" style={{ marginBottom: 12 }}>
+        <div className="edit-mode-toggle">
+          <button className={mode === "form" ? "active" : ""} onClick={() => switchMode("form")}>
+            {t("tpl_edit_form")}
+          </button>
+          <button className={mode === "json" ? "active" : ""} onClick={() => switchMode("json")}>
+            {t("tpl_edit_json")}
+          </button>
+        </div>
+        {mode === "form" ? (
+          <div className="param-editor">
+            {present.map((name) => (
+              <div className="param-section" key={name}>
+                <h4>{moduleLabel(name)}</h4>
+                <ModuleEditor name={name} value={modules[name]}
+                              onChange={(next) => setModule(name, next)} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div style={{ fontSize: 11, color: "var(--text-2)", marginBottom: 4 }}>
+              {t("custom_json_help")}
+            </div>
+            <textarea className={"json-edit" + (jsonError ? " invalid" : "")}
+                      value={jsonText} onChange={(e) => handleJsonChange(e.target.value)} />
+          </>
+        )}
+        {jsonError && (
+          <div style={{ color: "var(--error)", fontSize: 12, marginTop: 6 }}>
+            {t("tpl_invalid_json")}: {jsonError}
+          </div>
+        )}
+      </div>
+
+      {validation && (
+        <div className="card" style={{ marginBottom: 12 }}>
+          {validation.valid && (validation.errors || []).length === 0 && (
+            <div style={{ color: "var(--success)", fontSize: 12 }}>
+              {t("custom_validation_ok")}
+            </div>
+          )}
+          {(validation.errors || []).length > 0 && (
+            <div>
+              <div style={{ fontSize: 12, color: "var(--error)", marginBottom: 6 }}>
+                {t("custom_validation_errors")}
+              </div>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12 }}>
+                {validation.errors.map((err, i) => (
+                  <li key={i}><code>{err.path}</code> — {err.message}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {(validation.warnings || []).length > 0 && (
+            <div style={{ marginTop: 8 }}>
+              <div style={{ fontSize: 12, color: "var(--warn)", marginBottom: 6 }}>
+                {t("custom_validation_warnings")}
+              </div>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12 }}>
+                {validation.warnings.map((warn, i) => (
+                  <li key={i}><code>{warn.path}</code> — {warn.message}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="card" style={{ marginBottom: 12 }}>
+        <div className="page-header" style={{ marginBottom: 8 }}>
+          <h3 style={{ fontSize: 14 }}>{t("custom_preview_title")}</h3>
+          <button className="btn sm" onClick={runPreview} disabled={blocked}>
+            {busy === "preview" ? t("custom_previewing") : t("custom_preview")}
+          </button>
+        </div>
+        {preview
+          ? (preview.error
+              ? <pre className="preview-pane" style={{ color: "var(--error)" }}>{preview.error}</pre>
+              : <pre className="preview-pane">{preview.text}</pre>)
+          : <div className="empty" style={{ padding: 16 }}>{t("custom_no_preview")}</div>}
+      </div>
+
+      <div className="card" style={{ marginBottom: 12 }}>
+        <div className="page-header" style={{ marginBottom: 8 }}>
+          <h3 style={{ fontSize: 14 }}>{t("custom_saved_title")}</h3>
+          <span style={{ fontSize: 11, color: "var(--text-2)" }}>{t("custom_overwrite_hint")}</span>
+        </div>
+        {savedTemplates.length === 0
+          ? <div className="empty" style={{ padding: 12 }}>{t("custom_saved_empty")}</div>
+          : (
+            <div className="action-row" style={{ flexWrap: "wrap", gap: 6 }}>
+              {savedTemplates.map((item) => (
+                <span key={item.id} style={chipStyle}>
+                  <span>{item.name}</span>
+                  <button className="btn sm ghost" style={{ padding: "0 4px" }}
+                          onClick={() => loadSaved(item.id)}>{t("custom_load")}</button>
+                  <button className="btn sm ghost" style={{ padding: "0 4px" }}
+                          onClick={() => deleteSaved(item.id)}>{t("custom_delete")}</button>
+                </span>
+              ))}
+            </div>
+          )}
+      </div>
+
+      <div className="action-row" style={{ justifyContent: "flex-end", gap: 8 }}>
+        {notice && <span style={{ fontSize: 12, color: "var(--text-2)" }}>{notice}</span>}
+        <button className="btn" onClick={checkInput} disabled={blocked}>
+          {busy === "validate" ? t("custom_validating") : t("custom_validate")}
+        </button>
+        <button className="btn" onClick={saveTemplate} disabled={blocked}>
+          {busy === "save" ? t("custom_saving_template") : t("custom_save_template")}
+        </button>
+        <button className="btn primary" onClick={startRun} disabled={blocked}>
+          {busy === "start" ? t("custom_starting") : t("custom_start")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ---------- Run list page ----------------------------------------------
 function RunListPage({ onNew, onOpen }) {
   const { t } = useLang();
@@ -825,7 +1524,7 @@ function RunListPage({ onNew, onOpen }) {
 }
 
 // ---------- Template gallery page --------------------------------------
-function TemplateGallery({ onDetail, onBack }) {
+function TemplateGallery({ onDetail, onCustom, onBack }) {
   const { t } = useLang();
   const [templates, setTemplates] = useState([]);
   useEffect(() => { API.get("/api/v1/templates").then(d => setTemplates(d.templates || [])); }, []);
@@ -838,6 +1537,17 @@ function TemplateGallery({ onDetail, onBack }) {
           <div className="subtitle">{t("templates_subtitle")}</div>
         </div>
         <button className="btn ghost" onClick={onBack}>← {t("btn_back")}</button>
+      </div>
+      <div className="card" style={{ marginBottom: 16, cursor: "pointer" }} onClick={onCustom}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+          <div>
+            <h3 style={{ fontSize: 14 }}>{t("custom_entry_title")}</h3>
+            <p style={{ fontSize: 12, color: "var(--text-2)", marginTop: 4 }}>
+              {t("custom_entry_summary")}
+            </p>
+          </div>
+          <span className="btn sm primary">{t("custom_entry_action")}</span>
+        </div>
       </div>
       <div className="grid-3">
         {templates.map(tpl => (
@@ -869,6 +1579,13 @@ function RunDetailPage({ runId, onBack }) {
   const [error, setError] = useState(null);
   const [abortOpen, setAbortOpen] = useState(false);
   const [aborting, setAborting] = useState(false);
+  const artifactPaths = new Set(files.map((file) => file.path));
+  const hasArtifact = (path) => artifactPaths.has(path);
+  const fallbackEvents = (run && run.log_tail ? run.log_tail : []).map((line) => {
+    const match = String(line).match(/^\[([^\]]+)\]\s*(.*)$/);
+    return { kind: match ? match[1] : "log", message: match ? match[2] : String(line), ts: 0 };
+  });
+  const logEvents = events.length ? events : fallbackEvents;
 
   const refreshAll = useCallback(async () => {
     try {
@@ -890,11 +1607,19 @@ function RunDetailPage({ runId, onBack }) {
 
   // Lazy-load tab content
   useEffect(() => {
-    if (tab === "input"    && !input)    API.get("/api/v1/runs/" + runId + "/input").then(d => setInput(typeof d === "string" ? d : "")).catch(e => setError(e.message));
-    if (tab === "output"   && !output)   API.get("/api/v1/runs/" + runId + "/output").then(d => setOutput(typeof d === "string" ? d : "")).catch(e => setError(e.message));
-    if (tab === "selected" && !selected) API.get("/api/v1/runs/" + runId + "/selected-output").then(d => setSelected(typeof d === "string" ? d : "")).catch(e => setError(e.message));
-    if (tab === "results"  && !results)  API.get("/api/v1/runs/" + runId + "/results").then(d => setResults(typeof d === "string" ? JSON.parse(d) : d)).catch(e => setError(e.message));
-  }, [tab, runId, input, output, selected, results]);
+    if ((tab === "input" || (run && run.status === "failed")) && hasArtifact("input.pqi") && !input) {
+      API.get("/api/v1/runs/" + runId + "/input").then(d => setInput(typeof d === "string" ? d : "")).catch(e => setError(e.message));
+    }
+    if (tab === "output" && hasArtifact("output.qpo") && !output) {
+      API.get("/api/v1/runs/" + runId + "/output").then(d => setOutput(typeof d === "string" ? d : "")).catch(e => setError(e.message));
+    }
+    if (tab === "selected" && hasArtifact("selected_output.txt") && !selected) {
+      API.get("/api/v1/runs/" + runId + "/selected-output").then(d => setSelected(typeof d === "string" ? d : "")).catch(e => setError(e.message));
+    }
+    if (tab === "results" && hasArtifact("results.json") && !results) {
+      API.get("/api/v1/runs/" + runId + "/results").then(d => setResults(typeof d === "string" ? JSON.parse(d) : d)).catch(e => setError(e.message));
+    }
+  }, [tab, runId, input, output, selected, results, files, run]);
 
   // Stream events via long-poll: keep hitting /events until backoff
   useEffect(() => {
@@ -903,7 +1628,7 @@ function RunDetailPage({ runId, onBack }) {
     const poll = async () => {
       if (cancelled) return;
       try {
-        const evs = await API.get("/api/v1/runs/" + runId + "/events");
+        const evs = parseSseEvents(await API.get("/api/v1/runs/" + runId + "/events"));
         if (Array.isArray(evs) && evs.length > lastTs) {
           setEvents(evs);
           lastTs = evs.length;
@@ -930,7 +1655,12 @@ function RunDetailPage({ runId, onBack }) {
   // Poll events faster while running
   const isActive = run && (run.status === "running" || run.status === "pending");
 
-  if (error) return <div className="card" style={{ borderColor: "var(--error)", color: "var(--error)" }}>{error}</div>;
+  if (error) return (
+    <div className="card" style={{ borderColor: "var(--error)", color: "var(--error)" }}>
+      <div style={{ marginBottom: 12 }}>{error}</div>
+      <button className="btn ghost" onClick={onBack}>← {t("btn_back")}</button>
+    </div>
+  );
   if (!run) return <div className="empty">Loading…</div>;
 
   return (
@@ -964,17 +1694,26 @@ function RunDetailPage({ runId, onBack }) {
         </div>
       </div>
 
+      {run.status === "failed" && (
+        <>
+          <FailureSummary run={run} events={logEvents} input={input} />
+          <div className="card" style={{ marginBottom: 16, borderColor: "var(--warning, #d97706)" }}>
+            {t("run_failed_artifacts")}
+          </div>
+        </>
+      )}
+
       <div className="tabs">
         <button className={tab === "log" ? "active" : ""} onClick={() => setTab("log")}>{t("tab_log")}</button>
-        <button className={tab === "input" ? "active" : ""} onClick={() => setTab("input")}>{t("tab_input")}</button>
-        <button className={tab === "selected" ? "active" : ""} onClick={() => setTab("selected")}>{t("tab_selected")}</button>
-        <button className={tab === "output" ? "active" : ""} onClick={() => setTab("output")}>{t("tab_output")}</button>
-        <button className={tab === "results" ? "active" : ""} onClick={() => setTab("results")}>{t("tab_results")}</button>
-        <button className={tab === "charts" ? "active" : ""} onClick={() => setTab("charts")}>{t("tab_charts")}</button>
+        {hasArtifact("input.pqi") && <button className={tab === "input" ? "active" : ""} onClick={() => setTab("input")}>{t("tab_input")}</button>}
+        {hasArtifact("selected_output.txt") && <button className={tab === "selected" ? "active" : ""} onClick={() => setTab("selected")}>{t("tab_selected")}</button>}
+        {hasArtifact("output.qpo") && <button className={tab === "output" ? "active" : ""} onClick={() => setTab("output")}>{t("tab_output")}</button>}
+        {hasArtifact("results.json") && <button className={tab === "results" ? "active" : ""} onClick={() => setTab("results")}>{t("tab_results")}</button>}
+        {files.some((file) => file.path.startsWith("charts/")) && <button className={tab === "charts" ? "active" : ""} onClick={() => setTab("charts")}>{t("tab_charts")}</button>}
         <button className={tab === "files" ? "active" : ""} onClick={() => setTab("files")}>{t("tab_files")}</button>
       </div>
 
-      {tab === "log"    && <EventLog events={events} />}
+      {tab === "log"    && <EventLog events={logEvents} />}
       {tab === "input"  && <CodeView code={input || "(not generated yet)"} />}
       {tab === "output" && <CodeView code={output || "(not generated yet)"} />}
       {tab === "selected" && <CodeView code={selected || "(not generated yet)"} />}
@@ -993,6 +1732,83 @@ function RunDetailPage({ runId, onBack }) {
         onCancel={() => { if (!aborting) setAbortOpen(false); }}
         busy={aborting}
       />
+    </div>
+  );
+}
+
+function FailureSummary({ run, events, input }) {
+  const { t } = useLang();
+  const [copied, setCopied] = useState(false);
+  const step = [...events].reverse().find((event) => event.kind === "step");
+  const finalError = [...events].reverse().find((event) => event.kind === "error");
+  const exitMatch = finalError && String(finalError.message).match(/exit code\s+(\d+)/i);
+  const exitCode = exitMatch ? exitMatch[1] : null;
+  const errorCode = exitCode ? `PHREEQC_EXIT_${exitCode}` : "RUN_FAILED";
+  const output = events.filter((event) =>
+    (event.kind === "error" || event.kind === "stderr") && String(event.message || "").trim()
+  ).slice(-8);
+  const executable = events.find((event) => event.kind === "info" && String(event.message).startsWith("PHREEQC exe:"));
+  const database = events.find((event) => event.kind === "info" && String(event.message).startsWith("PHREEQC database:"));
+
+  const copyDetails = async () => {
+    const keyOutput = output.map((event) => `[${event.kind}] ${event.message}`).join("\n") || "(none extracted)";
+    const apiBase = window.location.origin + "/api/v1/runs/" + encodeURIComponent(run.run_id);
+    const details = [
+      "请帮助分析一个 PHREEQC 运行失败问题。",
+      "",
+      `运行 ID：${run.run_id}`,
+      `运行详情地址：${apiBase}`,
+      `事件日志地址：${apiBase}/events`,
+      `输入文件地址：${apiBase}/input`,
+      `运行阶段：${step ? step.message : "未从日志提取到"}`,
+      `错误码：${errorCode}`,
+      `退出码：${exitCode || "未从日志提取到"}`,
+      executable ? `PHREEQC：${executable.message.replace(/^PHREEQC exe:\s*/, "")}` : "PHREEQC：未从日志提取到",
+      database ? `数据库：${database.message.replace(/^PHREEQC database:\s*/, "")}` : "数据库：未从日志提取到",
+      "",
+      "关键日志：",
+      keyOutput,
+      "",
+      "PHREEQC 输入文件：",
+      input || "(输入文件正在加载；请稍后再次复制，或从“输入文件”标签复制。)",
+      "",
+      "请根据输入文件和日志解释失败原因，并给出可验证的修改建议；不要假设具体研究目标。",
+    ].join("\n");
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(details);
+      } else {
+        const area = document.createElement("textarea");
+        area.value = details;
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch (e) {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <div className="card" style={{ marginBottom: 12, borderColor: "var(--warning, #d97706)" }}>
+      <div className="card-title" style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+        <span>{t("failure_summary")}</span>
+        <button className="btn sm" onClick={copyDetails}>{t("failure_copy")}</button>
+      </div>
+      <div className="kv-list" style={{ marginTop: 10 }}>
+        <div className="k">{t("failure_stage")}</div><div className="v">{step ? step.message : "-"}</div>
+        <div className="k">{t("failure_error_code")}</div><div className="v mono">{errorCode}</div>
+        <div className="k">{t("failure_exit_code")}</div><div className="v mono">{exitCode || "-"}</div>
+        {(executable || database) && <><div className="k">{t("failure_environment")}</div><div className="v mono">{[executable, database].filter(Boolean).map((event) => event.message.replace(/^PHREEQC (exe|database):\s*/, "")).join("\n")}</div></>}
+      </div>
+      <div style={{ marginTop: 12, fontSize: 12, color: "var(--muted)" }}>{t("failure_output")}</div>
+      {output.length ? <div className="code" style={{ marginTop: 6, maxHeight: 170 }}>{output.map((event, index) => <div key={index}>[{event.kind}] {event.message}</div>)}</div> : <div className="empty" style={{ padding: "8px 0" }}>{t("failure_no_output")}</div>}
+      {copied && <div className="test-result ok" style={{ marginTop: 10 }}>{t("failure_copied")}</div>}
     </div>
   );
 }
@@ -1169,12 +1985,20 @@ function SettingsPanel({ health, onHealthChange, onBack }) {
   const [testResult, setTestResult] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState(null);
+  const [autoConfiguring, setAutoConfiguring] = useState(false);
+  const [showOverwriteNotice, setShowOverwriteNotice] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
       const d = await API.get("/api/v1/system/phreeqc/candidates");
       setData(d);
-      setExePath((d.settings && d.settings.phreeqc_exe) || d.active.executable || "");
+      const firstAvailableExe = (d.executables || []).find((candidate) => candidate.exists);
+      setExePath(
+        (d.settings && d.settings.phreeqc_exe) ||
+        (d.active && d.active.executable) ||
+        (firstAvailableExe && firstAvailableExe.path) ||
+        ""
+      );
       setDbPath((d.settings && d.settings.phreeqc_database) || d.active.database || "");
     } catch (e) {
       setData({ error: e.message });
@@ -1198,6 +2022,7 @@ function SettingsPanel({ health, onHealthChange, onBack }) {
   };
 
   const saveSettings = async () => {
+    setShowOverwriteNotice(false);
     setSaving(true);
     setSaveMsg(null);
     try {
@@ -1213,6 +2038,38 @@ function SettingsPanel({ health, onHealthChange, onBack }) {
       setSaveMsg({ ok: false, text: e.message });
     }
     setSaving(false);
+  };
+
+  const requestSave = () => {
+    const configured = data && data.settings;
+    const isAutoConfigured = configured && configured.phreeqc_config_source === "auto";
+    const pathsChanged = isAutoConfigured && (
+      exePath.trim().toLowerCase() !== String(configured.phreeqc_exe || "").trim().toLowerCase() ||
+      dbPath.trim().toLowerCase() !== String(configured.phreeqc_database || "").trim().toLowerCase()
+    );
+    if (pathsChanged) {
+      setShowOverwriteNotice(true);
+      return;
+    }
+    saveSettings();
+  };
+
+  const autoConfigure = async () => {
+    setAutoConfiguring(true);
+    setSaveMsg(null);
+    setTestResult(null);
+    try {
+      const r = await API.post("/api/v1/system/phreeqc/auto-configure", {});
+      setExePath(r.settings.phreeqc_exe || "");
+      setDbPath(r.settings.phreeqc_database || "");
+      setTestResult(r.test);
+      setSaveMsg({ ok: true, text: t("settings_auto_done") });
+      API.get("/api/v1/system/health").then(onHealthChange).catch(() => {});
+      refresh();
+    } catch (e) {
+      setSaveMsg({ ok: false, text: e.message });
+    }
+    setAutoConfiguring(false);
   };
 
   const clearOverride = async (key) => {
@@ -1233,6 +2090,7 @@ function SettingsPanel({ health, onHealthChange, onBack }) {
 
   const activeExe = data.active && data.active.executable;
   const activeDb = data.active && data.active.database;
+  const activeVersion = data.active && data.active.version;
 
   return (
     <div>
@@ -1252,6 +2110,7 @@ function SettingsPanel({ health, onHealthChange, onBack }) {
             <div className="v">{activeExe || "(not found)"}</div>
             <div className="k">Database</div>
             <div className="v">{activeDb || "(not found)"}</div>
+            {activeVersion && <><div className="k">{t("settings_version")}</div><div className="v">{activeVersion}</div></>}
             <div className="k">Status</div>
             <div className="v">
               {health && health.phreeqc && health.phreeqc.ok
@@ -1317,6 +2176,9 @@ function SettingsPanel({ health, onHealthChange, onBack }) {
                    placeholder={t("settings_placeholder")} />
           </div>
           <div className="action-row" style={{ flexWrap: "wrap" }}>
+            <button className="btn sm primary" onClick={autoConfigure} disabled={autoConfiguring || saving}>
+              {autoConfiguring ? t("settings_configuring") : t("settings_auto")}
+            </button>
             <button className="btn sm" onClick={() => runTest(exePath)} disabled={testing || !exePath}>
               {testing ? t("settings_testing") : t("settings_test")}
             </button>
@@ -1326,9 +2188,22 @@ function SettingsPanel({ health, onHealthChange, onBack }) {
             <button className="btn sm ghost" onClick={() => clearOverride("phreeqc_database")} disabled={saving}>
               {t("settings_clear")} (db)
             </button>
-            <button className="btn sm primary" onClick={saveSettings} disabled={saving}>
-              {saving ? "..." : t("settings_save")}
-            </button>
+            <span style={{ position: "relative", display: "inline-flex" }}>
+              <button className="btn sm primary" onClick={requestSave} disabled={saving || autoConfiguring}>
+                {saving ? "..." : t("settings_save")}
+              </button>
+              {showOverwriteNotice && (
+                <span style={{ position: "absolute", zIndex: 5, right: 0, bottom: "calc(100% + 8px)", width: 270,
+                  padding: 10, border: "1px solid var(--warning, #d97706)", borderRadius: 6, background: "var(--card, #fff)",
+                  boxShadow: "0 4px 14px rgba(0,0,0,.16)", fontSize: 12, lineHeight: 1.45 }}>
+                  {t("settings_override_notice")}
+                  <span style={{ display: "flex", justifyContent: "flex-end", gap: 6, marginTop: 8 }}>
+                    <button className="btn sm ghost" onClick={() => setShowOverwriteNotice(false)}>{t("settings_override_cancel")}</button>
+                    <button className="btn sm primary" onClick={saveSettings}>{t("settings_override_confirm")}</button>
+                  </span>
+                </span>
+              )}
+            </span>
           </div>
           {saveMsg && (
             <div className={"test-result " + (saveMsg.ok ? "ok" : "bad")} style={{ marginTop: 8 }}>
@@ -1340,6 +2215,7 @@ function SettingsPanel({ health, onHealthChange, onBack }) {
               {testResult.ok ? t("settings_test_passed") : t("settings_test_failed")}
               {" — "}
               {testResult.error || ("exit_code=" + testResult.exit_code + " in " + testResult.elapsed_ms + "ms")}
+              {testResult.version && <div style={{ marginTop: 4 }}>{t("settings_version")}: {testResult.version}</div>}
               {testResult.database && (
                 <div style={{ marginTop: 4 }}>
                   DB: {testResult.database.ok ? "✓" : "✗"} {testResult.database.path}
@@ -1447,9 +2323,13 @@ function App() {
           {view.page === "list" && <RunListPage onNew={() => setView({ page: "new" })} onOpen={(id) => setView({ page: "detail", runId: id })} />}
           {view.page === "new" && <TemplateGallery
               onDetail={(tid) => setView({ page: "tplDetail", templateId: tid })}
+              onCustom={() => setView({ page: "custom" })}
               onBack={() => setView({ page: "list" })} />}
           {view.page === "tplDetail" && <TemplateDetailPage
               templateId={view.templateId}
+              onCreate={(id) => setView({ page: "detail", runId: id })}
+              onBack={() => setView({ page: "new" })} />}
+          {view.page === "custom" && <CustomScenarioPage
               onCreate={(id) => setView({ page: "detail", runId: id })}
               onBack={() => setView({ page: "new" })} />}
           {view.page === "detail" && <RunDetailPage runId={view.runId} onBack={() => setView({ page: "list" })} />}

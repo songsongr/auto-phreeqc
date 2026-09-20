@@ -77,9 +77,11 @@ _db_cache: tuple[float, list[dict[str, Any]]] | None = None
 
 def invalidate_caches() -> None:
     """Drop the discovery cache (called after settings change)."""
-    global _discover_cache, _db_cache
+    global _discover_cache, _db_cache, _active_exe_cache, _active_db_cache
     _discover_cache = None
     _db_cache = None
+    _active_exe_cache = None
+    _active_db_cache = None
 
 
 def _default_settings_path() -> str:
@@ -138,9 +140,13 @@ def _apply_env_overrides(settings: dict[str, Any]) -> None:
     exe = settings.get("phreeqc_exe")
     if exe and os.path.isfile(exe):
         os.environ["PHREEQC_EXE"] = exe
+    else:
+        os.environ.pop("PHREEQC_EXE", None)
     db = settings.get("phreeqc_database")
     if db and os.path.isfile(db):
         os.environ["PHREEQC_DATABASE"] = db
+    else:
+        os.environ.pop("PHREEQC_DATABASE", None)
 
 
 def get_settings() -> dict[str, Any]:
@@ -157,7 +163,7 @@ def update_settings(patch: dict[str, Any]) -> dict[str, Any]:
     """
     with _settings_lock:
         for k, v in (patch or {}).items():
-            if k not in {"phreeqc_exe", "phreeqc_database", "watch_dirs"}:
+            if k not in {"phreeqc_exe", "phreeqc_database", "phreeqc_config_source", "watch_dirs"}:
                 continue
             if k == "watch_dirs":
                 # Watch dirs is a list; accept lists of strings.
@@ -409,7 +415,11 @@ def discover_databases(exe_path: str | None = None) -> list[dict[str, Any]]:
 # Reachability test
 # ---------------------------------------------------------------------------
 
-def _probe_version(exe_path: str, timeout: float = 8.0) -> dict[str, Any]:
+def _probe_version(
+    exe_path: str,
+    database_path: str | None = None,
+    timeout: float = 8.0,
+) -> dict[str, Any]:
     """Run a trivial PHREEQC job to verify the binary.
 
     PHREEQC has no documented ``--version``/``-h`` flag: calling the
@@ -442,10 +452,13 @@ def _probe_version(exe_path: str, timeout: float = 8.0) -> dict[str, Any]:
         # (we only need a working database for the binary to not stall
         # on "Name of database file?"); use whichever we can find, falling
         # back to whatever upstream discovery yields.
-        try:
-            db = find_database()
-        except FileNotFoundError:
-            db = None
+        if database_path and os.path.isfile(database_path):
+            db = os.path.abspath(database_path)
+        else:
+            try:
+                db = find_database()
+            except FileNotFoundError:
+                db = None
         cmd = [exe_path, tmp.name, out_path]
         if db:
             cmd.append(db)
@@ -465,24 +478,31 @@ def _probe_version(exe_path: str, timeout: float = 8.0) -> dict[str, Any]:
             return {"ok": False, "error": f"OS error: {exc}"}
         elapsed = time.time() - started
         stderr = (proc.stderr or "")[:400]
+        version = _detect_version(exe_path, proc.stderr or "", proc.stdout or "")
         # ``run_phreeqc`` already proved PHREEQC returns 0 on success; if
         # the binary launched, ran a job, and exited cleanly, treat the
         # binary as healthy regardless of stderr noise (PHREEQC can
         # print non-fatal warnings).
         if proc.returncode == 0 and os.path.isfile(out_path) and os.path.getsize(out_path) > 0:
-            return {
+            result = {
                 "ok": True,
                 "exit_code": proc.returncode,
                 "elapsed_ms": int(elapsed * 1000),
                 "stderr_head": stderr,
             }
-        return {
+            if version:
+                result["version"] = version
+            return result
+        result = {
             "ok": False,
             "exit_code": proc.returncode,
             "elapsed_ms": int(elapsed * 1000),
             "stderr_head": stderr,
             "error": f"rc={proc.returncode}, output_size={os.path.getsize(out_path) if os.path.isfile(out_path) else 0}",
         }
+        if version:
+            result["version"] = version
+        return result
     finally:
         for p in (tmp.name, tmp.name[:-4] + ".qpo"):
             try:
@@ -491,7 +511,24 @@ def _probe_version(exe_path: str, timeout: float = 8.0) -> dict[str, Any]:
                 pass
 
 
-def test_executable(exe_path: str) -> dict[str, Any]:
+def _detect_version(exe_path: str, *output_parts: str) -> str | None:
+    """Extract a human-readable PHREEQC version from its banner or path."""
+    text = "\n".join(output_parts)
+    match = re.search(r"PHREEQC[-\s]+([0-9]+(?:\.[0-9]+)+)", text, re.IGNORECASE)
+    version = match.group(1) if match else None
+    path_match = re.search(r"phreeqc-([0-9]+(?:\.[0-9]+)+)-([0-9]+)", exe_path, re.IGNORECASE)
+    if path_match:
+        version = version or path_match.group(1)
+        return f"PHREEQC {version} ({path_match.group(2)})"
+    return f"PHREEQC {version}" if version else None
+
+
+def detected_version(exe_path: str | None) -> str | None:
+    """Return the version encoded in a known PHREEQC install path."""
+    return _detect_version(exe_path, "") if exe_path else None
+
+
+def test_executable(exe_path: str, database_path: str | None = None) -> dict[str, Any]:
     """Validate that ``exe_path`` exists and runs.  Returns a dict."""
     if not exe_path:
         return {"ok": False, "error": "no path provided"}
@@ -500,7 +537,7 @@ def test_executable(exe_path: str) -> dict[str, Any]:
         return {"ok": False, "error": "file not found", "path": exe_path}
     if not os.access(exe_path, os.X_OK) and not exe_path.lower().endswith(".exe"):
         return {"ok": False, "error": "not executable", "path": exe_path}
-    result = _probe_version(exe_path)
+    result = _probe_version(exe_path, database_path)
     result["path"] = exe_path
     return result
 
@@ -555,14 +592,26 @@ def find_phreeqc_exe() -> str:
     global _active_exe_cache
     now = time.time()
     if _active_exe_cache and now - _active_exe_cache[0] < CACHE_TTL:
-        if _active_exe_cache[1] is None:
-            raise FileNotFoundError("(cached) PHREEQC executable not found")
-        return _active_exe_cache[1]
+        if _active_exe_cache[1] is not None:
+            return _active_exe_cache[1]
+        # A missing executable is not a stable result: a user may install
+        # PHREEQC, correct a path, or the discovery scan may have completed
+        # after the first health check.  Never make the UI wait for the cache
+        # TTL before trying discovery again.
+        _active_exe_cache = None
     try:
         result = _active_exe_lookup()
     except FileNotFoundError:
-        _active_exe_cache = (now, None)
-        raise
+        # The Skill only checks environment variables, PATH, and one
+        # shortcut. The Workbench additionally scans standard USGS install
+        # directories, so promote the first usable discovery result here.
+        result = next(
+            (item["path"] for item in discover_executables()
+             if item["exists"] and item["path"].lower().endswith(".exe")),
+            None,
+        )
+        if result is None:
+            raise
     _active_exe_cache = (now, result)
     return result
 
@@ -577,9 +626,15 @@ def find_database(name: str = "phreeqc.dat") -> str:
     try:
         result = run_phreeqc.find_database(name)
     except FileNotFoundError:
-        if name == "phreeqc.dat":
-            _active_db_cache = (now, None)
-        raise
+        result = next(
+            (item["path"] for item in discover_databases()
+             if item["exists"] and os.path.basename(item["path"]).lower() == name.lower()),
+            None,
+        )
+        if result is None:
+            if name == "phreeqc.dat":
+                _active_db_cache = (now, None)
+            raise
     if name == "phreeqc.dat":
         _active_db_cache = (now, result)
     return result

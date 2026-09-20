@@ -36,6 +36,7 @@ if _SKILL_SCRIPTS not in sys.path:
 # Storage is importable via package init
 from services import storage  # noqa: E402
 from services.process_registry import registry  # noqa: E402
+from services import phreeqc_locator  # noqa: E402
 
 # Skill scripts (imported lazily inside functions to keep cold-start fast)
 def _import_generate():
@@ -63,11 +64,11 @@ def _import_visualize():
 
 # Re-exports for direct callers
 def find_phreeqc_exe() -> str:
-    return _import_run_phreeqc().find_phreeqc_exe()
+    return phreeqc_locator.find_phreeqc_exe()
 
 
 def find_database(name: str = "phreeqc.dat") -> str:
-    return _import_run_phreeqc().find_database(name)
+    return phreeqc_locator.find_database(name)
 
 
 # ---------------------------------------------------------------------------
@@ -184,9 +185,8 @@ def execute_run(run_id: str) -> None:
         # ----- Step 2: run PHREEQC -----
         try:
             _emit(run_id, "step", "Step 2/4: running PHREEQC subprocess")
-            run_phreeqc = _import_run_phreeqc()
-            exe = run_phreeqc.find_phreeqc_exe()
-            database = run_phreeqc.find_database()
+            exe = phreeqc_locator.find_phreeqc_exe()
+            database = phreeqc_locator.find_database()
             input_path = os.path.join(run_dir, "input.pqi")
             output_path = os.path.join(run_dir, "output.qpo")
             _emit(

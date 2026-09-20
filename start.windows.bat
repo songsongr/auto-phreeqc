@@ -31,7 +31,18 @@ echo [workbench] Python:    %PY%
 echo [workbench] Project:   %ROOT%
 echo [workbench] Frontend:  http://%HOST%:%PORT%/
 
-REM Best-effort browser launch.
+REM Do not launch a second copy on the same port.  Python's HTTP server can
+REM otherwise share the listener with an old process, making the browser hit
+REM a random (possibly stale) Workbench instance.
+powershell -NoProfile -Command "if (Get-NetTCPConnection -LocalAddress '%HOST%' -LocalPort %PORT% -State Listen -ErrorAction SilentlyContinue) { exit 0 }; exit 1" >nul 2>&1
+if not errorlevel 1 (
+  echo [workbench] An instance is already running on this port; opening it in the browser.
+  start "" "http://%HOST%:%PORT%/" >nul 2>&1
+  popd >nul
+  endlocal & exit /b 0
+)
+
+REM Best-effort browser launch for a newly-started server.
 start "" "http://%HOST%:%PORT%/" >nul 2>&1
 
 "%PY%" "%ROOT%\workbench\backend\app.py" --host %HOST% --port %PORT%

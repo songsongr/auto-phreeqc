@@ -47,6 +47,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from services import storage  # noqa: E402  (after sys.path manipulation)
 from services import templates as tpl_service  # noqa: E402
 from services import runner  # noqa: E402
+from services import scenarios  # noqa: E402
+from services import custom_templates  # noqa: E402
 from services import phreeqc_locator as phreeqc_locator  # noqa: E402
 from services.process_registry import registry  # noqa: E402
 from services import importer as run_importer  # noqa: E402
@@ -58,7 +60,20 @@ API_PREFIX = "/api/v1"
 _FRONTEND_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "frontend"))
 _BACKEND_STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 STATIC_DIR = _FRONTEND_DIR if os.path.isdir(_FRONTEND_DIR) else _BACKEND_STATIC
-WORKBENCH_VERSION = "0.1.0"
+WORKBENCH_VERSION = "0.2.0"
+
+
+class SingleInstanceHTTPServer(ThreadingHTTPServer):
+    """Refuse a second Workbench on the same port.
+
+    ``HTTPServer`` enables address reuse by default.  On Windows that can
+    allow several workbench processes to listen on one port, so requests are
+    routed unpredictably to stale instances.  A local workbench should have
+    exactly one owner for its configured port.
+    """
+
+    allow_reuse_address = False
+    allow_reuse_port = False
 
 
 # ---------------------------------------------------------------------------
@@ -287,6 +302,7 @@ def list_phreeqc_candidates(handler, params, query, body):
         "active": {
             "executable": primary,
             "database": primary_db,
+            "version": phreeqc_locator.detected_version(primary),
         },
     })
 
@@ -303,7 +319,7 @@ def test_phreeqc_path(handler, params, query, body):
     exe = (body.get("executable") or "").strip()
     if not exe:
         return envelope_error(EC_INVALID_PARAMS, "Field 'executable' is required")
-    result = phreeqc_locator.test_executable(exe)
+    result = phreeqc_locator.test_executable(exe, body.get("database"))
     if body.get("database"):
         result["database"] = phreeqc_locator.test_database(body["database"])
     elif result.get("ok"):
@@ -317,18 +333,62 @@ def test_phreeqc_path(handler, params, query, body):
     return envelope_ok(result)
 
 
+@route("POST", "/api/v1/system/phreeqc/auto-configure")
+def auto_configure_phreeqc(handler, params, query, body):
+    """Discover, test, and persist the first working PHREEQC setup."""
+    databases = phreeqc_locator.discover_databases()
+    valid_databases = [
+        item["path"] for item in databases
+        if item["exists"] and phreeqc_locator.test_database(item["path"]).get("ok")
+    ]
+    # Prefer PHREEQC's general-purpose default database.  Other databases
+    # remain available for an explicit user selection in the settings panel.
+    database = next(
+        (path for path in valid_databases if os.path.basename(path).lower() == "phreeqc.dat"),
+        valid_databases[0] if valid_databases else None,
+    )
+    if not database:
+        return envelope_error(EC_INVALID_PATH, "No usable PHREEQC database was found")
+
+    attempts: list[dict] = []
+    for item in phreeqc_locator.discover_executables():
+        if not item["exists"]:
+            continue
+        probe = phreeqc_locator.test_executable(item["path"], database)
+        attempts.append({"path": item["path"], "ok": probe.get("ok"), "error": probe.get("error")})
+        if probe.get("ok"):
+            settings = phreeqc_locator.update_settings({
+                "phreeqc_exe": item["path"],
+                "phreeqc_database": database,
+                "phreeqc_config_source": "auto",
+            })
+            probe["database"] = phreeqc_locator.test_database(database)
+            return envelope_ok({"settings": settings, "test": probe, "attempts": attempts})
+    return envelope_error(EC_INVALID_PATH, "No discovered PHREEQC executable passed the reachability test")
+
+
 @route("POST", "/api/v1/system/phreeqc/settings")
 def update_phreeqc_settings(handler, params, query, body):
     """Persist the user's path overrides.  Pass empty strings to clear."""
     if not isinstance(body, dict):
         return envelope_error(EC_INVALID_PARAMS, "Body must be a JSON object")
     allowed = {"phreeqc_exe", "phreeqc_database", "watch_dirs"}
-    settings = phreeqc_locator.update_settings({k: body.get(k) for k in allowed if k in body})
+    patch = {k: body.get(k) for k in allowed if k in body}
+    existing = phreeqc_locator.get_settings()
+    changed = any(
+        str(patch[key] or "").strip() != str(existing.get(key) or "").strip()
+        for key in ("phreeqc_exe", "phreeqc_database") if key in patch
+    )
+    if changed:
+        patch["phreeqc_config_source"] = "manual"
+    settings = phreeqc_locator.update_settings(patch)
     # Echo a quick reachability summary so the UI can flag typos
     # without a second round-trip.
     summary: dict = {}
     if settings.get("phreeqc_exe"):
-        summary["executable"] = phreeqc_locator.test_executable(settings["phreeqc_exe"])
+        summary["executable"] = phreeqc_locator.test_executable(
+            settings["phreeqc_exe"], settings.get("phreeqc_database")
+        )
     if settings.get("phreeqc_database"):
         summary["database"] = phreeqc_locator.test_database(settings["phreeqc_database"])
     # If watch_dirs changed, reconfigure the importer.
@@ -364,6 +424,94 @@ def get_template(handler, params, query, body):
 
 
 # ---------------------------------------------------------------------------
+# Route: custom scenarios (Scenario v1 -> legacy params -> runner)
+# ---------------------------------------------------------------------------
+
+def _scenario_error(result: dict) -> tuple[int, bytes, str]:
+    """Turn a validation result into the standard error envelope."""
+
+    errors = result.get("errors") or []
+    message = errors[0].get("message") if errors else "Scenario validation failed"
+    return envelope_error(EC_INVALID_PARAMS, f"{message} ({len(errors)} issue(s))")
+
+
+def _body_scenario(body: Any) -> Any:
+    """Extract the scenario payload, accepting either envelope-free form.
+
+    The custom-scenario UI posts ``{"scenario": {...}}``; raw Scenario v1
+    objects are accepted too so the endpoint can be driven by hand.
+    """
+
+    if isinstance(body, dict) and "scenario" in body:
+        return body["scenario"]
+    return body
+
+
+@route("GET", "/api/v1/scenarios/types")
+def list_scenario_types(handler, params, query, body):
+    """Scenario types, their module skeletons, and the module registry."""
+
+    return envelope_ok({
+        "schema_version": scenarios.SCHEMA_VERSION,
+        "types": scenarios.list_scenario_types(),
+        "modules": scenarios.list_modules(),
+    })
+
+
+@route("POST", "/api/v1/scenarios/validate")
+def validate_scenario(handler, params, query, body):
+    """Structural check only.  Invalid input is data, not an HTTP error."""
+
+    return envelope_ok(scenarios.validate_scenario(_body_scenario(body)))
+
+
+@route("POST", "/api/v1/scenarios/preview")
+def preview_scenario(handler, params, query, body):
+    """Validate and, when valid, return the generated PHREEQC input text."""
+
+    return envelope_ok(scenarios.preview_scenario(_body_scenario(body)))
+
+
+@route("GET", "/api/v1/scenarios/templates")
+def list_custom_templates(handler, params, query, body):
+    return envelope_ok({"templates": custom_templates.list_templates()})
+
+
+@route("GET", "/api/v1/scenarios/templates/{id}")
+def get_custom_template(handler, params, query, body):
+    """Full record (including the scenario) so the editor can load it back."""
+
+    record = custom_templates.get_template(params["id"])
+    if record is None:
+        return envelope_error(EC_INVALID_PARAMS, f"Template not found: {params['id']}", 404)
+    return envelope_ok(record)
+
+
+@route("POST", "/api/v1/scenarios/templates")
+def save_custom_template(handler, params, query, body):
+    """Save (or overwrite) a custom scenario as a reusable template."""
+
+    if not isinstance(body, dict):
+        return envelope_error(EC_INVALID_PARAMS, "Body must be a JSON object")
+    try:
+        record = custom_templates.save_template(
+            _body_scenario(body), template_id=body.get("template_id"),
+        )
+    except scenarios.ScenarioValidationError as exc:
+        return _scenario_error(exc.result)
+    except ValueError as exc:
+        return envelope_error(EC_INVALID_PARAMS, str(exc))
+    return envelope_ok(record, status=201)
+
+
+@route("DELETE", "/api/v1/scenarios/templates/{id}")
+def delete_custom_template(handler, params, query, body):
+    if not custom_templates.delete_template(params["id"]):
+        return envelope_error(EC_INVALID_PARAMS, f"Template not found: {params['id']}", 404)
+    return envelope_ok({"deleted": params["id"]})
+
+
+# ---------------------------------------------------------------------------
 # Route: Runs
 # ---------------------------------------------------------------------------
 
@@ -374,9 +522,11 @@ def list_runs(handler, params, query, body):
 
 @route("POST", "/api/v1/runs")
 def create_run(handler, params, query, body):
-    """Create a new run from a template id OR from raw params.
+    """Create a new run from a template id, a Scenario v1, or raw params.
 
-    Body: ``{"template_id": "pb_speciation"}`` or ``{"params": {...}}``
+    Body: ``{"template_id": "pb_speciation"}``, ``{"scenario": {...}}`` or
+    ``{"params": {...}}``.  All three end up as the same legacy ``params``
+    document, so a custom scenario follows the identical runner path.
     """
     if not isinstance(body, dict):
         return envelope_error(EC_INVALID_PARAMS, "Body must be a JSON object")
@@ -388,13 +538,20 @@ def create_run(handler, params, query, body):
         params_dict = tpl_service.instantiate(tpl)
         run_id = tpl["id"]
         display_name = tpl["title"]
+    elif "scenario" in body:
+        result = scenarios.validate_scenario(body["scenario"])
+        if not result["valid"]:
+            return _scenario_error(result)
+        params_dict = result["params"]
+        run_id = body.get("run_id") or storage.gen_run_id()
+        display_name = body.get("name") or result["scenario"].get("name") or run_id
     elif "params" in body:
         params_dict = body["params"]
         run_id = body.get("run_id") or storage.gen_run_id()
         display_name = body.get("name", run_id)
     else:
         return envelope_error(
-            EC_INVALID_PARAMS, "Body must contain 'template_id' or 'params'"
+            EC_INVALID_PARAMS, "Body must contain 'template_id', 'scenario' or 'params'"
         )
 
     try:
@@ -752,6 +909,7 @@ def main() -> None:
     args = parse_args()
     storage.init(workspace_root=args.workspace)
     phreeqc_locator.init_settings(workspace_root=args.workspace)
+    custom_templates.init(workspace_root=storage.workspace_root())
     # Restore the file watcher if the user previously configured one.
     try:
         watch_dirs = phreeqc_locator.get_settings().get("watch_dirs") or []
@@ -761,7 +919,7 @@ def main() -> None:
             print(f"[workbench] importer watching: {watch_dirs}")
     except Exception as exc:  # noqa: BLE001
         print(f"[workbench] importer restore failed: {exc}")
-    server = ThreadingHTTPServer((args.host, args.port), WorkbenchHandler)
+    server = SingleInstanceHTTPServer((args.host, args.port), WorkbenchHandler)
     print(f"[workbench] listening on http://{args.host}:{args.port}")
     print(f"[workbench] static dir: {STATIC_DIR}")
     print(f"[workbench] workspace:  {storage.workspace_root()}")
