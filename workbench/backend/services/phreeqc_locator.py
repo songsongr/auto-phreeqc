@@ -372,6 +372,7 @@ def discover_databases(exe_path: str | None = None) -> list[dict[str, Any]]:
     argument is ignored on cache hit, which is fine because the
     database directories do not depend on the executable location).
     """
+    global _db_cache
     now = time.time()
     if _db_cache and now - _db_cache[0] < CACHE_TTL:
         return _db_cache[1]
@@ -551,6 +552,7 @@ def find_phreeqc_exe() -> str:
     potentially a PowerShell round-trip) and is on the hot path of
     the health endpoint.
     """
+    global _active_exe_cache
     now = time.time()
     if _active_exe_cache and now - _active_exe_cache[0] < CACHE_TTL:
         if _active_exe_cache[1] is None:
@@ -566,6 +568,7 @@ def find_phreeqc_exe() -> str:
 
 
 def find_database(name: str = "phreeqc.dat") -> str:
+    global _active_db_cache
     now = time.time()
     if name == "phreeqc.dat" and _active_db_cache and now - _active_db_cache[0] < CACHE_TTL:
         if _active_db_cache[1] is None:

@@ -711,3 +711,32 @@ main {
 
 /* Status badge in actions */
 .action-row { display: flex; gap: 6px; align-items: center; }
+
+/* Language switch (topbar) */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-size: 12px;
+}
+.lang-switch .lang-btn {
+  background: transparent;
+  border: 0;
+  padding: 2px 6px;
+  cursor: pointer;
+  color: var(--text-2);
+  border-radius: 4px;
+  font: inherit;
+  line-height: 1.4;
+}
+.lang-switch .lang-btn:hover { color: var(--text); }
+.lang-switch .lang-btn.active {
+  color: var(--primary);
+  font-weight: 600;
+  background: var(--surface);
+}
+.lang-switch .lang-sep { color: var(--border); user-select: none; }

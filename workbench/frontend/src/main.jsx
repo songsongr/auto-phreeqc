@@ -3,7 +3,7 @@
 // Loaded as type="text/babel" so JSX works without a build step.
 // =====================================================================
 
-const { useState, useEffect, useCallback, useRef, createContext, useContext } = React;
+const { useState, useEffect, useCallback, useMemo, useRef, createContext, useContext } = React;
 
 // ---------- API client (fetch wrapper) ---------------------------------
 const API = {
@@ -31,7 +31,42 @@ const API = {
 };
 
 // ---------- i18n -------------------------------------------------------
-const t = (key) => I18N[window.__locale || "zh"][key] || key;
+// Two-language UI (zh / en).  PHREEQC input keywords (SOLUTION,
+// SELECTED_OUTPUT, EQUILIBRIUM_PHASES, …) are emitted by the backend
+// in English and intentionally not translated here.
+const LANG_KEY = "phreeqc_workbench.lang";
+const LangContext = createContext(null);
+
+function LangProvider({ children }) {
+  const [locale, setLocaleState] = useState(() => {
+    try {
+      const saved = localStorage.getItem(LANG_KEY);
+      return (saved === "en" || saved === "zh") ? saved : "zh";
+    } catch (e) { return "zh"; }
+  });
+  const setLocale = useCallback((next) => {
+    if (next !== "zh" && next !== "en") return;
+    try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
+    setLocaleState(next);
+  }, []);
+  const t = useCallback((key) => {
+    const dict = I18N[locale] || I18N.zh;
+    return dict[key] || key;
+  }, [locale]);
+  const value = useMemo(() => ({ locale, setLocale, t }), [locale, setLocale, t]);
+  return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
+}
+
+function useLang() {
+  const ctx = useContext(LangContext);
+  // Fallback for components rendered outside <LangProvider> (should not
+  // happen, but keeps the page alive during HMR edge cases).
+  if (!ctx) {
+    return { locale: "zh", setLocale: () => {}, t: (k) => I18N.zh[k] || k };
+  }
+  return ctx;
+}
+
 const I18N = {
   zh: {
     workbench: "PHREEQC Workbench",
@@ -69,10 +104,13 @@ const I18N = {
     icon_runs: "≡",
     icon_new: "+",
     icon_exit: "⏻",
-    nav_settings: "设置",
-    icon_settings: "⚙",
-    settings_title: "PHREEQC 路径设置",
-    settings_subtitle: "自动发现 + 可达性测试 + 手动指定。",
+    exit_btn: "退出",
+    lang_zh: "中文",
+    lang_en: "EN",
+    nav_console: "控制台",
+    icon_console: "🛠",
+    console_title: "PHREEQC 控制台",
+    console_subtitle: "自动寻找 + 手动配置 + 可达性测试。",
     settings_executables: "可执行文件候选",
     settings_databases: "数据库候选",
     settings_active: "当前生效",
@@ -150,10 +188,13 @@ const I18N = {
     icon_runs: "≡",
     icon_new: "+",
     icon_exit: "⏻",
-    nav_settings: "Settings",
-    icon_settings: "⚙",
-    settings_title: "PHREEQC path settings",
-    settings_subtitle: "Auto-discovery + reachability test + manual override.",
+    exit_btn: "Exit",
+    lang_zh: "中文",
+    lang_en: "EN",
+    nav_console: "Console",
+    icon_console: "🛠",
+    console_title: "PHREEQC Console",
+    console_subtitle: "Auto-discovery + manual configuration + reachability test.",
     settings_executables: "Executable candidates",
     settings_databases: "Database candidates",
     settings_active: "Currently in use",
@@ -196,7 +237,6 @@ const I18N = {
     status_aborted: "aborted",
   },
 };
-window.__locale = "zh";
 
 // ---------- Shared components -----------------------------------------
 function StatusBadge({ status }) {
@@ -778,18 +818,9 @@ function RunListPage({ onNew, onOpen }) {
 }
 
 // ---------- Template gallery page --------------------------------------
-function TemplateGallery({ onCreate, onDetail, onBack }) {
+function TemplateGallery({ onDetail, onBack }) {
   const [templates, setTemplates] = useState([]);
   useEffect(() => { API.get("/api/v1/templates").then(d => setTemplates(d.templates || [])); }, []);
-
-  const handleStart = async (tid, e) => {
-    if (e) e.stopPropagation();
-    try {
-      const run = await API.post("/api/v1/runs", { template_id: tid });
-      await API.post("/api/v1/runs/" + run.run_id + "/start");
-      onCreate(run.run_id);
-    } catch (err) { alert("Failed: " + err.message); }
-  };
 
   return (
     <div>
@@ -808,7 +839,6 @@ function TemplateGallery({ onCreate, onDetail, onBack }) {
             <p>{tpl.summary}</p>
             <div className="actions" onClick={(e) => e.stopPropagation()}>
               <button className="btn sm ghost" onClick={() => onDetail(tpl.id)}>{t("tpl_btn_detail")}</button>
-              <button className="btn sm primary" onClick={(e) => handleStart(tpl.id, e)}>{t("tpl_btn_start")}</button>
             </div>
           </div>
         ))}
@@ -1198,8 +1228,8 @@ function SettingsPanel({ health, onHealthChange, onBack }) {
     <div>
       <div className="page-header">
         <div>
-          <h1>{t("settings_title")}</h1>
-          <div className="subtitle">{t("settings_subtitle")}</div>
+          <h1>{t("console_title")}</h1>
+          <div className="subtitle">{t("console_subtitle")}</div>
         </div>
         <button className="btn ghost" onClick={onBack}>← {t("btn_back")}</button>
       </div>
@@ -1322,6 +1352,7 @@ function SettingsPanel({ health, onHealthChange, onBack }) {
 
 // ---------- App root ---------------------------------------------------
 function App() {
+  const { t, locale, setLocale } = useLang();
   const [view, setView] = useState({ page: "list" });
   const [health, setHealth] = useState(null);
   const [exitOpen, setExitOpen] = useState(false);
@@ -1354,6 +1385,11 @@ function App() {
           <span>{t("workbench")}</span>
         </div>
         <div className="nav">
+          <button className={view.page === "settings" ? "active" : ""}
+                  onClick={() => setView({ page: "settings" })}>
+            <span className="icon">{t("icon_console")}</span>
+            <span>{t("nav_console")}</span>
+          </button>
           <button className={view.page === "list" ? "active" : ""}
                   onClick={() => setView({ page: "list" })}>
             <span className="icon">{t("icon_runs")}</span>
@@ -1363,11 +1399,6 @@ function App() {
                   onClick={() => setView({ page: "new" })}>
             <span className="icon">{t("icon_new")}</span>
             <span>{t("nav_new")}</span>
-          </button>
-          <button className={view.page === "settings" ? "active" : ""}
-                  onClick={() => setView({ page: "settings" })}>
-            <span className="icon">{t("icon_settings")}</span>
-            <span>{t("nav_settings")}</span>
           </button>
         </div>
         <div className="spacer" />
@@ -1386,15 +1417,25 @@ function App() {
           {exitDone
             ? <span style={{ fontSize: 12, color: "var(--text-2)" }}>{t("exit_done")}</span>
             : <HealthDot health={health} />}
+          <div className="lang-switch" role="group" aria-label="Language">
+            <button className={"lang-btn" + (locale === "zh" ? " active" : "")}
+                    onClick={() => setLocale("zh")} title="中文">
+              {t("lang_zh")}
+            </button>
+            <span className="lang-sep" aria-hidden="true">|</span>
+            <button className={"lang-btn" + (locale === "en" ? " active" : "")}
+                    onClick={() => setLocale("en")} title="English">
+              {t("lang_en")}
+            </button>
+          </div>
           <button className="btn danger" onClick={() => setExitOpen(true)} title={t("exit_title")}>
             <span className="icon" aria-hidden="true" style={{ width: 14, height: 14, display: "inline-grid", placeItems: "center" }}>{t("icon_exit")}</span>
-            <span>{t("nav_runs") === "运行列表" ? "退出" : "Exit"}</span>
+            <span>{t("exit_btn")}</span>
           </button>
         </div>
         <main>
           {view.page === "list" && <RunListPage onNew={() => setView({ page: "new" })} onOpen={(id) => setView({ page: "detail", runId: id })} />}
           {view.page === "new" && <TemplateGallery
-              onCreate={(id) => setView({ page: "detail", runId: id })}
               onDetail={(tid) => setView({ page: "tplDetail", templateId: tid })}
               onBack={() => setView({ page: "list" })} />}
           {view.page === "tplDetail" && <TemplateDetailPage
@@ -1426,4 +1467,4 @@ function App() {
 
 // Mount
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+root.render(<LangProvider><App /></LangProvider>);
