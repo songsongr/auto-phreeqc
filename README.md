@@ -4,14 +4,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](pyproject.toml)
 
-**Automated geochemical simulation workflows for PHREEQC**, powered by Claude Code.
+**Automated geochemical simulation workflows for PHREEQC**, designed for use from any agent terminal.
 
 > PHREEQC is a computer program for speciation, batch-reaction, one-dimensional transport,
 > and inverse geochemical calculations developed by the U.S. Geological Survey (USGS).
 
-This project provides a **Claude Code Skill** (`phreeqc-auto`) that enables natural-language-driven
-geochemical modeling — describe your simulation in plain language, and the skill handles
-input generation, execution, output parsing, and visualization.
+This project provides agent-ready workflows for natural-language-driven geochemical modeling.
+Describe your simulation in plain language, and the workflow handles input generation,
+execution, output parsing, and visualization. It can be used from any agent terminal;
+Codex and Claude Code are listed below as examples.
 
 ---
 
@@ -64,10 +65,10 @@ export PHREEQC_DATABASE="/path/to/phreeqc.dat"
 
 ### Usage
 
-**As a Claude Code Skill:**
+**From an agent terminal (for example, Codex or Claude Code):**
 
 ```bash
-# In Claude Code, simply describe your simulation:
+# Simply describe your simulation:
 # "Simulate calcite saturation index in seawater at pH 7-9"
 ```
 
