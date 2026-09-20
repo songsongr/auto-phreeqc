@@ -121,7 +121,7 @@ plot_si_vs_ph(si_data, "Calcite")
 │   ├── start.unix.sh / start.windows.bat
 │   ├── backend/app.py                  # stdlib HTTP server (REST + SSE)
 │   ├── backend/services/               # locator, registry, runner, storage, templates, importer
-│   ├── frontend/                       # React via CDN + ECharts
+│   ├── frontend/                       # bundled React, Babel, and ECharts assets
 │   └── workspace_workbench/            # runtime-generated runs (gitignored)
 │
 ├── examples/                           # curated reference simulations (one per task)
@@ -184,8 +184,8 @@ pytest .claude/skills/phreeqc-auto/scripts/test_scripts.py
 A self-hosted browser UI is included under [`workbench/`](workbench/)
 that wraps the skill with a REST + SSE API and an ECharts-powered
 result inspector.  No new Python packages are added — the backend is
-built on the standard library, and the frontend loads React/ECharts
-from a CDN.  See [`workbench/README.md`](workbench/README.md) for
+built on the standard library, and the frontend bundles its React, Babel,
+and ECharts assets for local use. See [`workbench/README.md`](workbench/README.md) for
 architecture, API conventions, and the full list of 9 built-in
 templates.
 

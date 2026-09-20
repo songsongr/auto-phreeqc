@@ -67,10 +67,10 @@ contributes no runtime dependencies to the host project.
   by SI sign) and SI evolution line chart for parameter sweeps.
 - **File download** — every artifact (input, output, results.json,
   `charts/*.png`, event log) is downloadable from the browser.
-- **Zero new dependencies** — the backend is built on Python
-  stdlib (`http.server`, `threading`, `subprocess`); the frontend
-  loads React + ECharts from a public CDN.  `pyproject.toml` is
-  untouched.
+- **No installation or network dependency** — the backend is built on Python
+  stdlib (`http.server`, `threading`, `subprocess`), while fixed versions of
+  React, Babel, and ECharts are bundled with the frontend. `pyproject.toml`
+  is untouched.
 
 ---
 
@@ -178,20 +178,19 @@ Design notes:
 
 | File             | Purpose                                         |
 |------------------|-------------------------------------------------|
-| `index.html`     | Single-page entry, loads React/ECharts from CDN |
+| `index.html`     | Single-page entry, loads bundled React/Babel/ECharts assets |
 | `styles.css`     | Theme tokens + component styles                 |
 | `src/main.jsx`   | App, pages, components (one file — keeps the    |
 |                  | build trivial when no bundler is present)       |
 
 Design notes:
 
-- **No build step required** — the entry HTML loads Babel
-  Standalone so JSX in `src/main.jsx` is compiled in the browser.
-  This makes the workbench runnable in offline / restricted
-  environments where `npm install` is impractical.
+- **No build step or network connection required** — bundled Babel
+  Standalone compiles JSX in `src/main.jsx` in the browser, so the
+  workbench remains usable in offline or restricted environments.
 - **i18n** — `I18N.zh` and `I18N.en` dictionaries at the top of
   `main.jsx`.  Toggle by setting `window.__locale = "en"`.
-- **ECharts** — CDN, no extra JS.  The SI bar chart colours each
+- **ECharts** — bundled locally, with no extra installation. The SI bar chart colours each
   bar by sign (green = supersaturated, blue = undersaturated).
 - **Long polling** — the run log is fetched every 1.5 s while a
   run is active; the page transitions from the SSE event list into

@@ -14,6 +14,23 @@ build/
 venv/
 env/
 
+# Python test and analysis caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+.coverage
+coverage.xml
+htmlcov/
+
+# Local environment configuration and notebooks
+.env
+.env.*
+!.env.example
+!.env.template
+.ipynb_checkpoints/
+
 # IDE / 编辑器
 .vscode/
 .idea/
@@ -39,6 +56,11 @@ Thumbs.db
 /selected_output.txt
 /selected_output_*.txt
 /selected_output_*.sel
+/results/
+/output/
+
+# 通用运行日志
+*.log
 
 # examples/ 子目录里的运行期产物（图表是二进制、日志是临时输出）
 /examples/**/phreeqc.log
@@ -47,6 +69,10 @@ Thumbs.db
 # WebBench 运行期数据（每次启动自动重建）
 /workbench/workspace_workbench/
 /workbench/backend/services/__pycache__/
+
+# 外部运行结果导入目录（保留目录占位文件）
+/external_runs/*
+!/external_runs/.gitkeep
 
 # 临时 / 测试 workspace 变体（examples/ 不受影响）
 /workspace/

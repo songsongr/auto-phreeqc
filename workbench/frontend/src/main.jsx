@@ -244,6 +244,7 @@ function StatusBadge({ status }) {
 }
 
 function HealthDot({ health }) {
+  const { t } = useLang();
   if (!health) return null;
   const phreeqcOk = health.phreeqc && health.phreeqc.ok;
   return (
@@ -308,6 +309,7 @@ function ParamText({ value, onChange }) {
 
 // A key/value pair editor for dicts like `components: {Na: 10, Cl: 10}`.
 function DictEditor({ value, onChange, label }) {
+  const { t } = useLang();
   const entries = Object.entries(value || {});
   const set = (k, v) => {
     const next = { ...value };
@@ -335,6 +337,7 @@ function DictEditor({ value, onChange, label }) {
 
 // A list editor for arrays like `totals: ["Ca", "K"]` or `si: ["Calcite"]`.
 function ListEditor({ value, onChange, itemType }) {
+  const { t } = useLang();
   const arr = Array.isArray(value) ? value : [];
   const set = (i, v) => {
     const next = arr.slice(); next[i] = itemType === "number" ? Number(v) : v; onChange(next);
@@ -358,6 +361,7 @@ function ListEditor({ value, onChange, itemType }) {
 // Equilibrium phases like {"Calcite": (0, 10)}: keep as an editable JSON
 // blob (the value is a Python tuple; the editor stores as [a, b]).
 function EqPhasesEditor({ value, onChange }) {
+  const { t } = useLang();
   const obj = value || {};
   const entries = Object.entries(obj);
   const set = (k, idx, raw) => {
@@ -414,6 +418,7 @@ function SolutionForm({ value, onChange }) {
 
 // Top-level ParamForm -- renders one section per known param block.
 function ParamForm({ params, onChange }) {
+  const { t } = useLang();
   const set = (key, val) => onChange({ ...params, [key]: val });
   return (
     <div className="param-editor">
@@ -597,6 +602,7 @@ function ParamForm({ params, onChange }) {
 
 // ---------- Template detail / param editor page ------------------------
 function TemplateDetailPage({ templateId, onCreate, onBack }) {
+  const { t } = useLang();
   const [tpl, setTpl] = useState(null);
   const [params, setParams] = useState(null);
   const [mode, setMode] = useState("form"); // "form" | "json"
@@ -739,6 +745,7 @@ function TemplateDetailPage({ templateId, onCreate, onBack }) {
 
 // ---------- Run list page ----------------------------------------------
 function RunListPage({ onNew, onOpen }) {
+  const { t } = useLang();
   const [runs, setRuns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -819,6 +826,7 @@ function RunListPage({ onNew, onOpen }) {
 
 // ---------- Template gallery page --------------------------------------
 function TemplateGallery({ onDetail, onBack }) {
+  const { t } = useLang();
   const [templates, setTemplates] = useState([]);
   useEffect(() => { API.get("/api/v1/templates").then(d => setTemplates(d.templates || [])); }, []);
 
@@ -849,6 +857,7 @@ function TemplateGallery({ onDetail, onBack }) {
 
 // ---------- Run detail page --------------------------------------------
 function RunDetailPage({ runId, onBack }) {
+  const { t } = useLang();
   const [run, setRun] = useState(null);
   const [tab, setTab] = useState("log");
   const [input, setInput] = useState("");
@@ -1152,6 +1161,7 @@ function FileListView({ runId, files }) {
 
 // ---------- Settings panel --------------------------------------------
 function SettingsPanel({ health, onHealthChange, onBack }) {
+  const { t } = useLang();
   const [data, setData] = useState(null);
   const [exePath, setExePath] = useState("");
   const [dbPath, setDbPath] = useState("");
