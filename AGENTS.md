@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-本文件为 Claude Code (claude.ai/code) 在本项目中工作时提供指导。
+本文件为在本项目中工作的智能体终端（Claude Code、Codex 等）提供指导。
 
 ## 项目概述
 
@@ -270,12 +270,15 @@ phreeqc_auto/
 然后在 Claude Code 中通过 Bash 工具调用 Python 脚本，而非使用 TeamCreate 编排 agent。
 
 ### 设计文档
-详细设计见 `docs/superpowers/specs/2026-05-10-phreeqc-auto-skill-design.md`
-实现计划见 `docs/superpowers/plans/2026-05-10-phreeqc-auto-skill-plan.md`
+详细设计见 `docs-developer/superpowers/specs/2026-05-10-phreeqc-auto-skill-design.md`
+实现计划见 `docs-developer/superpowers/plans/2026-05-10-phreeqc-auto-skill-plan.md`
+
+> `docs-developer/` 是本机开发文档目录，已被 `.gitignore` 忽略，不会随仓库分发；
+> 面向用户的中文文档放在受版本控制的 `docs/` 下。
 
 ## Skill 考题 (improve-task)
 
-`docs/improve-task.md` 包含 9 道用于评估和迭代 phreeqc-auto skill 能力的考题，分三个级别。
+`docs-developer/improve-task.md` 包含 9 道用于评估和迭代 phreeqc-auto skill 能力的考题，分三个级别。
 
 ### 完成状态
 

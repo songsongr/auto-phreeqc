@@ -1,5 +1,7 @@
 # phreeqc-auto 🔬
 
+[简体中文](docs/README.zh-CN.md)
+
 [![CI](https://github.com/songsongr/auto-phreeqc/actions/workflows/ci.yml/badge.svg)](https://github.com/songsongr/auto-phreeqc/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](pyproject.toml)
@@ -107,7 +109,7 @@ plot_si_vs_ph(si_data, "Calcite")
 
 ```
 .                                       # repo root
-├── README.md / CLAUDE.md / LICENSE     # project metadata
+├── README.md / AGENTS.md / LICENSE     # project metadata
 ├── pyproject.toml / uv.lock            # Python package definition + lockfile
 ├── start.unix.sh                       # launcher for macOS / Linux / Git Bash
 ├── start.windows.bat                   # launcher for Windows cmd
@@ -115,7 +117,8 @@ plot_si_vs_ph(si_data, "Calcite")
 │
 ├── .claude/skills/phreeqc-auto/        # Claude Code skill (see SKILL.md)
 ├── .github/                            # CI workflows, Pages, Discussions
-├── docs/                               # long-form docs (GitHub Pages site)
+├── docs/                               # user-facing docs (简体中文) + Pages landing page
+├── docs-developer/                     # local developer notes (gitignored)
 │
 ├── workbench/                          # PHREEQC Web Workbench (zero-dep, stdlib only)
 │   ├── start.unix.sh / start.windows.bat

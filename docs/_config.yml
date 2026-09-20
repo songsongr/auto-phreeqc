@@ -1,2 +1,5 @@
 title: phreeqc-auto
 description: Automated PHREEQC geochemical simulation workflows
+
+# 站点只发布 docs/ 目录：面向用户的中文文档 + 本页首页。
+# 开发者本地笔记放在 docs-developer/（已被 .gitignore 忽略）。
