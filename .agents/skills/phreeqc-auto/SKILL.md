@@ -12,13 +12,28 @@ description: >-
 
 ```
 Phase 1: 需求澄清 ── 与用户半自动对话确定模拟参数
-Phase 2: 团队编排 ── 用 TeamCreate 分配子任务给 agent 团队
+Phase 2: 任务编排 ── 按需拆分生成、运行、解析和可视化子任务
 Phase 3: 结果呈现 ── 终端报告 + 数据文件 + 图表
 ```
 
 ## 工作目录
 
 所有文件操作在项目根目录下执行。
+
+### Workbench 强制交付（硬性规则）
+
+所有由 agent 为用户实际运行的模拟必须先创建为 Workbench 运行，最终目录只能是
+`workbench/workspace_workbench/<run_id>/`，不能写入根目录 `runs/` 或 `examples/`。
+通过 `workbench/backend/services/storage.py` 的 `storage.create_run()` 建立运行记录，并在
+`meta.json` 的 `params` 中完整写入用户确认的配置：模拟类型、组分及单位、温度、pH/pe
+或气体边界、反应相、扫描/时间/单元参数、数据库与目标输出。
+
+运行目录必须包含 `meta.json`、`events.log`、`input.pqi`、`output.qpo`、
+`selected_output.txt`（适用时）、`results.json` 和 `charts/`；多阶段模拟还要保留所有
+子步骤原始输入/输出和协调脚本。完成前必须以 `storage.list_runs()`、`storage.get_run()`
+及规范产物存在性验证其在 WebUI 列表和详情页可见；若 Workbench 服务已运行，再验证
+`/api/v1/runs/<run_id>` 和 `/files`。未通过验证时将运行标为失败，不得交付数值结果。
+可执行模板见仓库 `docs/agent-usage.md` 的“Workbench 强制交付”。
 
 ## Phase 1: 需求澄清
 
@@ -80,18 +95,14 @@ pH:    8.22
 
 ## Phase 2: 团队编排
 
-用户确认参数后，使用 TeamCreate 创建 agent 团队并行执行子任务。
+用户确认参数后，将生成、运行、解析和可视化拆成可追踪的子任务。仅当宿主提供
+可靠的子任务/并行能力时才并行执行；否则由当前 agent 按顺序完成，不能假设存在
+`TeamCreate`、`TeamDelete` 或其他 Claude 专属工具。
 
-### 团队创建
+### 子任务划分
 
-```python
-# 创建团队
-TeamCreate(team_name="phreeqc-sim")
-```
-
-### 并发派发子任务
-
-在同一消息中同时 spawn 所有 4 个 agent，每个 agent 的 prompt 结构如下：
+如宿主支持并行 agent，在同一轮派发以下 4 个子任务；每个子任务都必须写入同一
+Workbench run 目录并报告真实结果。宿主不支持并行时，按同样顺序在当前 agent 中执行：
 
 **输入生成 Agent** — 任务说明模板:
 ```
@@ -104,9 +115,11 @@ Using the public runtime module:
 phreeqc_auto/generate_input.py
 
 IMPORTANT: Work in the project root directory
-- Create workspace/<run-id>/ directory
+- Create the Workbench run through storage.create_run() before writing input.
+- Use workbench/workspace_workbench/<run-id>/ as the only result directory.
+- Populate Workbench meta params with every confirmed simulation condition.
 - Call generate_single_simulation(params, output_file="selected.txt") or generate_parameter_sweep(...)
-- Write the result to workspace/<run-id>/input.pqi using write_input_file()
+- Write the result to workbench/workspace_workbench/<run-id>/input.pqi using write_input_file()
 
 Generate SELECTED_OUTPUT that includes all relevant -si and -totals for the simulation.
 ```
@@ -114,7 +127,7 @@ Generate SELECTED_OUTPUT that includes all relevant -si and -totals for the simu
 **模拟运行 Agent** — 任务说明模板:
 ```
 You are running a PHREEQC simulation. The input file is at:
-project_root\workspace\<run-id>\input.pqi
+project_root\workbench\workspace_workbench\<run-id>\input.pqi
 
 Using the public runtime module:
 phreeqc_auto/run_phreeqc.py
@@ -122,43 +135,43 @@ phreeqc_auto/run_phreeqc.py
 Call:
   from phreeqc_auto.run_phreeqc import run_simulation
   result = run_simulation(
-      input_file="workspace/<run-id>/input.pqi",
-      output_file="workspace/<run-id>/output.qpo",
-      cwd="workspace/<run-id>",
+      input_file="workbench/workspace_workbench/<run-id>/input.pqi",
+      output_file="workbench/workspace_workbench/<run-id>/output.qpo",
+      cwd="workbench/workspace_workbench/<run-id>",
   )
 
 Check result["success"]. If failed, try one retry with adjusted parameters.
-IMPORTANT: Always pass cwd=workspace_DIR so SELECTED_OUTPUT files are written correctly.
+IMPORTANT: Always pass cwd=WORKBENCH_RUN_DIR so SELECTED_OUTPUT files are written correctly.
 ```
 
 **输出解析 Agent** — 任务说明模板:
 ```
 You are parsing PHREEQC output files from:
-project_root\workspace\<run-id>\
+project_root\workbench\workspace_workbench\<run-id>\
 
 Using the public runtime module:
   from phreeqc_auto.parse_output import parse_selected_output, extract_saturation_indices, to_json
 
 - Parse selected_output.txt
 - Read output.qpo for saturation indices, species distribution, element molalities
-- Save results to workspace/<run-id>/results.json
+- Save results to workbench/workspace_workbench/<run-id>/results.json
 ```
 
 **可视化 + 文档 Agent** — 任务说明模板:
 ```
 You are creating visualizations AND a human-readable README from parsed PHREEQC results at:
-project_root\workspace\<run-id>\results.json
+project_root\workbench\workspace_workbench\<run-id>\results.json
 
 Using the public runtime module:
   from phreeqc_auto.visualize import plot_saturation_indices, plot_selected_output_sweep
 
-STEP 1 — Generate charts (save to workspace/<run-id>/charts/):
+STEP 1 — Generate charts (save to workbench/workspace_workbench/<run-id>/charts/):
   - Load results.json
-  - Call plot_saturation_indices(data, title=..., filepath="workspace/<run-id>/charts/<descriptive_name>.png")
+  - Call plot_saturation_indices(data, title=..., filepath="workbench/workspace_workbench/<run-id>/charts/<descriptive_name>.png")
   - If sweep data exists: plot_selected_output_sweep(selected_output, x_column, y_columns, ...)
   - Use descriptive filenames (e.g. "ph_titration.png" not "parameter_sweep.png")
 
-STEP 2 — Write workspace/<run-id>/README.md with this EXACT structure:
+STEP 2 — Write workbench/workspace_workbench/<run-id>/README.md with this EXACT structure:
 
 ```markdown
 # 模拟: {简短描述}
@@ -195,18 +208,20 @@ RULES for README.md:
 - Keep each chart section self-contained so the user can read just one and understand it
 ```
 
-### 收集结果与清理
+### 收集结果
 
-1. 等待所有 agent 完成，收集结果
-2. 检查每个结果是否有错误
-3. 使用 `TeamDelete` 清理团队
+1. 等待所有子任务完成并收集结果。
+2. 检查每个阶段的真实文件、返回值和错误信息。
+3. 不创建或清理宿主未提供的团队资源；只清理本次任务产生的临时文件。
 
 ### 工作区目录结构
 
 每次运行创建独立目录：
 ```
-workspace/
+workbench/workspace_workbench/
 ├── <run-id>/
+│   ├── meta.json                 # Workbench configuration and status
+│   ├── events.log                # Workbench event stream
 │   ├── input.pqi                # 输入文件
 │   ├── output.qpo               # PHREEQC 原始输出
 │   ├── selected_output.txt      # SELECTED_OUTPUT 数据
@@ -238,9 +253,9 @@ Ca²⁺:    1.23e-3 mol/kgw
 Mg²⁺:    5.67e-4 mol/kgw
 
 ── 输出文件 ──
-📋 workspace/<run-id>/README.md    ← 推荐首先查看：含图表解读
-📄 workspace/<run-id>/results.json
-📊 workspace/<run-id>/charts/
+📋 workbench/workspace_workbench/<run-id>/README.md    ← 推荐首先查看：含图表解读
+📄 workbench/workspace_workbench/<run-id>/results.json
+📊 workbench/workspace_workbench/<run-id>/charts/
 ```
 
 ### 输出文件

@@ -1,4 +1,4 @@
-# 使用 Codex 或 Claude Code 完成 PHREEQC 计算
+# 使用 Codex 完成 PHREEQC 计算
 
 本指南说明如何让 AI 编程助手在本仓库内完成可复核的 PHREEQC 模拟。运行计算
 仍在你的本机进行：智能体负责整理条件、生成输入、调用公开运行库、解析输出和
@@ -27,13 +27,10 @@ python scripts/bootstrap.py \
 
 ## Skill 如何被发现
 
-- **Codex**：仓库根目录的 `.agents/skills/phreeqc-auto/` 是自动发现入口；
-  它会加载唯一的公开 Skill 定义 `skills/phreeqc-auto/SKILL.md`。
-- **Claude Code**：仓库中有 `.claude/skills/phreeqc-auto/` 入口，指向同一个
-  公开 Skill。
+- **Codex**：仓库根目录的 `.agents/skills/phreeqc-auto/` 是项目层自动发现入口。
 
-这两处入口不保存实现副本，运行代码的唯一来源始终是根目录
-`phreeqc_auto/` 包。公开 Skill 和参考资料也不包含开发提示词或内部记录。
+运行代码的唯一来源始终是根目录 `phreeqc_auto/` 包；Skill 目录只保存行为规则
+和参考资料，不保存另一份运行实现。
 
 ## 可以直接对 Agent 说什么
 

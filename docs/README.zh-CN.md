@@ -5,7 +5,7 @@
 **把地球化学问题转化为可复核的 PHREEQC 计算。**
 
 `auto-phreeqc` 提供公开 Python 运行库、本地浏览器工作台、九个可运行案例，
-以及可被 Codex 或 Claude Code 使用的 PHREEQC Skill。它适用于水化学形态
+以及可被 Codex 项目层自动发现的 PHREEQC Skill。它适用于水化学形态
 分布、批量反应、混合、表面络合、离子交换、动力学和一维反应性运移。
 
 > PHREEQC 程序和热力学数据库由 USGS 单独分发，仓库不会打包它们。请从
@@ -20,6 +20,7 @@
 | 在浏览器中填写、运行和查看结果 | 启动本地 [Workbench](workbench-README.zh-CN.md)。 |
 | 在 Python 程序中重复调用 | 使用根目录的 `phreeqc_auto` 包。 |
 | 在已有模型上修改 | 从下方九个示例中选择最接近的一个。 |
+| 查阅 PHREEQC v3 官方手册 | 使用[已整理的 HTML 手册知识库](phreeqc-guide/README.md)。 |
 
 ## 首次配置
 
@@ -33,8 +34,8 @@
 PHREEQC，请说明官方安装步骤，安装完成后继续自检。
 ```
 
-Codex 会从 `.agents/skills/` 自动发现仓库级 Skill；Claude Code 也有对应的
-公开入口。两者都只引用用户端资料，不包含开发进度、内部提示词或私有配置。
+Codex 会从 `.agents/skills/` 自动发现仓库级 Skill。该入口只负责加载仓库
+Skill；本机配置和开发记录不会写入公开分发内容。
 
 ### 手动配置
 

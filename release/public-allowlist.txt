@@ -1,7 +1,6 @@
 # User-facing files exported to the clean public repository.
 .github
 .agents/skills/phreeqc-auto/SKILL.md
-.claude/skills/phreeqc-auto/SKILL.md
 .gitignore
 AGENTS.md
 AUTHORS.md

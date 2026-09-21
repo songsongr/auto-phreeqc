@@ -38,8 +38,7 @@ if (-not $paths) {
 $injectedPaths = @(
     "AGENTS.md",
     "CLAUDE.md",
-    ".agents/skills/phreeqc-auto/SKILL.md",
-    ".claude/skills/phreeqc-auto/SKILL.md"
+    ".agents/skills/phreeqc-auto/SKILL.md"
 )
 $archivePaths = $paths | Where-Object { $_ -notin $injectedPaths }
 

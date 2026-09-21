@@ -39,10 +39,10 @@ natural-language calculation. If PHREEQC is not installed, explain the
 official installation step and resume setup afterwards.
 ```
 
-The repository contains public instructions for Codex and Claude Code. Codex
-automatically discovers the repository Skill from `.agents/skills/`; Claude
-Code has a small repository entry point that directs it to the same public
-Skill. Neither contains development prompts or private project notes.
+The repository Skill is designed for Codex project-level discovery from
+`.agents/skills/`. It contains the workflow instructions needed to operate this
+development checkout; private machine settings and development notes remain
+outside the public distribution.
 
 ### Set it up yourself
 

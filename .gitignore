@@ -48,9 +48,6 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# Claude Code 本机设置
-.claude/settings.local.json
-
 # Playwright MCP 调试残留
 .playwright-mcp/
 

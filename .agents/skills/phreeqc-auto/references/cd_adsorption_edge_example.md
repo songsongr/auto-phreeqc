@@ -130,4 +130,4 @@ END
 - 数据: `workspace/task2_1_cd_adsorption/selected_output.txt`
 - 结果: `workspace/task2_1_cd_adsorption/results.json`
 - 图表: `workspace/task2_1_cd_adsorption/charts/cd_adsorption_edge.png`
-- 文献参数: `.claude/skills/phreeqc-auto/references/goethite_birnessite_surface_params.md`
+- 文献参数: `.agents/skills/phreeqc-auto/references/goethite_birnessite_surface_params.md`
