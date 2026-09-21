@@ -18,6 +18,14 @@ description: 使用 phreeqc_auto 包生成、运行、解析和可视化 PHREEQC
 
 将每次模拟写入一个独立结果目录，保留输入、原始输出、SELECTED_OUTPUT、结构化结果和图表。不要修改 `examples/` 中的源文件。
 
+按需查阅 Skill 随附的公开参考资料：
+
+- 选择案例或确定输入文件时，阅读 [案例索引](references/case-catalog.md)。
+- 编写 `SOLUTION`、`EQUILIBRIUM_PHASES` 或 `SELECTED_OUTPUT` 时，阅读 [输入与输出模式](references/input-patterns.md)。
+- 处理 Cd 等表面络合问题时，阅读 [表面络合说明](references/surface-complexation.md)。
+
+运行代码的唯一来源是仓库根目录的 `phreeqc_auto/` 包；不要在 Skill 目录中复制脚本，以免两份实现不同步。
+
 使用公开运行库完成以下步骤：
 
 ```python

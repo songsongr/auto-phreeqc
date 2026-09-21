@@ -22,6 +22,7 @@ examples/task3_3_co2_injection
 phreeqc_auto
 pyproject.toml
 skills/phreeqc-auto/SKILL.md
+skills/phreeqc-auto/references
 start.unix.sh
 start.windows.bat
 tests
