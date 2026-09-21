@@ -2,14 +2,14 @@
 
 [简体中文](../docs/workbench-README.zh-CN.md)
 
-A self-hosted web UI for the [`phreeqc-auto`](../README.md) skill.  Browse
+A self-hosted web UI for the [`phreeqc-auto`](../README.md) runtime. Browse
 PHREEQC simulations in the browser, watch a live event log as the
 subprocess runs, and inspect parsed results, charts, and raw artifacts —
 all without writing a single line of Python.
 
-The workbench is **fully decoupled from the phreeqc-auto package**: it
-talks to the four skill scripts over a thin REST + SSE interface and
-contributes no runtime dependencies to the host project.
+The workbench is a local interface over the public `phreeqc_auto` package. It
+uses a thin REST + SSE interface and keeps all simulations on the local
+machine.
 
 ```
 ┌────────────────────────────────┐    REST / SSE    ┌──────────────────────────┐
@@ -19,8 +19,8 @@ contributes no runtime dependencies to the host project.
                                                                     │ imports
                                                                     ▼
                                                   ┌────────────────────────────┐
-                                                  │ .claude/skills/            │
-                                                  │   phreeqc-auto/scripts/*   │
+                                                  │ phreeqc_auto/              │
+                                                  │   public runtime modules   │
                                                   └────────────────────────────┘
 ```
 
@@ -28,8 +28,7 @@ contributes no runtime dependencies to the host project.
 
 ## ✨ Features
 
-- **9 built-in templates** — one click to run the same L1/L2/L3
-  workflows documented in the skill references (Pb speciation,
+- **9 built-in templates** — one click to run L1/L2/L3 user examples (Pb speciation,
   calcite SI, seawater mixing, Cd adsorption, AMD neutralization,
   cation exchange, pyrite kinetics, As transport, supercritical CO₂).
 - **Parameter editor** — every template card has a "Details" button
@@ -309,7 +308,7 @@ Windows 10, Python 3.13, PHREEQC 3.8.6-17100.  The 9th template
 (`pyrite_kinetics`) reports a `failed` status because PHREEQC's
 default KINETICS numerical parameters cannot converge the test
 configuration in the stock `phreeqc.dat` — this is a PHREEQC-level
-parameter issue (add `KNOBS`; see `references/pyrite_kinetics_example.md`),
+parameter issue (add `KNOBS` and review the example's `input.pqi`),
 not a workbench issue.
 
 The custom-simulation path is additionally covered end to end: all six
@@ -336,7 +335,5 @@ against a live server.
 ## 📚 Related
 
 - `../README.md` — top-level project
-- `../.claude/skills/phreeqc-auto/SKILL.md` — the skill the workbench
-  wraps
-- `../.claude/skills/phreeqc-auto/references/*.md` — 9 verified
-  workflows that the templates mirror
+- `../phreeqc_auto/` — public runtime package used by the workbench
+- `../examples/` — the nine user-facing workflows mirrored by the templates

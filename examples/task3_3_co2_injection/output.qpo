@@ -1,5 +1,5 @@
-   Input file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\task3_3_co2_injection\input.pqi
-  Output file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\task3_3_co2_injection\output.qpo
+   Input file: examples/task3_3_co2_injection/input.pqi
+  Output file: examples/task3_3_co2_injection/output.qpo
 Database file: C:\Program Files\USGS\phreeqc-3.8.6-17100-x64\database\phreeqc.dat
 
 ------------------

@@ -19,7 +19,7 @@ PHREEQC 模拟协调脚本模板
   - 多段输出: 提取函数加 `last=True` 获取最终态数据
   - SELECTED_OUTPUT 多行数据: 用 `data[-1]` 取最后一行
 """
-import sys, os
+import os
 
 # ---- 环境设置 ----
 # 项目根目录: 从当前文件向上回溯到包含 pyproject.toml 的目录
@@ -28,16 +28,13 @@ _current = os.path.dirname(os.path.abspath(__file__))
 while _current and not os.path.isfile(os.path.join(_current, _PROJECT_MARKER)):
     _current = os.path.dirname(_current)
 PROJECT_ROOT = _current
-SCRIPTS_DIR = os.path.join(PROJECT_ROOT, ".claude", "skills", "phreeqc-auto", "scripts")
-sys.path.insert(0, SCRIPTS_DIR)
-
 WORKSPACE = os.path.dirname(os.path.abspath(__file__))
 CHARTS_DIR = os.path.join(WORKSPACE, "charts")
 os.makedirs(CHARTS_DIR, exist_ok=True)
 
-from generate_input import generate_single_simulation, generate_parameter_sweep, write_input_file
-from run_phreeqc import run_simulation, find_database
-from parse_output import (
+from phreeqc_auto.generate_input import generate_single_simulation, generate_parameter_sweep, write_input_file
+from phreeqc_auto.run_phreeqc import run_simulation, find_database
+from phreeqc_auto.parse_output import (
     parse_selected_output,
     extract_saturation_indices,
     extract_species_distribution,
@@ -45,7 +42,7 @@ from parse_output import (
     extract_ionic_strength,  # 新增: 离子强度提取
     to_json,
 )
-from visualize import plot_saturation_indices, plot_selected_output_sweep
+from phreeqc_auto.visualize import plot_saturation_indices, plot_selected_output_sweep
 
 # =========================================================================
 # Step 1: 构建参数 & 生成输入文件

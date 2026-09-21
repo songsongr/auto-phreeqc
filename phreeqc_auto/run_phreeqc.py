@@ -20,7 +20,7 @@ __all__ = [
 ]
 
 
-def find_phreeqc_exe() -> str:
+def find_phreeqc_exe(*, project_root: str | None = None) -> str:
     """Locate the PHREEQC executable.
 
     Search order:
@@ -28,7 +28,13 @@ def find_phreeqc_exe() -> str:
          to a valid file.
       2. ``phreeqc`` on ``PATH`` (via ``shutil.which``).
       3. ``phreeqc.exe`` on ``PATH``.
-      4. Windows ``.lnk`` shortcut at the project root.
+       4. Windows ``.lnk`` shortcut at ``project_root`` (or the current
+          project when it can be inferred).
+
+    Args:
+        project_root: Optional repository or project directory used only for
+            the local shortcut lookup.  Supplying it keeps discovery reliable
+            when this package is installed outside the source checkout.
 
     Returns:
         Absolute path to the PHREEQC executable.
@@ -54,7 +60,7 @@ def find_phreeqc_exe() -> str:
 
     # 4. Windows .lnk shortcut at project root
     if sys.platform.startswith("win"):
-        project_root = _find_project_root()
+        project_root = _find_project_root(project_root)
         lnk_name = "phreeqc-3.8.6-17100-x64 - 快捷方式.lnk"
         lnk_path = os.path.join(project_root, lnk_name)
         if os.path.isfile(lnk_path):
@@ -70,21 +76,26 @@ def find_phreeqc_exe() -> str:
     )
 
 
-def _find_project_root() -> str:
-    """Find the project root directory by searching upward for
-    ``CLAUDE.md``.
+def _find_project_root(project_root: str | None = None) -> str:
+    """Return an explicit project root or infer one from the working tree.
 
-    Starts from the directory containing this script and walks up at
-    most 6 levels.  Falls back to ``os.getcwd()`` if no ``CLAUDE.md``
-    is found.
+    An installed package must not infer a repository from its own
+    ``site-packages`` location.  When callers do not provide ``project_root``,
+    search upward from the current working directory for common repository
+    markers and otherwise use that directory.
 
     Returns:
         Absolute path to the project root directory.
     """
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    if project_root:
+        return os.path.abspath(project_root)
+
+    script_dir = os.path.abspath(os.getcwd())
     for _ in range(7):  # 6 levels up + current level
-        candidate = os.path.join(script_dir, "CLAUDE.md")
-        if os.path.isfile(candidate):
+        if any(
+            os.path.exists(os.path.join(script_dir, marker))
+            for marker in ("pyproject.toml", "AGENTS.md", ".git")
+        ):
             return script_dir
         parent = os.path.dirname(script_dir)
         if parent == script_dir:
@@ -137,7 +148,9 @@ def _resolve_lnk(lnk_path: str) -> str | None:
     return None
 
 
-def find_database(database_name: str = "phreeqc.dat") -> str:
+def find_database(
+    database_name: str = "phreeqc.dat", *, project_root: str | None = None
+) -> str:
     """Locate a PHREEQC database file.
 
     Search order:
@@ -152,6 +165,8 @@ def find_database(database_name: str = "phreeqc.dat") -> str:
     Args:
         database_name: Name of the database file to locate
             (default ``"phreeqc.dat"``).
+        project_root: Optional repository or project directory used for a
+            local ``database/`` lookup.
 
     Returns:
         Absolute path to the database file.
@@ -167,7 +182,7 @@ def find_database(database_name: str = "phreeqc.dat") -> str:
         if os.path.isfile(db):
             return db
 
-    project_root = _find_project_root()
+    project_root = _find_project_root(project_root)
 
     # 2. database/{name} relative to project root
     candidate = os.path.join(project_root, "database", database_name)
@@ -198,7 +213,7 @@ def find_database(database_name: str = "phreeqc.dat") -> str:
 
     # 4 & 5. Relative to PHREEQC exe directory
     try:
-        exe_dir = os.path.dirname(find_phreeqc_exe())
+        exe_dir = os.path.dirname(find_phreeqc_exe(project_root=project_root))
     except FileNotFoundError:
         exe_dir = None
 
@@ -228,6 +243,7 @@ def run_simulation(
     *,
     timeout: int = 300,
     cwd: str | None = None,
+    project_root: str | None = None,
 ) -> dict:
     """Run a PHREEQC simulation.
 
@@ -249,6 +265,8 @@ def run_simulation(
             SELECTED_OUTPUT files with relative paths will be written
             relative to this directory (default ``None``, which inherits
             the current process's working directory).
+        project_root: Optional repository or project directory forwarded to
+            executable and database discovery.
 
     Returns:
         A dict with the following keys:
@@ -269,9 +287,9 @@ def run_simulation(
     if not os.path.isfile(input_file):
         raise FileNotFoundError(f"Input file not found: {input_file}")
 
-    exe = find_phreeqc_exe()
+    exe = find_phreeqc_exe(project_root=project_root)
     if database is None:
-        database = find_database()
+        database = find_database(project_root=project_root)
 
     output_file_abs = (
         os.path.abspath(output_file) if output_file else None

@@ -37,8 +37,8 @@ more accessible through automated workflows, and your help is greatly appreciate
 
 ### Adding a new geochemical workflow
 
-1. Create a reference document in `.claude/skills/phreeqc-auto/references/`
-2. Add coordinator script or extend `generate_input.py` if new PHREEQC keywords are needed
+1. Add or improve a user-facing example under `examples/` and document its scope
+2. Add a coordinator script or extend `phreeqc_auto/generate_input.py` if new PHREEQC keywords are needed
 3. Add a test case
 4. Verify it runs end-to-end with a real PHREEQC installation
 
@@ -46,11 +46,10 @@ more accessible through automated workflows, and your help is greatly appreciate
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/auto-phreeqc.git
-cd auto-phreeqc
+git clone https://github.com/YOUR_USERNAME/auto-phreeqc-public.git
+cd auto-phreeqc-public
 
 # Install dependencies
-pip install -r requirements.txt
 pip install -e .[dev]
 
 # Set up PHREEQC
@@ -60,4 +59,4 @@ export PHREEQC_DATABASE="/path/to/phreeqc.dat"
 
 ## Questions?
 
-Open a [discussion](https://github.com/songsongr/auto-phreeqc/discussions) or issue.
+Open a [discussion](https://github.com/songsongr/auto-phreeqc-public/discussions) or issue.

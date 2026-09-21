@@ -1,8 +1,8 @@
 """
 Built-in simulation templates.
 
-Each template corresponds to one of the 9 verified reference examples
-documented in ``.claude/skills/phreeqc-auto/references/``. The
+Each template corresponds to one of the 9 user-facing reference examples
+documented under ``examples/``. The
 ``instantiate(tpl)`` step deep-copies the params so that subsequent edits
 by the user do not mutate the master template.
 """

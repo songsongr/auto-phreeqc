@@ -13,21 +13,25 @@ AMD composition (typical high-sulfide coal mine drainage):
 import json
 import os
 import sys
+from pathlib import Path
 
 # --- Path setup ---
-project_root = r"C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj"
-sys.path.insert(0, os.path.join(project_root, ".claude", "skills", "phreeqc-auto", "scripts"))
-workspace = os.path.join(project_root, "workspace", "task2_2_amd_neutralization")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from generate_input import (
+workspace = Path(__file__).resolve().parent
+(workspace / "charts").mkdir(exist_ok=True)
+
+from phreeqc_auto.generate_input import (
     generate_solution_block,
     generate_equilibrium_phases_block,
     generate_reaction_block,
     generate_selected_output_block,
     write_input_file,
 )
-from run_phreeqc import run_simulation
-from parse_output import (
+from phreeqc_auto.run_phreeqc import run_simulation
+from phreeqc_auto.parse_output import (
     parse_selected_output,
     extract_saturation_indices,
     extract_species_distribution,
@@ -35,7 +39,7 @@ from parse_output import (
     extract_ionic_strength,
     to_json,
 )
-from visualize import plot_selected_output_sweep, plot_saturation_indices
+from phreeqc_auto.visualize import plot_selected_output_sweep, plot_saturation_indices
 
 
 def build_input() -> str:

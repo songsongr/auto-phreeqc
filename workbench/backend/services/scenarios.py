@@ -17,7 +17,6 @@ import copy
 import json
 import math
 import os
-import sys
 from typing import Any
 
 
@@ -953,11 +952,7 @@ def preview_scenario(scenario: Any, *, output_file: str = "selected_output.txt")
     if not validation["valid"]:
         return validation
     try:
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-        skill_scripts = os.path.join(project_root, ".claude", "skills", "phreeqc-auto", "scripts")
-        if skill_scripts not in sys.path:
-            sys.path.insert(0, skill_scripts)
-        from generate_input import generate_single_simulation  # type: ignore
+        from phreeqc_auto.generate_input import generate_single_simulation
 
         validation["input"] = generate_single_simulation(
             validation["params"], output_file=output_file

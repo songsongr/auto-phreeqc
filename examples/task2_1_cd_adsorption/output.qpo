@@ -1,5 +1,5 @@
-   Input file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\task2_1_cd_adsorption\input.pqi
-  Output file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\task2_1_cd_adsorption\output.qpo
+   Input file: examples/task2_1_cd_adsorption/input.pqi
+  Output file: examples/task2_1_cd_adsorption/output.qpo
 Database file: C:\Program Files\USGS\phreeqc-3.8.6-17100-x64\database\phreeqc.dat
 
 ------------------

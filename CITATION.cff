@@ -5,9 +5,9 @@ authors:
   - family-names: "songsongr"
     given-names: ""
     orcid: ""
-version: 0.1.0
-date-released: 2026-06-18
-url: "https://github.com/songsongr/auto-phreeqc"
+version: 0.2.0
+date-released: 2026-09-21
+url: "https://github.com/songsongr/auto-phreeqc-public"
 preferred-citation:
   type: software
   title: "PHREEQC version 3 — A computer program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical calculations"

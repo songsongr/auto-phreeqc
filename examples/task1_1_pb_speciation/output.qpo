@@ -1,5 +1,5 @@
-   Input file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\pb_speciation_001\input.pqi
-  Output file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\pb_speciation_001\output.qpo
+   Input file: examples/task1_1_pb_speciation/input.pqi
+  Output file: examples/task1_1_pb_speciation/output.qpo
 Database file: C:\Program Files\USGS\phreeqc-3.8.6-17100-x64\database\phreeqc.dat
 
 ------------------
