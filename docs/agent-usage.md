@@ -1,180 +1,150 @@
-# 在 Claude Code 和 Codex 中使用 auto-phreeqc
+# 使用 Codex 或 Claude Code 完成 PHREEQC 计算
 
-本指南面向希望以自然语言协作完成 PHREEQC 模拟的用户。无论使用 Claude Code 还是 Codex，都应以仓库根目录为工作目录，并通过 `phreeqc_auto` Python 包完成输入生成、计算、结果解析和图表输出。
+本指南说明如何让 AI 编程助手在本仓库内完成可复核的 PHREEQC 模拟。运行计算
+仍在你的本机进行：智能体负责整理条件、生成输入、调用公开运行库、解析输出和
+解释结果。
 
-## 准备环境
+## 首次配置
 
-1. 安装 PHREEQC，并确保可执行文件和所用数据库可访问。
-2. 在仓库根目录安装 Python 包：
+在仓库根目录让 Agent 运行：
 
-   ```bash
-   python -m pip install -e .
-   ```
+```bash
+python scripts/bootstrap.py
+```
 
-3. 建议显式设置以下环境变量，避免不同电脑上的安装位置差异：
+该命令创建项目专属 `.venv/`，安装 `phreeqc_auto`，定位 PHREEQC 程序和数据库，
+写入不提交到 Git 的 `.phreeqc-auto.local.json`，并进行一次临时计算。若程序安装
+在非标准位置，传入两个路径：
 
-   ```powershell
-   $env:PHREEQC_EXE = "C:\\path\\to\\phreeqc.exe"
-   $env:PHREEQC_DATABASE = "C:\\path\\to\\phreeqc.dat"
-   ```
+```bash
+python scripts/bootstrap.py \
+  --phreeqc-exe /path/to/phreeqc \
+  --database /path/to/phreeqc.dat
+```
 
-   macOS、Linux 或 Git Bash 中可使用：
+若输出显示找不到 PHREEQC，请先通过 [USGS 官方下载页](https://water.usgs.gov/water-resources/software/PHREEQC/)
+安装它，再重新运行上述命令。不要让 Agent 静默安装系统级外部软件。
 
-   ```bash
-   export PHREEQC_EXE="/path/to/phreeqc"
-   export PHREEQC_DATABASE="/path/to/phreeqc.dat"
-   ```
+## Skill 如何被发现
 
-运行前可用 `find_phreeqc_exe()` 与 `find_database()` 验证路径。若未设置环境变量，运行库也会尝试从常见安装位置和项目位置寻找它们。
+- **Codex**：仓库根目录的 `.agents/skills/phreeqc-auto/` 是自动发现入口；
+  它会加载唯一的公开 Skill 定义 `skills/phreeqc-auto/SKILL.md`。
+- **Claude Code**：仓库中有 `.claude/skills/phreeqc-auto/` 入口，指向同一个
+  公开 Skill。
 
-## 安装随附 Skill（可选）
+这两处入口不保存实现副本，运行代码的唯一来源始终是根目录
+`phreeqc_auto/` 包。公开 Skill 和参考资料也不包含开发提示词或内部记录。
 
-仓库中的 `skills/phreeqc-auto/` 是精简的用户 Skill，不包含开发提示词或
-内部记录。若希望工具自动发现它，可将整个文件夹复制到对应工具的 Skill
-目录；也可以直接在请求中引用仓库内的 `skills/phreeqc-auto/SKILL.md`。
+## 可以直接对 Agent 说什么
 
-- **Claude Code**：复制到项目的 `.claude/skills/phreeqc-auto/`。
-- **Codex**：复制到 Codex 用户目录中的 `skills/phreeqc-auto/`，或把本仓库
-  作为工作区并在请求中引用该文件。
+首次配置：
 
-## 每次运行前先确认什么
+```text
+配置这个 auto-phreeqc 仓库并运行自检。成功后启用随附 Skill，等待我的自然语言
+计算请求；若 PHREEQC 缺失，说明官方安装步骤后继续配置。
+```
 
-无论由人还是智能体生成输入，都应先把以下信息汇总给用户确认，再开始计算：
+开始计算：
 
-1. **目标和模型类型**：物种分布、批反应、混合、表面络合、离子交换、动力学或一维运移。
-2. **溶液组成**：各组分、浓度、单位、温度、pH、pe 或氧化还原条件。
-3. **反应条件**：参与的矿物、气体、表面或交换位点；平衡或动力学假设；反应量与时间。
-4. **扫描设置**：待变化的变量、范围、步数，以及需要追踪的指标。
-5. **数据库和输出**：数据库文件、要提取的总量或饱和指数、需要的表格和图表。
-6. **默认值和不确定项**：明确标出推定值，等待用户确认或修改。
+```text
+模拟 25 °C、pH 7.2、Ca 80 mg/L、碱度 200 mg/L as CaCO3 的水样；计算方解石
+饱和指数。先说明单位、数据库和假设，等我确认后运行，并输出表格和图。
+```
 
-确认摘要时，应同时说明输入和结果将保存到哪个独立目录。不要覆盖 `examples/` 中的原始案例文件。
+## 一次计算的标准流程
 
-## 在 Claude Code 中使用
+1. **澄清目标**：形态分析、批反应、混合、表面络合、离子交换、动力学或运移。
+2. **确认条件**：组分、浓度单位、温度、pH、pe/氧化还原状态、反应相、数据库和
+   需要的指标。扫描和运移还要确认范围、步数、时间单位、单元数与输出位置。
+3. **汇总假设**：智能体必须把缺失条件和拟采用的默认值列出，等待确认后才修改模型
+   或启动计算。
+4. **运行并保留证据**：按下述 Workbench 强制交付规则创建运行记录并保存 `.pqi`、
+   原始输出、SELECTED_OUTPUT、结构化结果和图表；不修改 `examples/` 中的案例文件。
+5. **汇报解读**：报告关键数值、图表坐标与趋势、数据库名称、假设以及收敛或模型
+   限制。
 
-在仓库根目录启动 Claude Code，并让它先阅读 [`skills/phreeqc-auto/SKILL.md`](../skills/phreeqc-auto/SKILL.md) 和本指南。随后可直接描述目标，例如：
+## Workbench 强制交付
 
-> 用 25°C、pH 7.2 的 Ca–碳酸盐水样计算方解石饱和指数；先列出单位、碱度表达方式和数据库假设，等我确认后再运行，并生成结果表和图。
-
-一个完整的协作过程应当是：
-
-1. Claude Code 提取已知条件并提出必要的补充问题。
-2. 它给出包含默认值的参数摘要，等待确认。
-3. 确认后，它调用 `phreeqc_auto` 生成 `.pqi` 输入、运行 PHREEQC、解析输出，并把表格和图表写入结果目录。
-4. 它报告关键数值、文件路径、图表含义和需要注意的收敛或数据库问题。
-
-## 在 Codex 中使用
-
-将该仓库作为 Codex 工作区打开，并在请求中说明使用 [`skills/phreeqc-auto/SKILL.md`](../skills/phreeqc-auto/SKILL.md)。提示词可与 Claude Code 相同，例如：
-
-> 请使用 phreeqc-auto 完成海水与纯水等体积混合模拟。先总结配方、浓度单位、温度、pH、数据库和希望输出的离子强度；我确认后再生成输入并运行。请保留原始输出、结构化结果和图表。
-
-Codex 应遵循相同的确认、运行和汇报顺序。对参数扫描或运移模拟，要额外确认扫描范围、步数、时间单位、单元数和输出单元。
-
-## 直接调用公开运行库
-
-下面是一个可作为智能体执行目标的最小示例。它创建独立结果目录，生成输入，运行计算，解析 SELECTED_OUTPUT，并保存饱和指数图。
+所有由 agent 为用户实际运行的模拟都必须显示为一个 Workbench 运行，而不是写入根目录
+`runs/` 或临时目录。创建输入前，使用 Workbench 存储服务创建
+`workbench/workspace_workbench/<run_id>/`。`params` 必须包含用户确认的配置：模拟类型、
+组分和单位、温度、pH/pe 或气体边界、反应相、扫描/时间/单元设置、数据库和目标输出。
 
 ```python
+import sys
 from pathlib import Path
 
+PROJECT_ROOT = Path.cwd()
+sys.path.insert(0, str(PROJECT_ROOT / "workbench" / "backend"))
+from services import storage
+
+run_id = "descriptive_unique_run_id"
+storage.init(str(PROJECT_ROOT / "workbench" / "workspace_workbench"))
+storage.create_run(
+    run_id,
+    display_name="用户可读的模拟名称",
+    params={
+        "simulation_type": "batch_reaction",
+        "confirmed_conditions": {"units": "mol/kgw", "temp_c": 25.0},
+        "database": "minteq.v4.dat",
+        "requested_outputs": ["pH", "selected_output"],
+    },
+)
+run_dir = Path(storage.workspace_root()) / run_id
+```
+
+将 `input.pqi`、`output.qpo`、`selected_output.txt`（适用时）、`results.json`、图表及
+`events.log` 写入该目录；复杂算例还应保存全部子步骤输入/输出和协调脚本。结束时设置
+`succeeded` 或 `failed` 并校验 WebUI 契约：
+
+```python
+storage.set_status(run_id, "succeeded")
+visible = any(item["run_id"] == run_id for item in storage.list_runs())
+required = ["meta.json", "events.log", "input.pqi", "output.qpo", "results.json"]
+assert visible and storage.get_run(run_id) is not None
+assert all((run_dir / name).is_file() for name in required)
+```
+
+上述验证确保下次启动 Workbench 时，运行会出现在列表并能打开详情页；如果服务已经
+运行，还应请求 `/api/v1/runs/<run_id>` 和 `/api/v1/runs/<run_id>/files` 进行在线验证。
+验证失败时不得交付模拟数值，必须将状态标为 `failed` 并报告缺失项。
+
+## 运行库接口
+
+智能体和 Workbench 都应调用根目录的公开包：
+
+```python
 from phreeqc_auto import (
     generate_single_simulation,
     parse_selected_output,
     run_simulation,
     write_input_file,
 )
-from phreeqc_auto.parse_output import extract_saturation_indices
-from phreeqc_auto.visualize import plot_saturation_indices
-
-run_dir = Path("runs/calcite_si")
-charts_dir = run_dir / "charts"
-charts_dir.mkdir(parents=True, exist_ok=True)
-
-params = {
-    "solution": {
-        "id": 1,
-        "units": "mg/L",
-        "temp": 25.0,
-        "pH": 7.2,
-        "pe": 4.0,
-        "components": {
-            "Ca": 80.0,
-            "Alkalinity": "200 as CaCO3",
-        },
-    },
-    "selected_output": {
-        "pH": True,
-        "pe": True,
-        "totals": ["Ca", "C"],
-        "si": ["Calcite"],
-    },
-}
-
-input_text = generate_single_simulation(params)
-input_path = write_input_file(input_text, str(run_dir / "input.pqi"))
-
-result = run_simulation(
-    input_path,
-    output_file=str(run_dir / "output.qpo"),
-    cwd=str(run_dir),
+from phreeqc_auto.parse_output import (
+    extract_element_molalities,
+    extract_saturation_indices,
+    extract_species_distribution,
 )
-if not result["success"]:
-    raise RuntimeError(result["error"])
-
-selected = parse_selected_output(str(run_dir / "selected_output.txt"))
-output_text = Path(result["output_file"]).read_text(
-    encoding="utf-8", errors="replace"
-)
-saturation_indices = extract_saturation_indices(output_text, last=True)
-chart_path = plot_saturation_indices(
-    saturation_indices,
-    title="方解石饱和指数",
-    filepath=str(charts_dir / "saturation_indices.png"),
-)
-
-print(selected["columns"])
-print(chart_path)
 ```
 
-常用模块与输出如下：
+`run_simulation()` 会优先使用 `PHREEQC_EXE` / `PHREEQC_DATABASE`，其次使用
+`.phreeqc-auto.local.json`、`PATH` 和常见安装位置。多阶段计算提取标准输出时，
+通常应使用 `last=True` 获取最终阶段。
 
-| 目的 | 函数或模块 | 典型产物 |
-|---|---|---|
-| 生成输入 | `generate_single_simulation()`、`write_input_file()` | `input.pqi` |
-| 执行计算 | `run_simulation()` | `output.qpo`、SELECTED_OUTPUT 文件 |
-| 解析表格 | `parse_selected_output()` | 列名、数据行、行数 |
-| 提取标准输出 | `extract_saturation_indices()`、`extract_species_distribution()`、`extract_element_molalities()` | 饱和指数、物种分布、元素摩尔浓度 |
-| 单点结果图 | `plot_saturation_indices()` | 饱和指数条形图 |
-| 参数扫描图 | `plot_selected_output_sweep()` | 多曲线扫描图 |
-| 运移结果图 | `plot_breakthrough_curve()` | 突破曲线 |
+## 选择案例
 
-含有多个反应阶段或多个溶液的计算，提取标准输出时通常应传入 `last=True`，以取得最终阶段的数据。
+新问题应先从最相近的案例复制输入到结果目录，再调整条件：
 
-## 九个随附案例
+| 类型 | 起点 |
+| --- | --- |
+| Pb 形态分布 | `examples/task1_1_pb_speciation/` |
+| 方解石饱和指数 | `examples/task1_2_calcite_si/` |
+| 海水与纯水混合 | `examples/task1_3_SimpleMix/` |
+| Cd 表面吸附 | `examples/task2_1_cd_adsorption/` |
+| AMD 石灰石中和 | `examples/task2_2_amd_neutralization/` |
+| 阳离子交换 | `examples/task2_3_cation_exchange/` |
+| 黄铁矿动力学 | `examples/task3_1_pyrite_kinetics/` |
+| As 一维运移 | `examples/task3_2_as_transport/` |
+| CO₂ 注入 | `examples/task3_3_co2_injection/` |
 
-每个案例目录都包含可检查的 PHREEQC 输入和结果文件。处理新问题时，先选择最接近的案例作为起点，把输入复制到新的结果目录后再修改。
-
-| 级别 | 案例 | 目录 | 适用问题 |
-|---|---|---|---|
-| L1 | Pb 形态分布 | `examples/task1_1_pb_speciation/` | 铅在 NaCl 溶液中的物种分布 |
-| L1 | 方解石饱和指数 | `examples/task1_2_calcite_si/` | pH 对饱和指数的影响 |
-| L1 | 海水与纯水混合 | `examples/task1_3_SimpleMix/` | 稀释和 `MIX` 计算 |
-| L2 | Cd 表面吸附 | `examples/task2_1_cd_adsorption/` | 氧化物表面络合与 pH 扫描 |
-| L2 | AMD 石灰石中和 | `examples/task2_2_amd_neutralization/` | 酸性矿山排水中和与沉淀 |
-| L2 | 阳离子交换 | `examples/task2_3_cation_exchange/` | 海水入侵下的离子交换 |
-| L3 | 黄铁矿动力学 | `examples/task3_1_pyrite_kinetics/` | 矿物溶解动力学 |
-| L3 | As 一维运移 | `examples/task3_2_as_transport/` | 反应性运移与突破曲线 |
-| L3 | CO₂ 注入 | `examples/task3_3_co2_injection/` | 高压 CO₂ 条件下的多相演化 |
-
-## 结果交付清单
-
-一次完成的模拟至少应交付：
-
-- 完整的输入文件和所用数据库名称；
-- PHREEQC 原始输出与 SELECTED_OUTPUT 数据；
-- 可复核的结构化结果或表格；
-- 与问题匹配的图表，并标出坐标含义、单位和关键阈值；
-- 简明结论，包括主要数值、模型假设、异常信息和下一步可调整的参数。
-
-模型结论受输入条件和热力学数据库影响。若计算未收敛、目标元素不在数据库中，或所需物相缺少数据，应如实报告原因，并在修改条件后重新获得用户确认。
+案例能帮助确定输入结构和输出指标，但不能替代对当前样品条件的确认。

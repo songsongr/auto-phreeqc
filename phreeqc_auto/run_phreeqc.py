@@ -7,17 +7,64 @@ and to run PHREEQC simulations with subprocess.
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 
 __all__ = [
     "find_phreeqc_exe",
     "find_database",
+    "save_local_config",
     "run_simulation",
 ]
+
+
+_LOCAL_CONFIG_FILENAME = ".phreeqc-auto.local.json"
+
+
+def _local_config_path(project_root: str | None = None) -> Path:
+    """Return the repository-local, untracked PHREEQC configuration path."""
+    return Path(_find_project_root(project_root)) / _LOCAL_CONFIG_FILENAME
+
+
+def _load_local_config(project_root: str | None = None) -> dict[str, str]:
+    """Read local configuration without blocking normal discovery fallbacks."""
+    try:
+        data = json.loads(_local_config_path(project_root).read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def save_local_config(
+    phreeqc_exe: str,
+    database: str,
+    *,
+    project_root: str | None = None,
+) -> str:
+    """Persist validated PHREEQC paths for this checkout only.
+
+    The configuration file is ignored by Git. It makes a successful first-run
+    setup survive terminal restarts without requiring global environment edits.
+    """
+    exe_path = os.path.abspath(phreeqc_exe)
+    database_path = os.path.abspath(database)
+    if not os.path.isfile(exe_path):
+        raise FileNotFoundError(f"PHREEQC executable not found: {exe_path}")
+    if not os.path.isfile(database_path):
+        raise FileNotFoundError(f"PHREEQC database not found: {database_path}")
+
+    config_path = _local_config_path(project_root)
+    config_path.write_text(
+        json.dumps({"phreeqc_exe": exe_path, "database": database_path}, indent=2)
+        + "\n",
+        encoding="utf-8",
+    )
+    return str(config_path)
 
 
 def find_phreeqc_exe(*, project_root: str | None = None) -> str:
@@ -26,9 +73,10 @@ def find_phreeqc_exe(*, project_root: str | None = None) -> str:
     Search order:
       1. ``PHREEQC_EXE`` environment variable -- returned if it points
          to a valid file.
-      2. ``phreeqc`` on ``PATH`` (via ``shutil.which``).
-      3. ``phreeqc.exe`` on ``PATH``.
-       4. Windows ``.lnk`` shortcut at ``project_root`` (or the current
+      2. ``.phreeqc-auto.local.json`` in the project root.
+      3. ``phreeqc`` on ``PATH`` (via ``shutil.which``).
+      4. Windows standard installation locations.
+      5. Windows ``.lnk`` shortcut at ``project_root`` (or the current
           project when it can be inferred).
 
     Args:
@@ -50,7 +98,11 @@ def find_phreeqc_exe(*, project_root: str | None = None) -> str:
         if os.path.isfile(exe):
             return exe
 
-    # 2 & 3. PATH lookup -- prefer .exe, reject batch wrappers
+    configured_exe = _load_local_config(project_root).get("phreeqc_exe")
+    if configured_exe and os.path.isfile(configured_exe):
+        return os.path.abspath(configured_exe)
+
+    # 3. PATH lookup -- prefer .exe, reject batch wrappers
     found = shutil.which("phreeqc.exe")
     if found:
         return os.path.abspath(found)
@@ -58,7 +110,18 @@ def find_phreeqc_exe(*, project_root: str | None = None) -> str:
     if found and not found.lower().endswith(('.bat', '.cmd')):
         return os.path.abspath(found)
 
-    # 4. Windows .lnk shortcut at project root
+    # 4. Standard Windows installation locations.
+    if sys.platform.startswith("win"):
+        import glob as _glob
+        for base in ("C:\\Program Files\\USGS", "C:\\Program Files (x86)\\USGS"):
+            candidates = _glob.glob(
+                os.path.join(base, "phreeqc-*", "bin", "Release", "phreeqc.exe")
+            )
+            for candidate in candidates:
+                if os.path.isfile(candidate):
+                    return os.path.abspath(candidate)
+
+    # 5. Windows .lnk shortcut at project root
     if sys.platform.startswith("win"):
         project_root = _find_project_root(project_root)
         lnk_name = "phreeqc-3.8.6-17100-x64 - 快捷方式.lnk"
@@ -155,12 +218,13 @@ def find_database(
 
     Search order:
       1. ``PHREEQC_DATABASE`` environment variable.
-      2. ``database/{database_name}`` relative to the project root.
-      3. Standard install locations (``C:\\Program Files\\USGS\\phreeqc-*\\database\\``
+      2. ``.phreeqc-auto.local.json`` in the project root.
+      3. ``database/{database_name}`` relative to the project root.
+      4. Standard install locations (``C:\\Program Files\\USGS\\phreeqc-*\\database\\``
          on Windows, ``/usr/local/share/phreeqc/database/`` on Unix).
-      4. ``database/{database_name}`` relative to the PHREEQC executable
+      5. ``database/{database_name}`` relative to the PHREEQC executable
          directory.
-      5. ``{database_name}`` in the PHREEQC executable directory.
+      6. ``{database_name}`` in the PHREEQC executable directory.
 
     Args:
         database_name: Name of the database file to locate
@@ -184,12 +248,20 @@ def find_database(
 
     project_root = _find_project_root(project_root)
 
-    # 2. database/{name} relative to project root
+    configured_database = _load_local_config(project_root).get("database")
+    if (
+        configured_database
+        and Path(configured_database).name == database_name
+        and os.path.isfile(configured_database)
+    ):
+        return os.path.abspath(configured_database)
+
+    # 3. database/{name} relative to project root
     candidate = os.path.join(project_root, "database", database_name)
     if os.path.isfile(candidate):
         return os.path.abspath(candidate)
 
-    # 3. Standard install locations (fallback when exe not resolvable)
+    # 4. Standard install locations (fallback when exe not resolvable)
     if sys.platform.startswith("win"):
         _search = os.path.join(
             "C:\\Program Files\\USGS", "phreeqc-*", "database", database_name
@@ -211,7 +283,7 @@ def find_database(
             if os.path.isfile(candidate):
                 return os.path.abspath(candidate)
 
-    # 4 & 5. Relative to PHREEQC exe directory
+    # 5 & 6. Relative to PHREEQC exe directory
     try:
         exe_dir = os.path.dirname(find_phreeqc_exe(project_root=project_root))
     except FileNotFoundError:

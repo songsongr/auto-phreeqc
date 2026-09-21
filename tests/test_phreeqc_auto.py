@@ -14,6 +14,7 @@ import json
 import os
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from phreeqc_auto import generate_input, parse_output
 
@@ -456,6 +457,54 @@ class TestRunPhreeqc(unittest.TestCase):
                 run_phreeqc.find_database("_nonexistent_db_file_.dat")
             except FileNotFoundError:
                 raise
+
+    def test_local_config_persists_discovered_paths_per_project(self):
+        """A local setup config is used without changing process-wide variables."""
+        from phreeqc_auto import run_phreeqc
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            executable = os.path.join(tmpdir, "phreeqc.exe")
+            database = os.path.join(tmpdir, "phreeqc.dat")
+            for filepath in (executable, database):
+                with open(filepath, "w", encoding="utf-8") as file:
+                    file.write("placeholder")
+
+            config_path = run_phreeqc.save_local_config(
+                executable, database, project_root=tmpdir
+            )
+            self.assertTrue(os.path.isfile(config_path))
+
+            with patch.dict(
+                os.environ,
+                {"PHREEQC_EXE": "", "PHREEQC_DATABASE": ""},
+                clear=False,
+            ):
+                self.assertEqual(
+                    run_phreeqc.find_phreeqc_exe(project_root=tmpdir),
+                    os.path.abspath(executable),
+                )
+                self.assertEqual(
+                    run_phreeqc.find_database(project_root=tmpdir),
+                    os.path.abspath(database),
+                )
+
+    def test_local_config_does_not_override_a_requested_database_name(self):
+        """A configured phreeqc.dat cannot satisfy a different database request."""
+        from phreeqc_auto import run_phreeqc
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            executable = os.path.join(tmpdir, "phreeqc.exe")
+            database = os.path.join(tmpdir, "phreeqc.dat")
+            for filepath in (executable, database):
+                with open(filepath, "w", encoding="utf-8") as file:
+                    file.write("placeholder")
+
+            run_phreeqc.save_local_config(executable, database, project_root=tmpdir)
+            with patch.dict(os.environ, {"PHREEQC_DATABASE": ""}, clear=False):
+                with self.assertRaises(FileNotFoundError):
+                    run_phreeqc.find_database(
+                        "_unavailable_database_for_test_.dat", project_root=tmpdir
+                    )
 
 
 # ============================================================================

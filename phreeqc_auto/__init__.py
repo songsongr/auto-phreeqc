@@ -7,7 +7,12 @@ Claude/Codex skill.
 
 from .generate_input import generate_single_simulation, write_input_file
 from .parse_output import parse_selected_output
-from .run_phreeqc import find_database, find_phreeqc_exe, run_simulation
+from .run_phreeqc import (
+    find_database,
+    find_phreeqc_exe,
+    run_simulation,
+    save_local_config,
+)
 
 __all__ = [
     "find_database",
@@ -15,6 +20,7 @@ __all__ = [
     "generate_single_simulation",
     "parse_selected_output",
     "run_simulation",
+    "save_local_config",
     "write_input_file",
 ]
 

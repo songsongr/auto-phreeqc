@@ -37,8 +37,7 @@ Get-ChildItem -LiteralPath $PublicRoot -Recurse -File -Force |
         if (-not $isAllowed) {
             $unexpected += $relative
         }
-        if ($relative -eq "AGENTS.md" -or
-            $relative.StartsWith(".claude/") -or
+        if ($relative -eq ".claude/settings.local.json" -or
             $relative.StartsWith("docs-developer/") -or
             $relative.StartsWith("release/") -or
             $relative.StartsWith("examples/task3_3_co2_extended/")) {

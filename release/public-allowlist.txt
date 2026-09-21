@@ -1,8 +1,12 @@
 # User-facing files exported to the clean public repository.
 .github
+.agents/skills/phreeqc-auto/SKILL.md
+.claude/skills/phreeqc-auto/SKILL.md
 .gitignore
+AGENTS.md
 AUTHORS.md
 CHANGELOG.md
+CLAUDE.md
 CITATION.cff
 CONTRIBUTING.md
 LICENSE
@@ -21,6 +25,7 @@ examples/task3_2_as_transport
 examples/task3_3_co2_injection
 phreeqc_auto
 pyproject.toml
+scripts
 skills/phreeqc-auto/SKILL.md
 skills/phreeqc-auto/references
 start.unix.sh
