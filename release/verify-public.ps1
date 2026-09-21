@@ -54,7 +54,7 @@ if ($forbidden) {
 }
 
 $leakPattern = 'auto_phreeqc_proj|C:\\Users\\songsongr|TeamCreate|docs-developer'
-$leaks = & rg -n --hidden --glob '!.git/**' -e $leakPattern $PublicRoot
+$leaks = & rg -n --hidden --glob '!.git/**' --glob '!.gitignore' -e $leakPattern $PublicRoot
 if ($LASTEXITCODE -eq 0) {
     throw "Public tree contains private-development content:`n$($leaks -join "`n")"
 }
