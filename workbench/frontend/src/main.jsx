@@ -535,11 +535,17 @@ function EqPhasesEditor({ value, onChange }) {
   const remove = (k) => { const n = { ...obj }; delete n[k]; onChange(n); };
   return (
     <div className="kv-list-edit">
+      <div className="eq-phase-labels" aria-hidden="true">
+        <span>相名称 / Phase</span>
+        <span>目标 SI / Target SI</span>
+        <span>物质的量 / Moles</span>
+        <span></span>
+      </div>
       {entries.map(([k, v]) => (
         <div key={k} className="row" style={{ gridTemplateColumns: "1fr 100px 100px auto" }}>
-          <input value={k} onChange={(e) => rename(k, e.target.value)} />
-          <input type="number" step="any" value={(v && v[0]) || 0} onChange={(e) => set(k, 0, e.target.value)} />
-          <input type="number" step="any" value={(v && v[1]) || 0} onChange={(e) => set(k, 1, e.target.value)} />
+          <input aria-label="Phase" value={k} onChange={(e) => rename(k, e.target.value)} />
+          <input aria-label="Target saturation index" type="number" step="any" value={(v && v[0]) || 0} onChange={(e) => set(k, 0, e.target.value)} />
+          <input aria-label="Moles" type="number" step="any" value={(v && v[1]) || 0} onChange={(e) => set(k, 1, e.target.value)} />
           <button className="btn sm" onClick={() => remove(k)}>{t("tpl_remove")}</button>
         </div>
       ))}
@@ -765,6 +771,7 @@ function TemplateDetailPage({ templateId, onCreate, onBack }) {
   const [preview, setPreview] = useState(null);
   const [previewing, setPreviewing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     API.get("/api/v1/templates/" + templateId).then(d => {
@@ -833,7 +840,7 @@ function TemplateDetailPage({ templateId, onCreate, onBack }) {
     }
     setSubmitting(true);
     try {
-      const run = await API.post("/api/v1/runs", { params });
+      const run = await API.post("/api/v1/runs", { params, description });
       await API.post("/api/v1/runs/" + run.run_id + "/start");
       onCreate(run.run_id);
     } catch (e) {
@@ -856,6 +863,12 @@ function TemplateDetailPage({ templateId, onCreate, onBack }) {
       </div>
 
       <div className="card" style={{ marginBottom: 12 }}>
+        <div className="field" style={{ marginBottom: 14 }}>
+          <label>算例描述 / Description</label>
+          <textarea value={description}
+                    placeholder="记录本次模拟的目的、假设或数据来源；会保存在运行详情中。"
+                    onChange={(e) => setDescription(e.target.value)} />
+        </div>
         <div className="edit-mode-toggle">
           <button className={mode === "form" ? "active" : ""} onClick={() => switchMode("form")}>
             {t("tpl_edit_form")}
@@ -1068,6 +1081,7 @@ function CustomScenarioPage({ onCreate, onBack }) {
   const [notice, setNotice] = useState("");
   const [savedTemplates, setSavedTemplates] = useState([]);
   const [savedId, setSavedId] = useState(null);
+  const [description, setDescription] = useState("");
 
   const refreshSaved = useCallback(() => {
     API.get("/api/v1/scenarios/templates")
@@ -1208,7 +1222,7 @@ function CustomScenarioPage({ onCreate, onBack }) {
   const startRun = async () => {
     setBusy("start");
     try {
-      const run = await API.post("/api/v1/runs", { scenario });
+      const run = await API.post("/api/v1/runs", { scenario, description });
       await API.post("/api/v1/runs/" + run.run_id + "/start");
       onCreate(run.run_id);
     } catch (e) {
@@ -1290,6 +1304,15 @@ function CustomScenarioPage({ onCreate, onBack }) {
         </div>
         <div style={{ fontSize: 11, color: "var(--text-2)", marginTop: 4 }}>
           {t("custom_choose_type_help")}
+        </div>
+      </div>
+
+      <div className="card" style={{ marginBottom: 12 }}>
+        <div className="field" style={{ marginBottom: 0 }}>
+          <label>算例描述 / Description</label>
+          <textarea value={description}
+                    placeholder="记录本次模拟的目的、假设或数据来源；会保存在运行详情中。"
+                    onChange={(e) => setDescription(e.target.value)} />
         </div>
       </div>
 
@@ -1448,6 +1471,7 @@ function RunListPage({ onNew, onOpen }) {
   const [runs, setRuns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sort, setSort] = useState({ key: "updated_at", direction: "desc" });
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -1475,6 +1499,26 @@ function RunListPage({ onNew, onOpen }) {
     catch (e) { alert("Delete failed: " + e.message); }
   };
 
+  const toggleSort = (key) => {
+    setSort((current) => current.key === key
+      ? { key, direction: current.direction === "asc" ? "desc" : "asc" }
+      : { key, direction: "asc" });
+  };
+  const sortedRuns = useMemo(() => [...runs].sort((a, b) => {
+    const left = a[sort.key] ?? "";
+    const right = b[sort.key] ?? "";
+    const result = typeof left === "number" && typeof right === "number"
+      ? left - right
+      : String(left).localeCompare(String(right), undefined, { numeric: true, sensitivity: "base" });
+    return sort.direction === "asc" ? result : -result;
+  }), [runs, sort]);
+  const SortHeader = ({ column, children }) => (
+    <th className="sortable" onClick={() => toggleSort(column)}
+        aria-sort={sort.key === column ? (sort.direction === "asc" ? "ascending" : "descending") : "none"}>
+      {children}<span className="sort-indicator">{sort.key === column ? (sort.direction === "asc" ? " ▲" : " ▼") : " ↕"}</span>
+    </th>
+  );
+
   return (
     <div>
       <div className="page-header">
@@ -1492,16 +1536,16 @@ function RunListPage({ onNew, onOpen }) {
           <table className="table">
             <thead>
               <tr>
-                <th>{t("name")}</th>
-                <th>ID</th>
-                <th>{t("status")}</th>
-                <th>{t("created")}</th>
-                <th>{t("updated")}</th>
+                <SortHeader column="name">{t("name")}</SortHeader>
+                <SortHeader column="run_id">ID</SortHeader>
+                <SortHeader column="status">{t("status")}</SortHeader>
+                <SortHeader column="created_at">{t("created")}</SortHeader>
+                <SortHeader column="updated_at">{t("updated")}</SortHeader>
                 <th>{t("action")}</th>
               </tr>
             </thead>
             <tbody>
-              {runs.map(r => (
+              {sortedRuns.map(r => (
                 <tr key={r.run_id}>
                   <td>{r.name}</td>
                   <td className="mono">{r.run_id}</td>
@@ -1571,7 +1615,6 @@ function RunDetailPage({ runId, onBack }) {
   const [run, setRun] = useState(null);
   const [tab, setTab] = useState("log");
   const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
   const [selected, setSelected] = useState("");
   const [results, setResults] = useState(null);
   const [files, setFiles] = useState([]);
@@ -1610,16 +1653,13 @@ function RunDetailPage({ runId, onBack }) {
     if ((tab === "input" || (run && run.status === "failed")) && hasArtifact("input.pqi") && !input) {
       API.get("/api/v1/runs/" + runId + "/input").then(d => setInput(typeof d === "string" ? d : "")).catch(e => setError(e.message));
     }
-    if (tab === "output" && hasArtifact("output.qpo") && !output) {
-      API.get("/api/v1/runs/" + runId + "/output").then(d => setOutput(typeof d === "string" ? d : "")).catch(e => setError(e.message));
-    }
     if (tab === "selected" && hasArtifact("selected_output.txt") && !selected) {
       API.get("/api/v1/runs/" + runId + "/selected-output").then(d => setSelected(typeof d === "string" ? d : "")).catch(e => setError(e.message));
     }
     if (tab === "results" && hasArtifact("results.json") && !results) {
       API.get("/api/v1/runs/" + runId + "/results").then(d => setResults(typeof d === "string" ? JSON.parse(d) : d)).catch(e => setError(e.message));
     }
-  }, [tab, runId, input, output, selected, results, files, run]);
+  }, [tab, runId, input, selected, results, files, run]);
 
   // Stream events via long-poll: keep hitting /events until backoff
   useEffect(() => {
@@ -1687,6 +1727,7 @@ function RunDetailPage({ runId, onBack }) {
           <div className="k">Status</div><div className="v">{run.status}</div>
           <div className="k">Created</div><div className="v">{new Date(run.created_at * 1000).toLocaleString()}</div>
           <div className="k">Updated</div><div className="v">{new Date(run.updated_at * 1000).toLocaleString()}</div>
+          {run.description && <><div className="k">Description</div><div className="v description-value">{run.description}</div></>}
           {run.result_summary && <>
             <div className="k">Rows</div><div className="v">{run.result_summary.row_count || 0}</div>
             <div className="k">SI extracted</div><div className="v">{run.result_summary.has_si ? "yes" : "no"}</div>
@@ -1715,7 +1756,7 @@ function RunDetailPage({ runId, onBack }) {
 
       {tab === "log"    && <EventLog events={logEvents} />}
       {tab === "input"  && <CodeView code={input || "(not generated yet)"} />}
-      {tab === "output" && <CodeView code={output || "(not generated yet)"} />}
+      {tab === "output" && <OutputPreview runId={runId} />}
       {tab === "selected" && <CodeView code={selected || "(not generated yet)"} />}
       {tab === "results" && <ResultsView results={results} />}
       {tab === "charts"  && <ChartsView runId={runId} files={files} />}
@@ -1832,6 +1873,44 @@ function CodeView({ code }) {
   return <div className="code">{code}</div>;
 }
 
+function OutputPreview({ runId }) {
+  const [preview, setPreview] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    API.get("/api/v1/runs/" + runId + "/output-preview")
+      .then((data) => { if (!cancelled) setPreview(data); })
+      .catch((err) => { if (!cancelled) setError(err.message); });
+    return () => { cancelled = true; };
+  }, [runId]);
+  if (error) return <div className="card" style={{ borderColor: "var(--error)", color: "var(--error)" }}>{error}</div>;
+  if (!preview) return <div className="empty">Loading output preview…</div>;
+  const downloadPath = `/api/v1/runs/${encodeURIComponent(runId)}/files/output.qpo`;
+  const hasFallbackLog = preview.source === "run_log_fallback";
+  return (
+    <div>
+      {hasFallbackLog && (
+        <div className="output-preview-notice">
+          此运行的 output.qpo 为空；以下显示已保存的 PHREEQC 进程输出。
+        </div>
+      )}
+      {preview.truncated && (
+        <div className="output-preview-notice">
+          此处仅显示前 200,000 个字符（完整文件 {formatFileSize(preview.size_bytes)}），以保持页面响应。
+          <a className="btn sm" href={downloadPath} download>下载完整 PHREEQC 输出</a>
+        </div>
+      )}
+      <CodeView code={preview.text || "该运行未生成可显示的 PHREEQC 输出。请查看运行日志。"} />
+    </div>
+  );
+}
+
+function formatFileSize(bytes) {
+  if (!Number.isFinite(bytes) || bytes < 1024) return `${bytes || 0} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 function ResultsView({ results }) {
   if (!results) return <div className="empty">No results yet</div>;
   if (results.error) return <div className="card" style={{ borderColor: "var(--error)" }}>{results.error}</div>;
@@ -1877,13 +1956,38 @@ function ResultsView({ results }) {
       {results.species_distribution && (
         <div className="card">
           <div className="card-title">物种分布 (Species Distribution)</div>
-          <pre className="code">{JSON.stringify(results.species_distribution, null, 2)}</pre>
+          <SpeciesDistributionChart data={results.species_distribution} />
+          <div style={{ maxHeight: 360, overflow: "auto", marginTop: 12 }}>
+            <table className="table">
+              <thead><tr><th>Species</th><th>Molality (mol/kgw)</th><th>Activity</th></tr></thead>
+              <tbody>
+                {normalizeSpeciesDistribution(results.species_distribution).map((item, index) => (
+                  <tr key={`${item.species}-${index}`}>
+                    <td className="mono">{item.species}</td>
+                    <td className="mono">{formatScientific(item.molality)}</td>
+                    <td className="mono">{formatScientific(item.activity)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
       {results.element_molalities && (
         <div className="card">
           <div className="card-title">元素摩尔浓度 (Element Molalities)</div>
-          <pre className="code">{JSON.stringify(results.element_molalities, null, 2)}</pre>
+          <ElementMolalitiesChart data={results.element_molalities} />
+          <table className="table" style={{ marginTop: 12 }}>
+            <thead><tr><th>Element</th><th>Molality (mol/kgw)</th></tr></thead>
+            <tbody>
+              {normalizeElementMolalities(results.element_molalities).map((item) => (
+                <tr key={item.element}>
+                  <td className="mono">{item.element}</td>
+                  <td className="mono">{formatScientific(item.molality)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
@@ -1936,6 +2040,89 @@ function SatIndexChart({ data }) {
   }, [data]);
   const entries = normalizeSIList(data);
   return <div ref={ref} style={{ width: "100%", height: Math.max(180, entries.length * 22) }} />;
+}
+
+function normalizeSpeciesDistribution(data) {
+  const source = Array.isArray(data) ? data : (data && typeof data === "object" ? Object.entries(data).map(([species, value]) =>
+    typeof value === "object" ? { species, ...value } : { species, molality: value }) : []);
+  return source.map((item) => {
+    if (Array.isArray(item)) return { species: item[0], molality: Number(item[1]), activity: Number(item[2]) };
+    return {
+      species: item.species || item.name || "Unknown",
+      molality: Number(item.molality ?? item.value),
+      activity: Number(item.activity),
+    };
+  });
+}
+
+function normalizeSpeciesList(data) {
+  return normalizeSpeciesDistribution(data)
+    .filter((item) => Number.isFinite(item.molality) && item.molality > 0);
+}
+
+function normalizeElementMolalities(data) {
+  return Object.entries(data || {})
+    .map(([element, molality]) => ({ element, molality: Number(molality) }))
+    .filter((item) => Number.isFinite(item.molality))
+    .sort((a, b) => b.molality - a.molality);
+}
+
+function formatScientific(value) {
+  return Number.isFinite(value) ? value.toExponential(3) : "-";
+}
+
+function SpeciesDistributionChart({ data }) {
+  const ref = useRef(null);
+  const entries = useMemo(() => normalizeSpeciesList(data)
+    .sort((a, b) => b.molality - a.molality).slice(0, 15), [data]);
+  useEffect(() => {
+    if (!ref.current || !window.echarts) return;
+    const chart = window.echarts.init(ref.current);
+    const values = entries.map((item) => Math.log10(item.molality)).reverse();
+    const names = entries.map((item) => item.species).reverse();
+    chart.setOption({
+      tooltip: { trigger: "axis", formatter: (items) => {
+        const item = entries[entries.length - 1 - items[0].dataIndex];
+        return `${item.species}<br/>Molality: ${item.molality.toExponential(3)} mol/kgw`;
+      } },
+      grid: { left: 100, right: 28, top: 24, bottom: 35 },
+      xAxis: { type: "value", name: "log₁₀(molality)", axisLabel: { formatter: (value) => value.toFixed(0) } },
+      yAxis: { type: "category", data: names, axisLabel: { fontSize: 10 } },
+      series: [{ type: "bar", data: values, itemStyle: { color: "#2563eb" }, label: { show: true, position: "right", formatter: (p) => p.value.toFixed(2), fontSize: 10 } }]
+    });
+    const resize = () => chart.resize();
+    window.addEventListener("resize", resize);
+    return () => { window.removeEventListener("resize", resize); chart.dispose(); };
+  }, [entries]);
+  if (!entries.length) return null;
+  return <div ref={ref} style={{ width: "100%", height: Math.max(220, entries.length * 24) }} />;
+}
+
+function ElementMolalitiesChart({ data }) {
+  const ref = useRef(null);
+  const entries = useMemo(() => normalizeElementMolalities(data)
+    .filter((item) => item.molality > 0), [data]);
+  useEffect(() => {
+    if (!ref.current || !window.echarts) return;
+    const chart = window.echarts.init(ref.current);
+    const values = entries.map((item) => Math.log10(item.molality)).reverse();
+    const names = entries.map((item) => item.element).reverse();
+    chart.setOption({
+      tooltip: { trigger: "axis", formatter: (items) => {
+        const item = entries[entries.length - 1 - items[0].dataIndex];
+        return `${item.element}<br/>Molality: ${item.molality.toExponential(3)} mol/kgw`;
+      } },
+      grid: { left: 72, right: 28, top: 24, bottom: 35 },
+      xAxis: { type: "value", name: "log₁₀(molality)", axisLabel: { formatter: (value) => value.toFixed(0) } },
+      yAxis: { type: "category", data: names, axisLabel: { fontSize: 10 } },
+      series: [{ type: "bar", data: values, itemStyle: { color: "#16a34a" }, label: { show: true, position: "right", formatter: (p) => p.value.toFixed(2), fontSize: 10 } }]
+    });
+    const resize = () => chart.resize();
+    window.addEventListener("resize", resize);
+    return () => { window.removeEventListener("resize", resize); chart.dispose(); };
+  }, [entries]);
+  if (!entries.length) return null;
+  return <div ref={ref} style={{ width: "100%", height: Math.max(190, entries.length * 26) }} />;
 }
 
 function ChartsView({ runId, files }) {

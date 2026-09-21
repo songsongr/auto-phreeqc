@@ -292,6 +292,9 @@ main {
   letter-spacing: 0.3px;
   background: var(--surface-2);
 }
+.table th.sortable { cursor: pointer; user-select: none; }
+.table th.sortable:hover { color: var(--primary); }
+.sort-indicator { color: var(--primary); font-size: 10px; }
 .table tr:hover { background: var(--surface-2); }
 .table .mono { font-family: var(--mono); font-size: 12px; }
 
@@ -357,6 +360,20 @@ main {
 .code .kw { color: var(--primary); font-weight: 600; }
 .code .cmt { color: var(--text-2); font-style: italic; }
 .code .num { color: var(--warn); }
+.output-preview-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 9px 10px;
+  border: 1px solid rgba(210, 153, 34, 0.45);
+  border-radius: 6px;
+  background: rgba(210, 153, 34, 0.08);
+  color: var(--text-2);
+  font-size: 12px;
+}
+.output-preview-notice .btn { flex-shrink: 0; }
 
 /* ============== Tabs ============== */
 .tabs {
@@ -456,6 +473,7 @@ main {
 }
 .kv-list .k { color: var(--text-2); }
 .kv-list .v { font-family: var(--mono); }
+.kv-list .v.description-value { font-family: inherit; white-space: pre-wrap; line-height: 1.5; }
 
 /* ============== Modal (confirm dialog) ============== */
 .modal-backdrop {
@@ -622,6 +640,14 @@ main {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+.eq-phase-labels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 100px 100px 40px;
+  gap: 4px;
+  padding: 0 2px;
+  color: var(--text-2);
+  font-size: 11px;
 }
 .kv-list-edit .row {
   display: grid;

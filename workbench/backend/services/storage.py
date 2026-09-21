@@ -75,7 +75,9 @@ def gen_run_id() -> str:
 # CRUD
 # ---------------------------------------------------------------------------
 
-def create_run(run_id: str, *, display_name: str, params: dict) -> dict:
+def create_run(
+    run_id: str, *, display_name: str, params: dict, description: str = ""
+) -> dict:
     if not _VALID_RUN_ID.match(run_id):
         raise ValueError(
             f"Invalid run id: {run_id!r}. Use 1-64 chars [a-zA-Z0-9_-]."
@@ -89,6 +91,7 @@ def create_run(run_id: str, *, display_name: str, params: dict) -> dict:
         meta = {
             "run_id": run_id,
             "name": display_name,
+            "description": description.strip(),
             "params": params,
             "status": "created",
             "created_at": time.time(),
@@ -174,6 +177,7 @@ def list_runs() -> list[dict]:
         items.append({
             "run_id": meta.get("run_id", entry),
             "name": meta.get("name", entry),
+            "description": meta.get("description", ""),
             "status": meta.get("status", "unknown"),
             "created_at": meta.get("created_at"),
             "updated_at": meta.get("updated_at"),
@@ -248,6 +252,29 @@ def read_artifact(run_id: str, name: str) -> str | None:
             return f.read()
     except OSError:
         return None
+
+
+def read_artifact_preview(
+    run_id: str, name: str, *, max_chars: int = 200_000
+) -> tuple[str | None, int]:
+    """Read at most ``max_chars`` from a text artifact and report its byte size.
+
+    Large PHREEQC output files can contain many megabytes of transport-step
+    diagnostics.  The UI uses this bounded reader instead of rendering the
+    entire file in one browser DOM node.
+    """
+    rel = _safe_relpath(name)
+    if rel is None:
+        return None, 0
+    full = os.path.join(_run_dir(run_id), rel.replace("/", os.sep))
+    if not os.path.isfile(full):
+        return None, 0
+    try:
+        size = os.path.getsize(full)
+        with open(full, encoding="utf-8", errors="replace") as f:
+            return f.read(max_chars), size
+    except OSError:
+        return None, 0
 
 
 def read_binary_artifact(run_id: str, name: str) -> tuple[bytes | None, str]:

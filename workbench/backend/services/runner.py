@@ -253,6 +253,23 @@ def execute_run(run_id: str) -> None:
                 if storage.get_run(run_id).get("status") != "aborted":
                     storage.set_status(run_id, "failed")
                 return
+            # PHREEQC normally writes its complete report to output.qpo.  A
+            # few Windows builds instead emit it on stderr while leaving the
+            # requested output file empty. Preserve that report so the output
+            # tab remains useful and downstream parsing has a real artifact.
+            try:
+                output_is_empty = (not os.path.isfile(output_path) or
+                                   os.path.getsize(output_path) == 0)
+                fallback_report = max((stderr or "", stdout or ""), key=len)
+                if output_is_empty and fallback_report:
+                    storage.write_artifact(run_id, "output.qpo", fallback_report)
+                    _emit(
+                        run_id,
+                        "warn",
+                        "output.qpo was empty; saved PHREEQC process output as fallback",
+                    )
+            except OSError as exc:
+                _emit(run_id, "warn", f"Could not create output fallback: {exc}")
             _emit(
                 run_id, "simulation_done",
                 "PHREEQC simulation completed",

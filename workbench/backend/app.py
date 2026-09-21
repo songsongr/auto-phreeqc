@@ -555,7 +555,12 @@ def create_run(handler, params, query, body):
         )
 
     try:
-        run = storage.create_run(run_id, display_name=display_name, params=params_dict)
+        run = storage.create_run(
+            run_id,
+            display_name=display_name,
+            params=params_dict,
+            description=str(body.get("description") or ""),
+        )
     except ValueError as exc:
         return envelope_error(EC_INVALID_PARAMS, str(exc))
     return envelope_ok(run, status=201)
@@ -639,6 +644,29 @@ def get_output(handler, params, query, body):
         return envelope_error(EC_RUN_NOT_FOUND, "output.qpo not found", 404)
     body_bytes = text.encode("utf-8")
     return 200, body_bytes, "text/plain; charset=utf-8"
+
+
+@route("GET", "/api/v1/runs/{id}/output-preview")
+def get_output_preview(handler, params, query, body):
+    """Return a bounded preview so large PHREEQC outputs cannot freeze the UI."""
+    text, size = storage.read_artifact_preview(params["id"], "output.qpo")
+    if text is None:
+        return envelope_error(EC_RUN_NOT_FOUND, "output.qpo not found", 404)
+    source = "output_file"
+    if not text:
+        # Existing runs created before the runner fallback may have an empty
+        # output.qpo although their captured process output remains in meta.
+        run = storage.get_run(params["id"])
+        log_tail = (run or {}).get("log_tail") or []
+        if log_tail:
+            text = "\n".join(str(line) for line in log_tail)
+            source = "run_log_fallback"
+    return envelope_ok({
+        "text": text,
+        "size_bytes": size,
+        "truncated": size > len(text.encode("utf-8")),
+        "source": source,
+    })
 
 
 @route("GET", "/api/v1/runs/{id}/selected-output")
