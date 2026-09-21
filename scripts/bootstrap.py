@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-VENV_DIR = PROJECT_ROOT / ".auto-phreeqc-venv"
+VENV_DIR = PROJECT_ROOT / ".venv"
 VENV_PYTHON = VENV_DIR / (
     "Scripts/python.exe" if sys.platform.startswith("win") else "bin/python"
 )
@@ -41,7 +41,21 @@ def main() -> int:
 
     extras = ".[dev]" if args.with_dev else "."
     if uv:
-        if _run([uv, "pip", "install", "--python", str(VENV_PYTHON), "-e", extras]) != 0:
+        # Use the interpreter inside the project environment for installation.
+        # `uv pip` can select a different cached Python build for editable
+        # build isolation on Windows, so it may fail even when `.venv` itself
+        # is healthy.
+        has_pip = subprocess.run(
+            [str(VENV_PYTHON), "-m", "pip", "--version"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        ).returncode == 0
+        if not has_pip and _run([str(VENV_PYTHON), "-m", "ensurepip", "--upgrade"]) != 0:
+            return 1
+        if _run([str(VENV_PYTHON), "-m", "pip", "install", "--upgrade", "setuptools", "wheel"]) != 0:
+            return 1
+        if _run([str(VENV_PYTHON), "-m", "pip", "install", "--no-build-isolation", "-e", extras]) != 0:
             return 1
     else:
         # Some managed Python distributions create a virtual environment

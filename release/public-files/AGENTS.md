@@ -11,7 +11,7 @@ When the user asks to configure this repository, run:
 python scripts/bootstrap.py
 ```
 
-It creates a project-local `.auto-phreeqc-venv` environment, installs the public package,
+It creates a project-local `.venv` environment, installs the public package,
 locates PHREEQC, saves only local paths in `.phreeqc-auto.local.json`, and runs
 a disposable calculation. If PHREEQC is missing, explain that the official
 USGS installation is required and resume this command after it is installed.

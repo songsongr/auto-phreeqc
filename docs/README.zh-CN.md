@@ -47,7 +47,7 @@ cd auto-phreeqc-public
 python scripts/bootstrap.py
 ```
 
-该命令会创建 `.auto-phreeqc-venv/`、安装公开依赖、定位 PHREEQC 和数据库、把本机路径保存
+该命令会创建 `.venv/`、安装公开依赖、定位 PHREEQC 和数据库、把本机路径保存
 在不提交到 Git 的 `.phreeqc-auto.local.json` 中，并运行一次临时计算自检。
 
 若 PHREEQC 安装在非标准位置：

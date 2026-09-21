@@ -17,7 +17,6 @@ build/
 
 # Virtual environment
 .venv/
-.auto-phreeqc-venv/
 venv/
 env/
 

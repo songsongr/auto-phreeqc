@@ -58,7 +58,7 @@ cd auto-phreeqc-public
 python scripts/bootstrap.py
 ```
 
-The setup command creates `.auto-phreeqc-venv/`, installs the public package, searches for
+The setup command creates `.venv/`, installs the public package, searches for
 PHREEQC, writes discovered paths to the untracked
 `.phreeqc-auto.local.json`, and runs a disposable calculation. A successful
 health-check report means this checkout is ready to use.
