@@ -41,5 +41,5 @@ phreeqc_auto = ["**/*"]
 
 [tool.pytest.ini_options]
 testpaths = [
-    ".claude/skills/phreeqc-auto/scripts",
+    "tests",
 ]

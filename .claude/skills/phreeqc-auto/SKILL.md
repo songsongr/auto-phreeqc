@@ -100,8 +100,8 @@ You are generating PHREEQC input files for a {speciation/batch_reaction} simulat
 Parameters (confirmed by user):
 {JSON parameters}
 
-Using the script at:
-.claude/skills/phreeqc-auto/scripts/generate_input.py
+Using the public runtime module:
+phreeqc_auto/generate_input.py
 
 IMPORTANT: Work in the project root directory
 - Create workspace/<run-id>/ directory
@@ -116,11 +116,11 @@ Generate SELECTED_OUTPUT that includes all relevant -si and -totals for the simu
 You are running a PHREEQC simulation. The input file is at:
 project_root\workspace\<run-id>\input.pqi
 
-Using the script at:
-.claude/skills/phreeqc-auto/scripts/run_phreeqc.py
+Using the public runtime module:
+phreeqc_auto/run_phreeqc.py
 
 Call:
-  from run_phreeqc import run_simulation
+  from phreeqc_auto.run_phreeqc import run_simulation
   result = run_simulation(
       input_file="workspace/<run-id>/input.pqi",
       output_file="workspace/<run-id>/output.qpo",
@@ -136,8 +136,8 @@ IMPORTANT: Always pass cwd=workspace_DIR so SELECTED_OUTPUT files are written co
 You are parsing PHREEQC output files from:
 project_root\workspace\<run-id>\
 
-Using the scripts at .claude/skills/phreeqc-auto/scripts/:
-  from parse_output import parse_selected_output, extract_saturation_indices, to_json
+Using the public runtime module:
+  from phreeqc_auto.parse_output import parse_selected_output, extract_saturation_indices, to_json
 
 - Parse selected_output.txt
 - Read output.qpo for saturation indices, species distribution, element molalities
@@ -149,8 +149,8 @@ Using the scripts at .claude/skills/phreeqc-auto/scripts/:
 You are creating visualizations AND a human-readable README from parsed PHREEQC results at:
 project_root\workspace\<run-id>\results.json
 
-Using the script at .claude/skills/phreeqc-auto/scripts/:
-  from visualize import plot_saturation_indices, plot_selected_output_sweep
+Using the public runtime module:
+  from phreeqc_auto.visualize import plot_saturation_indices, plot_selected_output_sweep
 
 STEP 1 — Generate charts (save to workspace/<run-id>/charts/):
   - Load results.json
@@ -248,19 +248,18 @@ Mg²⁺:    5.67e-4 mol/kgw
 
 ## 脚本路径参考
 
-所有 Python 脚本位于项目根目录的相对路径：
+公开运行库位于项目根目录的相对路径：
 ```
-.claude/skills/phreeqc-auto/scripts/generate_input.py
-.claude/skills/phreeqc-auto/scripts/run_phreeqc.py
-.claude/skills/phreeqc-auto/scripts/parse_output.py
-.claude/skills/phreeqc-auto/scripts/visualize.py
+phreeqc_auto/generate_input.py
+phreeqc_auto/run_phreeqc.py
+phreeqc_auto/parse_output.py
+phreeqc_auto/visualize.py
 ```
 
-import 时使用：
+从项目根目录运行时直接 import：
 ```python
-import sys, os
-project_root = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(project_root, ".claude", "skills", "phreeqc-auto", "scripts"))
+from phreeqc_auto.generate_input import generate_single_simulation
+from phreeqc_auto.run_phreeqc import run_simulation
 ```
 
 ## 参考文件
@@ -345,7 +344,7 @@ params = {
 
 **典型突破曲线绘图:**
 ```python
-from visualize import plot_breakthrough_curve
+from phreeqc_auto.visualize import plot_breakthrough_curve
 bt = plot_breakthrough_curve(
     selected_output,        # dict from parse_selected_output
     time_column="step",     # X 轴

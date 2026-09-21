@@ -2,9 +2,9 @@
 
 [English](../workbench/README.md)
 
-[`phreeqc-auto`](../README.md) skill 的自托管 Web 界面。你可以在浏览器中查看 PHREEQC 模拟过程、在子进程运行时实时观察事件日志，并检查解析结果、图表和原始产物——全程无需编写任何 Python 代码。
+[`phreeqc-auto`](../README.md) 运行库的自托管 Web 界面。你可以在浏览器中查看 PHREEQC 模拟过程、在子进程运行时实时观察事件日志，并检查解析结果、图表和原始产物——全程无需编写任何 Python 代码。
 
-工作台与 phreeqc-auto 包**完全解耦**：它通过轻量的 REST + SSE 接口调用四个 skill 脚本，且不会为宿主项目引入任何运行时依赖。
+工作台通过轻量的 REST + SSE 接口调用公开的 `phreeqc_auto` 包，所有模拟都保留在本机工作区中。
 
 ```
 ┌────────────────────────────────┐    REST / SSE    ┌──────────────────────────┐
@@ -14,8 +14,8 @@
                                                                     │ 导入
                                                                     ▼
                                                   ┌────────────────────────────┐
-                                                  │ .claude/skills/            │
-                                                  │   phreeqc-auto/scripts/*   │
+                                                  │ phreeqc_auto/              │
+                                                  │   公开运行模块             │
                                                   └────────────────────────────┘
 ```
 
@@ -23,7 +23,7 @@
 
 ## ✨ 功能
 
-- **9 个内置模板**：一键运行 skill 参考文档中描述的 L1/L2/L3 工作流，覆盖 Pb 形态分布、方解石 SI、海水混合、Cd 吸附、AMD 中和、阳离子交换、黄铁矿动力学、As 运移和超临界 CO₂。
+- **9 个内置模板**：一键运行 L1/L2/L3 的用户示例，覆盖 Pb 形态分布、方解石 SI、海水混合、Cd 吸附、AMD 中和、阳离子交换、黄铁矿动力学、As 运移和超临界 CO₂。
 - **参数编辑器**：每张模板卡片都有“Details”按钮，可打开结构化表单（溶液、组分、平衡相、反应、动力学、运移、混合、气相、交换、SELECTED_OUTPUT）以及原始 JSON 视图；两者会保持同步。启动前可通过实时“PHREEQC 输入预览”查看当前参数。
 - **自定义模拟构建器**：“新建模拟”页还提供“自定义模拟”入口：先选择计算类型（水化学形态分析、相平衡、溶液混合、反应路径 / 滴定、气液平衡、反应性运移），再按需增删该类型允许的模块（SOLUTION、EQUILIBRIUM_PHASES、REACTION、MIX、GAS_PHASE、TRANSPORT、SELECTED_OUTPUT）。表单与 JSON 标签页编辑的是同一份 Scenario v1 文档；后端会逐字段校验，并在运行前展示生成的输入文件；任何场景都可以保存为可复用的自定义模板。
 - **自动发现 PHREEQC**：工作台会扫描 `C:\Program Files\USGS\phreeqc-*`、`%PATH%` 和附近的 `.lnk` 快捷方式，以查找候选可执行文件和数据库；随后运行真实的最小 PHREEQC 任务，端到端验证可用性（已正确连接二进制与数据库，通常少于 30 ms）。
@@ -219,7 +219,7 @@ workbench/workspace_workbench/
 
 ## 🧪 已测试
 
-已在 Windows 10、Python 3.13、PHREEQC 3.8.6-17100 环境下对 9 个内置模板中的 8 个（L1、L2、L3）完成端到端冒烟测试，均成功生成 `succeeded` 运行。第 9 个模板（`pyrite_kinetics`）会报告 `failed`，原因是 PHREEQC 默认的 KINETICS 数值参数无法使测试配置在原版 `phreeqc.dat` 中收敛。这是 PHREEQC 层面的参数问题（请加入 `KNOBS`；参见 `references/pyrite_kinetics_example.md`），并非工作台问题。
+已在 Windows 10、Python 3.13、PHREEQC 3.8.6-17100 环境下对 9 个内置模板中的 8 个（L1、L2、L3）完成端到端冒烟测试，均成功生成 `succeeded` 运行。第 9 个模板（`pyrite_kinetics`）会报告 `failed`，原因是 PHREEQC 默认的 KINETICS 数值参数无法使测试配置在原版 `phreeqc.dat` 中收敛。这是 PHREEQC 层面的参数问题（请加入 `KNOBS` 并检查该示例的 `input.pqi`），并非工作台问题。
 
 自定义模拟路径同样经过端到端验证：六种场景类型都能编译出有效输入并得到 `succeeded` 运行；浏览器端流程（选择类型 → 编辑模块 → 检查输入 → 预览 → 保存 / 载入模板 → 启动模拟）已在无头浏览器中对运行中的服务器完整走通。
 
@@ -237,5 +237,5 @@ workbench/workspace_workbench/
 ## 📚 相关内容
 
 - `../README.md`：顶层项目说明
-- `../.claude/skills/phreeqc-auto/SKILL.md`：工作台所封装的 skill
-- `../.claude/skills/phreeqc-auto/references/*.md`：模板所镜像的 9 个已验证工作流
+- `../phreeqc_auto/`：工作台调用的公开运行库
+- `../examples/`：模板所镜像的九个用户示例

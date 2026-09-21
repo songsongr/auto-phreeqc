@@ -28,6 +28,4 @@ jobs:
         pip install .[dev]
 
     - name: Run unit tests
-      run: |
-        pip install pytest
-        python -m pytest .claude/skills/phreeqc-auto/scripts/test_scripts.py -v --ignore-glob='*phreeqc*' || echo "Tests failed (some may require PHREEQC binary)"
+      run: python -m pytest tests -v

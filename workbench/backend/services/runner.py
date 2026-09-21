@@ -1,8 +1,8 @@
 """
 Run orchestration service.
 
-This module is the glue between the workbench HTTP layer and the four
-phreeqc-auto skill scripts:
+This module is the glue between the workbench HTTP layer and the public
+``phreeqc_auto`` runtime package:
 
     generate_input.generate_single_simulation
     run_phreeqc.run_simulation
@@ -23,40 +23,38 @@ import time
 import traceback
 from typing import Any
 
-# Re-import path setup from app.py contract
+# Make the public runtime package importable when this service is used
+# directly from a source checkout.
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 _BACKEND_DIR = os.path.dirname(_THIS_DIR)
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(_BACKEND_DIR))
-_SKILL_SCRIPTS = os.path.join(
-    _PROJECT_ROOT, ".claude", "skills", "phreeqc-auto", "scripts"
-)
-if _SKILL_SCRIPTS not in sys.path:
-    sys.path.insert(0, _SKILL_SCRIPTS)
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
 
 # Storage is importable via package init
 from services import storage  # noqa: E402
 from services.process_registry import registry  # noqa: E402
 from services import phreeqc_locator  # noqa: E402
 
-# Skill scripts (imported lazily inside functions to keep cold-start fast)
+# Runtime modules are imported lazily to keep cold-start fast.
 def _import_generate():
-    import generate_input  # type: ignore
+    from phreeqc_auto import generate_input
     return generate_input
 
 
 def _import_run_phreeqc():
-    import run_phreeqc  # type: ignore
+    from phreeqc_auto import run_phreeqc
     return run_phreeqc
 
 
 def _import_parse():
-    import parse_output  # type: ignore
+    from phreeqc_auto import parse_output
     return parse_output
 
 
 def _import_visualize():
     try:
-        import visualize  # type: ignore
+        from phreeqc_auto import visualize
         return visualize
     except Exception:  # noqa: BLE001
         return None

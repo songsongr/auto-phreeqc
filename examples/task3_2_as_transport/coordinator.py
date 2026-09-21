@@ -11,26 +11,28 @@ PHREEQC 考题 3.2: 一维反应溶质运移 (As 穿透曲线)
 
 工作流: 生成输入 -> 运行 PHREEQC -> 解析输出 -> 可视化
 """
-import sys, os
+import os
+import sys
+from pathlib import Path
 
-PROJECT_ROOT = r"C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj"
-SCRIPTS_DIR = os.path.join(PROJECT_ROOT, ".claude", "skills", "phreeqc-auto", "scripts")
-sys.path.insert(0, SCRIPTS_DIR)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-WORKSPACE = os.path.dirname(os.path.abspath(__file__))
-CHARTS_DIR = os.path.join(WORKSPACE, "charts")
-os.makedirs(CHARTS_DIR, exist_ok=True)
+WORKSPACE = Path(__file__).resolve().parent
+CHARTS_DIR = WORKSPACE / "charts"
+CHARTS_DIR.mkdir(exist_ok=True)
 
-from generate_input import generate_single_simulation, write_input_file
-from run_phreeqc import run_simulation, find_database
-from parse_output import (
+from phreeqc_auto.generate_input import generate_single_simulation, write_input_file
+from phreeqc_auto.run_phreeqc import run_simulation, find_database
+from phreeqc_auto.parse_output import (
     parse_selected_output,
     extract_saturation_indices,
     extract_element_molalities,
     extract_ionic_strength,
     to_json,
 )
-from visualize import plot_breakthrough_curve
+from phreeqc_auto.visualize import plot_breakthrough_curve
 
 # =========================================================================
 # Step 1: 构建参数 & 生成输入文件

@@ -10,19 +10,12 @@ Tests for:
 No PHREEQC executable is required to run these tests.
 """
 
-import os
-import sys
 import json
+import os
 import tempfile
 import unittest
 
-# Add the scripts directory to sys.path so we can import the modules
-_SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
-if _SCRIPTS_DIR not in sys.path:
-    sys.path.insert(0, _SCRIPTS_DIR)
-
-import generate_input
-import parse_output
+from phreeqc_auto import generate_input, parse_output
 
 
 # ============================================================================
@@ -436,7 +429,7 @@ class TestRunPhreeqc(unittest.TestCase):
 
     def test_module_imports(self):
         """run_phreeqc module can be imported and exposes expected names."""
-        import run_phreeqc
+        from phreeqc_auto import run_phreeqc
         expected = {"find_phreeqc_exe", "find_database", "run_simulation"}
         self.assertTrue(expected.issubset(set(run_phreeqc.__all__)))
 
@@ -447,7 +440,7 @@ class TestRunPhreeqc(unittest.TestCase):
         executable happens to be available on this machine the function
         should return a non-empty string; otherwise it raises.
         """
-        import run_phreeqc
+        from phreeqc_auto import run_phreeqc
         try:
             path = run_phreeqc.find_phreeqc_exe()
             self.assertIsInstance(path, str)
@@ -457,7 +450,7 @@ class TestRunPhreeqc(unittest.TestCase):
 
     def test_find_database_raises_when_not_found(self):
         """find_database raises FileNotFoundError when db cannot be located."""
-        import run_phreeqc
+        from phreeqc_auto import run_phreeqc
         with self.assertRaises(FileNotFoundError):
             try:
                 run_phreeqc.find_database("_nonexistent_db_file_.dat")
@@ -474,7 +467,7 @@ class TestVisualize(unittest.TestCase):
 
     def test_module_imports(self):
         """visualize module can be imported and exposes expected names."""
-        import visualize
+        from phreeqc_auto import visualize
         expected = {"plot_saturation_indices", "plot_selected_output_sweep", "plot_multi_panel"}
         self.assertTrue(expected.issubset(set(visualize.__all__)))
 

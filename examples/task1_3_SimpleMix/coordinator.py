@@ -15,19 +15,20 @@ Input: 将 500mL 的海水（标准组分）与 500mL 的纯水混合，
 import json
 import os
 import sys
+from pathlib import Path
 
 # ---- 环境设置 ----
-PROJECT_ROOT = r"C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj"
-SCRIPTS_DIR = os.path.join(PROJECT_ROOT, ".claude", "skills", "phreeqc-auto", "scripts")
-sys.path.insert(0, SCRIPTS_DIR)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-WORKSPACE = os.path.dirname(os.path.abspath(__file__))
-CHARTS_DIR = os.path.join(WORKSPACE, "charts")
-os.makedirs(CHARTS_DIR, exist_ok=True)
+WORKSPACE = Path(__file__).resolve().parent
+CHARTS_DIR = WORKSPACE / "charts"
+CHARTS_DIR.mkdir(exist_ok=True)
 
-from generate_input import generate_single_simulation, write_input_file
-from run_phreeqc import run_simulation, find_database
-from parse_output import (
+from phreeqc_auto.generate_input import generate_single_simulation, write_input_file
+from phreeqc_auto.run_phreeqc import run_simulation, find_database
+from phreeqc_auto.parse_output import (
     parse_selected_output,
     extract_saturation_indices,
     extract_species_distribution,
@@ -35,7 +36,7 @@ from parse_output import (
     extract_ionic_strength,
     to_json,
 )
-from visualize import plot_multi_panel, plot_saturation_indices
+from phreeqc_auto.visualize import plot_multi_panel, plot_saturation_indices
 
 
 # ---- 海水组分 (基于 ex1, 不含 U) ----

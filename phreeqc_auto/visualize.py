@@ -99,7 +99,7 @@ def plot_selected_output_sweep(
 
     Args:
         selected_output: Dict from
-            :func:`~scripts.parse_output.parse_selected_output`. Must
+            :func:`~phreeqc_auto.parse_output.parse_selected_output`. Must
             contain ``"columns"`` (list of str) and ``"data"`` (list of
             list of float) keys.
         x_column: Name of the column to use for the X axis.
@@ -257,7 +257,7 @@ def plot_breakthrough_curve(
 
     Args:
         selected_output: Dict from
-            :func:`~scripts.parse_output.parse_selected_output`. Must
+            :func:`~phreeqc_auto.parse_output.parse_selected_output`. Must
             contain ``"columns"`` and ``"data"`` keys.
         time_column: Name of the column to use for the X axis
             (default ``"step"``).  Common alternatives: ``"time"``.

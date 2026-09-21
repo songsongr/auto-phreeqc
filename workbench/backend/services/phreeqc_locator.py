@@ -44,19 +44,15 @@ import time
 from typing import Any
 
 # ---------------------------------------------------------------------------
-# Path setup -- mirror the convention used by runner.py so that
-# ``import run_phreeqc`` resolves to the same upstream module.
+# Import the public runtime package from a source checkout when needed.
 # ---------------------------------------------------------------------------
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 _BACKEND_DIR = os.path.dirname(_THIS_DIR)
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(_BACKEND_DIR))
-_SKILL_SCRIPTS = os.path.join(
-    _PROJECT_ROOT, ".claude", "skills", "phreeqc-auto", "scripts"
-)
-if _SKILL_SCRIPTS not in sys.path:
-    sys.path.insert(0, _SKILL_SCRIPTS)
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
 
-import run_phreeqc  # noqa: E402  (after sys.path manipulation)
+from phreeqc_auto import run_phreeqc  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -239,10 +235,7 @@ def _scan_lnk_shortcuts() -> list[str]:
     """Pick up ``phreeqc*.lnk`` files near the project root."""
     candidates: list[str] = []
     bases: list[str] = []
-    project_root = os.path.dirname(_SKILL_SCRIPTS)  # .claude/skills/phreeqc-auto
-    bases.append(os.path.dirname(project_root))     # .claude/skills
-    bases.append(os.path.dirname(bases[-1]))        # .claude
-    bases.append(os.path.dirname(bases[-1]))        # repo root
+    bases.append(_PROJECT_ROOT)
     for base in bases:
         if not os.path.isdir(base):
             continue
@@ -578,7 +571,7 @@ _active_db_cache: tuple[float, str | None] | None = None
 
 def _active_exe_lookup() -> str:
     """Resolve the PHREEQC executable through the upstream helper."""
-    return run_phreeqc.find_phreeqc_exe()
+    return run_phreeqc.find_phreeqc_exe(project_root=_PROJECT_ROOT)
 
 
 def find_phreeqc_exe() -> str:
@@ -602,7 +595,7 @@ def find_phreeqc_exe() -> str:
     try:
         result = _active_exe_lookup()
     except FileNotFoundError:
-        # The Skill only checks environment variables, PATH, and one
+        # The public runtime only checks environment variables, PATH, and one
         # shortcut. The Workbench additionally scans standard USGS install
         # directories, so promote the first usable discovery result here.
         result = next(
@@ -624,7 +617,7 @@ def find_database(name: str = "phreeqc.dat") -> str:
             raise FileNotFoundError("(cached) PHREEQC database not found")
         return _active_db_cache[1]
     try:
-        result = run_phreeqc.find_database(name)
+        result = run_phreeqc.find_database(name, project_root=_PROJECT_ROOT)
     except FileNotFoundError:
         result = next(
             (item["path"] for item in discover_databases()

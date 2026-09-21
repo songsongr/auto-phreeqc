@@ -9,27 +9,32 @@ Output: Calcite SI at pH=7.2 + SI vs pH sweep (6.0-8.5)
   - 电荷平衡: Ca2+ (4.0 meq/L) vs Alkalinity (4.0 meq/L) -> 完美平衡
   - pH 敏感性: 方解石 SI 随 pH 变化趋势
 """
-import sys, os, re, copy, json
+import copy
+import json
+import os
+import re
+import sys
+from pathlib import Path
 
 # ---- Environment ----
-PROJECT_ROOT = r"C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj"
-SCRIPTS_DIR = os.path.join(PROJECT_ROOT, ".claude", "skills", "phreeqc-auto", "scripts")
-sys.path.insert(0, SCRIPTS_DIR)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-WORKSPACE = os.path.dirname(os.path.abspath(__file__))
-CHARTS_DIR = os.path.join(WORKSPACE, "charts")
-os.makedirs(CHARTS_DIR, exist_ok=True)
+WORKSPACE = Path(__file__).resolve().parent
+CHARTS_DIR = WORKSPACE / "charts"
+CHARTS_DIR.mkdir(exist_ok=True)
 
-from generate_input import generate_single_simulation, generate_parameter_sweep, write_input_file
-from run_phreeqc import run_simulation, find_database
-from parse_output import (
+from phreeqc_auto.generate_input import generate_single_simulation, generate_parameter_sweep, write_input_file
+from phreeqc_auto.run_phreeqc import run_simulation, find_database
+from phreeqc_auto.parse_output import (
     parse_selected_output,
     extract_saturation_indices,
     extract_species_distribution,
     extract_element_molalities,
     to_json,
 )
-from visualize import plot_saturation_indices, plot_selected_output_sweep
+from phreeqc_auto.visualize import plot_saturation_indices, plot_selected_output_sweep
 
 def fix_alkalinity(text):
     """Post-process: Alkalinity 200 -> Alkalinity 200 as CaCO3.

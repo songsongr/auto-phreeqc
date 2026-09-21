@@ -33,13 +33,10 @@ from socketserver import ThreadingMixIn
 from typing import Any, Callable
 from urllib.parse import parse_qs, urlparse
 
-# Make the skill scripts importable as a library
+# Make the public runtime package importable from a source checkout.
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-SKILL_SCRIPTS = os.path.join(
-    PROJECT_ROOT, ".claude", "skills", "phreeqc-auto", "scripts"
-)
-if SKILL_SCRIPTS not in sys.path:
-    sys.path.insert(0, SKILL_SCRIPTS)
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 # Make local workbench modules importable
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -52,6 +49,7 @@ from services import custom_templates  # noqa: E402
 from services import phreeqc_locator as phreeqc_locator  # noqa: E402
 from services.process_registry import registry  # noqa: E402
 from services import importer as run_importer  # noqa: E402
+from phreeqc_auto.generate_input import generate_single_simulation  # noqa: E402
 
 
 API_PREFIX = "/api/v1"
@@ -724,7 +722,6 @@ def preview_input(handler, params, query, body):
     if not isinstance(body, dict) or "params" not in body:
         return envelope_error(EC_INVALID_PARAMS, "Body must contain 'params'")
     try:
-        from generate_input import generate_single_simulation  # type: ignore
         text = generate_single_simulation(body["params"], output_file="selected_output.txt")
     except Exception as exc:  # noqa: BLE001
         return envelope_error(EC_INVALID_PARAMS, f"Failed to generate input: {exc}")

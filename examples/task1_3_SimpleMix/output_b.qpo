@@ -1,5 +1,5 @@
-   Input file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\ex13\input_b.pqi
-  Output file: C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj\workspace\ex13\output_b.qpo
+   Input file: examples/task1_3_SimpleMix/input_b.pqi
+  Output file: examples/task1_3_SimpleMix/output_b.qpo
 Database file: C:\Program Files\USGS\phreeqc-3.8.6-17100-x64\database\phreeqc.dat
 
 ------------------

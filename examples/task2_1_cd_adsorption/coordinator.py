@@ -6,12 +6,16 @@ REACTION 滴定法: 从 pH=3 开始逐步加 NaOH, 表面始终参与平衡
 25mL 溶液, Cd 100 ug/L, NaNO3 0.01 M
 """
 
-import sys, os, json
+import json
+import os
+import sys
+from pathlib import Path
 
-project_root = r"C:\Users\songsongr\Desktop\claudecodel_proj\auto_phreeqc_proj"
-sys.path.insert(0, os.path.join(project_root, ".claude", "skills", "phreeqc-auto", "scripts"))
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from generate_input import (
+from phreeqc_auto.generate_input import (
     generate_surface_master_species_block,
     generate_surface_species_block,
     generate_surface_block,
@@ -20,12 +24,12 @@ from generate_input import (
     generate_selected_output_block,
     write_input_file,
 )
-from run_phreeqc import run_simulation
-from parse_output import parse_selected_output
+from phreeqc_auto.run_phreeqc import run_simulation
+from phreeqc_auto.parse_output import parse_selected_output
 
-WORKSPACE = os.path.join(project_root, "workspace", "task2_1_cd_adsorption")
-CHARTS = os.path.join(WORKSPACE, "charts")
-os.makedirs(CHARTS, exist_ok=True)
+WORKSPACE = Path(__file__).resolve().parent
+CHARTS = WORKSPACE / "charts"
+CHARTS.mkdir(exist_ok=True)
 
 # ── Build input: one simulation with REACTION sweep ─────────────────────
 blocks = []
