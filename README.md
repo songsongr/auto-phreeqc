@@ -1,4 +1,4 @@
-# phreeqc-auto 🔬
+# auto-phreeqc 🔬
 
 [简体中文](docs/README.zh-CN.md)
 
@@ -45,7 +45,8 @@ Codex and Claude Code are listed below as examples.
 ### Prerequisites
 
 1. **PHREEQC** installed (v3.8.6+)
-   - Download from [USGS PHREEQC website](https://www.usgs.gov/software/phreeqc-geochemical-modeling)
+   - Download from [USGS PHREEQC website](https://www.usgs.gov/software/phreeqc-version-3), 
+   - 64-bit Batch Versions of PHREEQC is recommended. The 32-bit GUI Version has not yet passed the adaptation process.
    - Set `PHREEQC_EXE` environment variable to your executable path
 
 2. **Python** 3.9+ with required packages:
@@ -70,6 +71,7 @@ export PHREEQC_DATABASE="/path/to/phreeqc.dat"
 **From an agent terminal (for example, Codex or Claude Code):**
 
 ```bash
+# Open the Claude Code CLI from the root directory of this repository, or open this repository as a workspace in a desktop application such as Codex to start running simulations using natural language:
 # Simply describe your simulation:
 # "Simulate calcite saturation index in seawater at pH 7-9"
 ```

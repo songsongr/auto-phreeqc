@@ -41,7 +41,8 @@
 ### 前置条件
 
 1. 安装 **PHREEQC**（v3.8.6+）
-   - 从 [USGS PHREEQC 网站](https://www.usgs.gov/software/phreeqc-geochemical-modeling)下载
+   - 从 [USGS PHREEQC 网站](https://www.usgs.gov/software/phreeqc-version-3)下载
+   - 64 位批处理版本的 PHREEQC 推荐使用。32 位 GUI 版本尚未通过适配过程。
    - 将 `PHREEQC_EXE` 环境变量设为可执行文件路径
 
 2. 安装 **Python** 3.9+ 及所需依赖：
@@ -66,6 +67,7 @@ export PHREEQC_DATABASE="/path/to/phreeqc.dat"
 **在智能体终端中使用（例如 Codex 或 Claude Code）：**
 
 ```bash
+# 从本仓库的根目录打开 claude code cli，或在 codex 等桌面端中直接将本仓库作为工作区即可开始使用自然语言进行模拟：
 # 直接描述你的模拟需求：
 # “模拟海水在 pH 7-9 范围内的方解石饱和指数”
 ```
