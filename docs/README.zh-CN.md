@@ -45,7 +45,7 @@ Skill；本机配置和开发记录不会写入公开分发内容。
 ```bash
 git clone https://github.com/songsongr/auto-phreeqc-public.git
 cd auto-phreeqc-public
-python scripts/bootstrap.py
+python doctor/bootstrap.py
 ```
 
 该命令会创建 `.venv/`、安装公开依赖、定位 PHREEQC 和数据库、把本机路径保存
@@ -54,7 +54,7 @@ python scripts/bootstrap.py
 若 PHREEQC 安装在非标准位置：
 
 ```bash
-python scripts/bootstrap.py \
+python doctor/bootstrap.py \
   --phreeqc-exe /path/to/phreeqc \
   --database /path/to/phreeqc.dat
 ```

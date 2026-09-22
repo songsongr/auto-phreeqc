@@ -9,7 +9,7 @@
 在仓库根目录让 Agent 运行：
 
 ```bash
-python scripts/bootstrap.py
+python doctor/bootstrap.py
 ```
 
 该命令创建项目专属 `.venv/`，安装 `phreeqc_auto`，定位 PHREEQC 程序和数据库，
@@ -17,7 +17,7 @@ python scripts/bootstrap.py
 在非标准位置，传入两个路径：
 
 ```bash
-python scripts/bootstrap.py \
+python doctor/bootstrap.py \
   --phreeqc-exe /path/to/phreeqc \
   --database /path/to/phreeqc.dat
 ```

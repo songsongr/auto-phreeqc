@@ -24,7 +24,7 @@ examples/task3_2_as_transport
 examples/task3_3_co2_injection
 phreeqc_auto
 pyproject.toml
-scripts
+doctor
 skills/phreeqc-auto/SKILL.md
 skills/phreeqc-auto/references
 start.unix.sh

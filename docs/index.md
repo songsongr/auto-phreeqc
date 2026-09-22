@@ -26,6 +26,7 @@ export PHREEQC_DATABASE="/path/to/phreeqc.dat"
 - [Workbench 中文文档](https://github.com/songsongr/auto-phreeqc-public/blob/main/docs/workbench-README.zh-CN.md)
 - [English README](https://github.com/songsongr/auto-phreeqc-public/blob/main/README.md)
 - [Workbench (English)](https://github.com/songsongr/auto-phreeqc-public/blob/main/workbench/README.md)
+- [PHREEQC v3 官方 HTML 手册知识库](phreeqc-guide/README.md)
 - [Contributing](https://github.com/songsongr/auto-phreeqc-public/blob/main/CONTRIBUTING.md)
 - [Changelog](https://github.com/songsongr/auto-phreeqc-public/blob/main/CHANGELOG.md)
 

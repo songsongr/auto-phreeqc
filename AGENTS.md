@@ -22,7 +22,7 @@
 | `workbench/frontend/` | Workbench 用户界面；改动后须做页面回归 |
 | `.agents/skills/phreeqc-auto/` | Codex 项目层 Skill、脚本和参考资料 |
 | `skills/phreeqc-auto/` | 受版本控制的 Skill 分发副本 |
-| `scripts/` | 环境初始化、依赖自检和维护脚本 |
+| `doctor/` | 环境初始化、依赖自检和维护脚本 |
 | `tests/` | 自动化测试 |
 | `examples/` | 可重复的 PHREEQC 示例输入和结果样例 |
 | `docs/` | 面向用户的公开文档 |
@@ -32,8 +32,8 @@
 ## 3. 本地环境
 
 - 项目只允许使用根目录唯一的 `.venv`；不得创建 `.auto-phreeqc-venv` 或其他项目级虚拟环境。
-- 首次配置或环境损坏时运行 `python scripts/bootstrap.py`；该脚本负责创建/修复 `.venv`、安装项目和执行自检。
-- 运行前用 `python scripts/doctor.py --run` 检查 PHREEQC 可执行文件、数据库和最小计算。
+- 首次配置或环境损坏时运行 `python doctor/bootstrap.py`；该脚本负责创建/修复 `.venv`、安装项目和执行自检。
+- 运行前用 `python doctor/doctor.py --run` 检查 PHREEQC 可执行文件、数据库和最小计算。
 - 本机路径写入 `.phreeqc-auto.local.json`；该文件只保存本机配置，不得提交或写入公开文档。
 - Windows 终端使用 UTF-8：必要时设置 `PYTHONIOENCODING=utf-8`。
 
@@ -59,10 +59,10 @@
 
 ```powershell
 # 安装项目和开发依赖
-python scripts/bootstrap.py --with-dev
+python doctor/bootstrap.py --with-dev
 
 # 环境和 PHREEQC 最小回归
-python scripts/doctor.py --run
+python doctor/doctor.py --run
 
 # Python 测试
 python -m pytest -q
@@ -91,7 +91,7 @@ python -m pytest -q
 
 - [ ] 改动范围与用户请求一致，未误改未提交文件。
 - [ ] 唯一 `.venv`、本机配置和生成产物未进入提交。
-- [ ] 相关测试及 `doctor.py --run` 通过，或已明确记录阻塞原因。
+- [ ] 相关测试及 `doctor/doctor.py --run` 通过，或已明确记录阻塞原因。
 - [ ] Workbench 运行契约（如适用）已验证。
 - [ ] 用户文档、开发文档和公开导出边界保持正确。
 - [ ] `git diff --check` 通过，提交内容可解释、可回滚。

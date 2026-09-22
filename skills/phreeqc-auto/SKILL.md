@@ -16,7 +16,19 @@ description: 使用 phreeqc_auto 包生成、运行、解析和可视化 PHREEQC
 
 ## 执行方式
 
-将每次模拟写入一个独立结果目录，保留输入、原始输出、SELECTED_OUTPUT、结构化结果和图表。不要修改 `examples/` 中的源文件。
+**硬性要求：每次由 agent 实际运行的模拟都必须创建为 Workbench 运行。** 在生成
+输入前，用 Workbench `storage.create_run()` 创建
+`workbench/workspace_workbench/<run_id>/`；该目录是唯一的最终结果目录，不能使用
+`runs/`、项目根目录或 `examples/`。`meta.json` 的 `params` 必须完整记录用户确认的
+配置（组分和单位、温度、pH/pe/气体边界、反应相、扫描设置、数据库和目标输出）。
+
+按 Workbench 契约保留 `input.pqi`、`output.qpo`、`selected_output.txt`（适用时）、
+`results.json`、`charts/`、`meta.json` 和 `events.log`；多阶段模拟还须保留每个子步骤的
+输入、输出和协调脚本。完成前用 `storage.list_runs()`、`storage.get_run()` 和规范产物
+存在性验证该运行可被 WebUI 列表和详情页读取；服务运行时还验证
+`/api/v1/runs/<run_id>` 与 `/files`。未通过验证时，将状态设为失败且不要交付数值结论。
+完整代码模板见 `docs/agent-usage.md` 的“Workbench 强制交付”。不要修改
+`examples/` 中的源文件。
 
 按需查阅 Skill 随附的公开参考资料：
 

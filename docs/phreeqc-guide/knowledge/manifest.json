@@ -1,0 +1,42 @@
+{
+  "schema_version": "0.2",
+  "generated": "2026-09-22",
+  "source": "https://water.usgs.gov/water-resources/software/PHREEQC/documentation/phreeqc3-html/phreeqc3.htm",
+  "parser": "doctor/import_phreeqc_guide.py",
+  "documents": 110,
+  "chunks": 774,
+  "symbols": 457,
+  "relations": 381,
+  "tables": 62,
+  "equations": 244,
+  "chunk_types": {
+    "keyword": 96,
+    "phreeqc_input": 110,
+    "explanation": 79,
+    "note": 84,
+    "concept": 119,
+    "related_keywords": 69,
+    "example_context": 46,
+    "table": 5,
+    "tutorial": 166
+  },
+  "failures": [
+    {
+      "url": "https://water.usgs.gov/water-resources/software/PHREEQC/documentation/phreeqc3-html/examples.htm",
+      "error": "HTTP Error 404: Not Found"
+    }
+  ],
+  "fts5_available": true,
+  "agent_entrypoint": "index.sqlite",
+  "auxiliary_indexes": [
+    "symbols.json",
+    "relations.jsonl",
+    "tables.jsonl",
+    "equations.jsonl"
+  ],
+  "archive": {
+    "raw_html": "source/html/",
+    "parsed_pages": "parsed/pages/",
+    "full_markdown": "parsed/full.md"
+  }
+}

@@ -8,7 +8,7 @@ or recreate private development notes, prompts, or local machine settings.
 When the user asks to configure this repository, run:
 
 ```bash
-python scripts/bootstrap.py
+python doctor/bootstrap.py
 ```
 
 It creates a project-local `.venv` environment, installs the public package,

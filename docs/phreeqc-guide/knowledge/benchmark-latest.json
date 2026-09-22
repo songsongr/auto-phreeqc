@@ -1,0 +1,299 @@
+{
+  "database": "C:\\Users\\songsongr\\Desktop\\claudecodel_proj\\auto_phreeqc_proj\\docs\\phreeqc-guide\\knowledge\\index.sqlite",
+  "limit": 5,
+  "symbol": {
+    "top1_accuracy": 1.0,
+    "cases": [
+      {
+        "query": "SOLUTION",
+        "expected": "SOLUTION",
+        "top": "SOLUTION",
+        "hit": true,
+        "returned": [
+          "SOLUTION",
+          "-solution"
+        ],
+        "latency_ms": 2.714
+      },
+      {
+        "query": "溶液",
+        "expected": "SOLUTION",
+        "top": "SOLUTION",
+        "hit": true,
+        "returned": [
+          "SOLUTION"
+        ],
+        "latency_ms": 1.903
+      },
+      {
+        "query": "-pH",
+        "expected": "-pH",
+        "top": "-pH",
+        "hit": true,
+        "returned": [
+          "-pH"
+        ],
+        "latency_ms": 1.75
+      },
+      {
+        "query": "GAS_PHASE",
+        "expected": "GAS_PHASE",
+        "top": "GAS_PHASE",
+        "hit": true,
+        "returned": [
+          "GAS_PHASE",
+          "-gas_phase"
+        ],
+        "latency_ms": 1.777
+      },
+      {
+        "query": "表面络合",
+        "expected": "SURFACE",
+        "top": "SURFACE",
+        "hit": true,
+        "returned": [
+          "SURFACE"
+        ],
+        "latency_ms": 1.747
+      }
+    ]
+  },
+  "search": {
+    "hit_rate": 1.0,
+    "mean_precision_at_k": 0.854,
+    "mean_recall_at_k": 0.617,
+    "cases": [
+      {
+        "query": "surface complexation",
+        "expected_docs": [
+          "phreeqc3-2",
+          "phreeqc3-70",
+          "phreeqc3-76"
+        ],
+        "returned_docs": [
+          "phreeqc3-2",
+          "phreeqc3-70",
+          "phreeqc3-76",
+          "phreeqc3-53"
+        ],
+        "hit": true,
+        "precision_at_k": 0.75,
+        "recall_at_k": 1.0,
+        "latency_ms": 1.895
+      },
+      {
+        "query": "inverse modeling",
+        "expected_docs": [
+          "phreeqc3-2",
+          "phreeqc3-20",
+          "phreeqc3-4",
+          "phreeqc3-78",
+          "phreeqc3-79",
+          "phreeqc3-80"
+        ],
+        "returned_docs": [
+          "phreeqc3-20",
+          "phreeqc3-5",
+          "phreeqc3-2"
+        ],
+        "hit": true,
+        "precision_at_k": 0.667,
+        "recall_at_k": 0.333,
+        "latency_ms": 1.795
+      },
+      {
+        "query": "gas phase",
+        "expected_docs": [
+          "phreeqc3-17",
+          "phreeqc3-30",
+          "phreeqc3-5",
+          "phreeqc3-69",
+          "phreeqc3-84",
+          "phreeqc3-91"
+        ],
+        "returned_docs": [
+          "phreeqc3-5",
+          "phreeqc3-17"
+        ],
+        "hit": true,
+        "precision_at_k": 1.0,
+        "recall_at_k": 0.333,
+        "latency_ms": 2.779
+      },
+      {
+        "query": "activity coefficient",
+        "expected_docs": [
+          "mean_gammas",
+          "phreeqc3-16",
+          "phreeqc3-2",
+          "phreeqc3-26",
+          "phreeqc3-37"
+        ],
+        "returned_docs": [
+          "phreeqc3-37",
+          "phreeqc3-16",
+          "phreeqc3-26",
+          "mean_gammas"
+        ],
+        "hit": true,
+        "precision_at_k": 1.0,
+        "recall_at_k": 0.8,
+        "latency_ms": 1.549
+      }
+    ]
+  },
+  "input": {
+    "hit_rate": 1.0,
+    "cases": [
+      {
+        "query": "GAS_PHASE",
+        "expected": "GAS_PHASE",
+        "returned": [
+          "phreeqc3-17::example-data-block-3",
+          "phreeqc3-17::example-data-block-2",
+          "phreeqc3-17::example-data-block-1",
+          "phreeqc3-30::example-data-block",
+          "phreeqc3-91::example-data-block"
+        ],
+        "hit": true,
+        "latency_ms": 1.252
+      },
+      {
+        "query": "TRANSPORT",
+        "expected": "TRANSPORT",
+        "returned": [
+          "phreeqc3-56::example-data-block",
+          "phreeqc3-73::example-11-transport-and-cation-exchange",
+          "phreeqc3-75::stagnant-zone-calculation-using-the-first-order-exchange-approximation-with-implicit-mixing-factors",
+          "phreeqc3-77::input-file",
+          "phreeqc3-75::stagnant-zone-calculation-using-the-first-order-exchange-approximation-with-explicit-mixing-factors"
+        ],
+        "hit": true,
+        "latency_ms": 2.144
+      },
+      {
+        "query": "-punch_cells",
+        "expected": "-punch_cells",
+        "returned": [
+          "phreeqc3-6::example-data-block",
+          "phreeqc3-56::example-data-block",
+          "phreeqc3-73::example-11-transport-and-cation-exchange",
+          "phreeqc3-75::stagnant-zone-calculation-using-the-first-order-exchange-approximation-with-implicit-mixing-factors",
+          "phreeqc3-5::conventions-for-data-input"
+        ],
+        "hit": true,
+        "latency_ms": 0.722
+      },
+      {
+        "query": "SURFACE",
+        "expected": "SURFACE",
+        "returned": [
+          "phreeqc3-52::example-data-block-1",
+          "phreeqc3-52::example-data-block-2",
+          "phreeqc3-34::example-data-block",
+          "phreeqc3-53::example-data-block",
+          "phreeqc3-54::example-data-block-1"
+        ],
+        "hit": true,
+        "latency_ms": 1.583
+      }
+    ]
+  },
+  "examples": {
+    "cases": [
+      {
+        "simulation_type": "transport",
+        "count": 5,
+        "all_tagged_correctly": true,
+        "examples": [
+          "9",
+          "11",
+          "12",
+          "13",
+          "14"
+        ],
+        "latency_ms": 1.046
+      },
+      {
+        "simulation_type": "inverse_modeling",
+        "count": 3,
+        "all_tagged_correctly": true,
+        "examples": [
+          "16",
+          "17",
+          "18"
+        ],
+        "latency_ms": 0.302
+      },
+      {
+        "simulation_type": "kinetics",
+        "count": 3,
+        "all_tagged_correctly": true,
+        "examples": [
+          "6",
+          "9",
+          "15"
+        ],
+        "latency_ms": 0.226
+      },
+      {
+        "simulation_type": "surface_complexation",
+        "count": 5,
+        "all_tagged_correctly": true,
+        "examples": [
+          "8",
+          "14",
+          "15",
+          "19",
+          "21"
+        ],
+        "latency_ms": 0.22
+      },
+      {
+        "simulation_type": "gas_phase",
+        "count": 3,
+        "all_tagged_correctly": true,
+        "examples": [
+          "7",
+          "9",
+          "22"
+        ],
+        "latency_ms": 0.221
+      }
+    ]
+  },
+  "context": {
+    "cases": [
+      {
+        "chunk_id": "phreeqc3-17::example-data-block-1",
+        "expected_doc": "phreeqc3-17",
+        "returned": [
+          "phreeqc3-17::gas-phase",
+          "phreeqc3-17::example-data-block-1",
+          "phreeqc3-17::explanation-1"
+        ],
+        "target_present": true,
+        "same_doc": true,
+        "latency_ms": 0.967
+      },
+      {
+        "chunk_id": "phreeqc3-63::example-1-speciation-calculation",
+        "expected_doc": "phreeqc3-63",
+        "returned": [
+          "phreeqc3-63::example-1-speciation-calculation",
+          "phreeqc3-63::412-3"
+        ],
+        "target_present": true,
+        "same_doc": true,
+        "latency_ms": 0.278
+      }
+    ]
+  },
+  "latency_ms": {
+    "count": 20,
+    "mean_ms": 1.343,
+    "p50_ms": 1.566,
+    "p95_ms": 2.779,
+    "max_ms": 2.779
+  }
+}

@@ -55,7 +55,7 @@ Requirements:
 ```bash
 git clone https://github.com/songsongr/auto-phreeqc-public.git
 cd auto-phreeqc-public
-python scripts/bootstrap.py
+python doctor/bootstrap.py
 ```
 
 The setup command creates `.venv/`, installs the public package, searches for
@@ -66,7 +66,7 @@ health-check report means this checkout is ready to use.
 If PHREEQC is installed in a nonstandard location, pass its paths explicitly:
 
 ```bash
-python scripts/bootstrap.py \
+python doctor/bootstrap.py \
   --phreeqc-exe /path/to/phreeqc \
   --database /path/to/phreeqc.dat
 ```
