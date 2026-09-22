@@ -1,0 +1,451 @@
+{
+  "suite": "advanced-retrieval-v1",
+  "limit": 5,
+  "database": "C:\\Users\\songsongr\\Desktop\\claudecodel_proj\\auto_phreeqc_proj\\docs\\phreeqc-guide\\knowledge\\index.sqlite",
+  "symbol": {
+    "top1_accuracy": 1.0,
+    "cases": [
+      {
+        "query": "形态分布",
+        "expected": "SOLUTION",
+        "top": "SOLUTION",
+        "hit": true,
+        "latency_ms": 2.589
+      },
+      {
+        "query": "-potential",
+        "expected": "-potential",
+        "top": "-potential",
+        "hit": true,
+        "latency_ms": 2.023
+      },
+      {
+        "query": "气相平衡",
+        "expected": "GAS_PHASE",
+        "top": "GAS_PHASE",
+        "hit": true,
+        "latency_ms": 1.815
+      },
+      {
+        "query": "阳离子交换",
+        "expected": "EXCHANGE",
+        "top": "EXCHANGE",
+        "hit": true,
+        "latency_ms": 1.702
+      }
+    ]
+  },
+  "search": {
+    "hit_rate": 1.0,
+    "mean_precision": 0.479,
+    "mean_recall": 0.408,
+    "source_rate": 1.0,
+    "cases": [
+      {
+        "query": "surface complexation Donnan diffuse layer",
+        "expected_docs": [
+          "phreeqc3-2",
+          "phreeqc3-52",
+          "phreeqc3-53",
+          "phreeqc3-54",
+          "phreeqc3-70",
+          "phreeqc3-76"
+        ],
+        "returned_docs": [
+          "phreeqc3-52",
+          "phreeqc3-70",
+          "phreeqc3-103"
+        ],
+        "hit": true,
+        "precision": 0.667,
+        "recall": 0.333,
+        "source_complete": true,
+        "latency_ms": 9.74
+      },
+      {
+        "query": "kinetics rate equation CVODE",
+        "expected_docs": [
+          "phreeqc3-24",
+          "phreeqc3-39",
+          "phreeqc3-71",
+          "phreeqc3-77",
+          "phreeqc3-93"
+        ],
+        "returned_docs": [
+          "phreeqc3-24",
+          "phreeqc3-93",
+          "phreeqc3-19",
+          "phreeqc3-85"
+        ],
+        "hit": true,
+        "precision": 0.5,
+        "recall": 0.4,
+        "source_complete": true,
+        "latency_ms": 5.829
+      },
+      {
+        "query": "inverse modeling uncertainty isotope",
+        "expected_docs": [
+          "phreeqc3-20",
+          "phreeqc3-22",
+          "phreeqc3-78",
+          "phreeqc3-79",
+          "phreeqc3-80"
+        ],
+        "returned_docs": [
+          "phreeqc3-20",
+          "phreeqc3-80",
+          "phreeqc3-51",
+          "phreeqc3-48"
+        ],
+        "hit": true,
+        "precision": 0.5,
+        "recall": 0.4,
+        "source_complete": true,
+        "latency_ms": 6.37
+      },
+      {
+        "query": "transport stagnant zone exchange factors",
+        "expected_docs": [
+          "phreeqc3-75",
+          "phreeqc3-77"
+        ],
+        "returned_docs": [
+          "phreeqc3-56",
+          "phreeqc3-75",
+          "phreeqc3-13",
+          "phreeqc3-14"
+        ],
+        "hit": true,
+        "precision": 0.25,
+        "recall": 0.5,
+        "source_complete": true,
+        "latency_ms": 5.007
+      }
+    ]
+  },
+  "input": {
+    "hit_rate": 1.0,
+    "source_rate": 1.0,
+    "cases": [
+      {
+        "query": "-punch_frequency",
+        "expected": "-punch_frequency",
+        "hit": true,
+        "returned": [
+          "phreeqc3-56::example-data-block",
+          "phreeqc3-6::example-data-block",
+          "phreeqc3-73::example-11-transport-and-cation-exchange",
+          "phreeqc3-75::stagnant-zone-calculation-using-the-first-order-exchange-approximation-with-implicit-mixing-factors"
+        ],
+        "source_complete": true,
+        "latency_ms": 3.437
+      },
+      {
+        "query": "-initial_time TRANSPORT",
+        "expected": "TRANSPORT",
+        "hit": true,
+        "returned": [
+          "phreeqc3-56::example-data-block",
+          "phreeqc3-14::notes-2",
+          "phreeqc3-13::example-data-block",
+          "phreeqc3-14::example-data-block-1",
+          "phreeqc3-14::example-data-block-2"
+        ],
+        "source_complete": true,
+        "latency_ms": 3.711
+      },
+      {
+        "query": "-donnan SURFACE",
+        "expected": "-donnan",
+        "hit": true,
+        "returned": [
+          "phreeqc3-52::example-data-block-1",
+          "phreeqc3-70::gtot-gads-zf-21",
+          "phreeqc3-52::example-data-block-2",
+          "phreeqc3-10::example-data-block",
+          "phreeqc3-11::example-data-block"
+        ],
+        "source_complete": true,
+        "latency_ms": 4.551
+      },
+      {
+        "query": "-cvode KINETICS",
+        "expected": "-cvode",
+        "hit": true,
+        "returned": [
+          "phreeqc3-24::example-data-block-1",
+          "phreeqc3-93::example-data-block",
+          "phreeqc3-24::example-data-block-2",
+          "phreeqc3-39::example-data-block",
+          "phreeqc3-10::example-data-block"
+        ],
+        "source_complete": true,
+        "latency_ms": 3.927
+      }
+    ]
+  },
+  "examples": {
+    "filter_accuracy": 1.0,
+    "source_rate": 1.0,
+    "cases": [
+      {
+        "simulation_type": "surface_complexation",
+        "count": 5,
+        "all_tagged_correctly": true,
+        "source_complete": true,
+        "latency_ms": 1.291
+      },
+      {
+        "simulation_type": "transport",
+        "count": 5,
+        "all_tagged_correctly": true,
+        "source_complete": true,
+        "latency_ms": 0.304
+      },
+      {
+        "simulation_type": "inverse_modeling",
+        "count": 3,
+        "all_tagged_correctly": true,
+        "source_complete": true,
+        "latency_ms": 0.244
+      },
+      {
+        "simulation_type": "gas_phase",
+        "count": 3,
+        "all_tagged_correctly": true,
+        "source_complete": true,
+        "latency_ms": 0.268
+      }
+    ]
+  },
+  "context": {
+    "target_rate": 1.0,
+    "same_doc_rate": 1.0,
+    "source_rate": 1.0,
+    "cases": [
+      {
+        "chunk_id": "phreeqc3-52::example-data-block-1",
+        "expected_doc": "phreeqc3-52",
+        "target_present": true,
+        "same_doc": true,
+        "source_complete": true,
+        "latency_ms": 0.647
+      },
+      {
+        "chunk_id": "phreeqc3-75::stagnant-zone-calculation-using-the-first-order-exchange-approximation-with-implicit-mixing-factors",
+        "expected_doc": "phreeqc3-75",
+        "target_present": true,
+        "same_doc": true,
+        "source_complete": true,
+        "latency_ms": 0.517
+      },
+      {
+        "chunk_id": "phreeqc3-80::example-18-inverse-modeling-of-the-madison-aquifer",
+        "expected_doc": "phreeqc3-80",
+        "target_present": true,
+        "same_doc": true,
+        "source_complete": true,
+        "latency_ms": 0.298
+      }
+    ]
+  },
+  "answer": {
+    "mean_coverage": 1.0,
+    "source_rate": 1.0,
+    "cases": [
+      {
+        "query": "surface complexation Donnan diffuse layer",
+        "plan": {
+          "concepts": [
+            "diffuse layer",
+            "donnan",
+            "surface complexation"
+          ],
+          "keywords": [
+            "SURFACE"
+          ],
+          "identifiers": [
+            "-cd_music",
+            "-constant_capacitance",
+            "-constant_charge",
+            "-diffuse_layer",
+            "-donnan"
+          ],
+          "aliases": [
+            "diffuse layer",
+            "diffuse-layer",
+            "diffuse_layer",
+            "donnan",
+            "donnan model",
+            "donnan 平衡",
+            "surface complexation",
+            "surface-complexation",
+            "吸附",
+            "扩散层",
+            "表面络合"
+          ]
+        },
+        "keyword_hits": [
+          "SURFACE"
+        ],
+        "identifier_hits": [
+          "-donnan",
+          "-diffuse_layer"
+        ],
+        "input_found": true,
+        "coverage": 1.0,
+        "source_complete": true,
+        "latency_ms": 20.252
+      },
+      {
+        "query": "kinetics rate equation CVODE",
+        "plan": {
+          "concepts": [
+            "cvode",
+            "kinetics",
+            "rate equation"
+          ],
+          "keywords": [
+            "CVODE",
+            "KINETICS",
+            "RATES"
+          ],
+          "identifiers": [
+            "-cvode"
+          ],
+          "aliases": [
+            "cvode",
+            "kinetic",
+            "kinetic reaction",
+            "kinetics",
+            "rate equation",
+            "rate equations",
+            "reaction rate",
+            "stiff integrator",
+            "刚性积分器",
+            "动力学",
+            "速率方程"
+          ]
+        },
+        "keyword_hits": [
+          "KINETICS",
+          "RATES"
+        ],
+        "identifier_hits": [
+          "-cvode"
+        ],
+        "input_found": true,
+        "coverage": 1.0,
+        "source_complete": true,
+        "latency_ms": 17.474
+      },
+      {
+        "query": "inverse modeling uncertainty isotope",
+        "plan": {
+          "concepts": [
+            "inverse modeling",
+            "isotope",
+            "uncertainty"
+          ],
+          "keywords": [
+            "INVERSE_MODELING",
+            "ISOTOPE_ALPHAS"
+          ],
+          "identifiers": [
+            "-uncertainty"
+          ],
+          "aliases": [
+            "inverse model",
+            "inverse modeling",
+            "isotope",
+            "isotopes",
+            "uncertainties",
+            "uncertainty",
+            "不确定性",
+            "反演建模",
+            "同位素",
+            "地球化学反演"
+          ]
+        },
+        "keyword_hits": [
+          "INVERSE_MODELING"
+        ],
+        "identifier_hits": [],
+        "input_found": true,
+        "coverage": 1.0,
+        "source_complete": true,
+        "latency_ms": 6.233
+      },
+      {
+        "query": "transport stagnant zone exchange factors",
+        "plan": {
+          "concepts": [
+            "cation exchange",
+            "stagnant zone",
+            "transport"
+          ],
+          "keywords": [
+            "ADVECTION",
+            "EXCHANGE",
+            "TRANSPORT"
+          ],
+          "identifiers": [
+            "-equilibrate",
+            "-stagnant"
+          ],
+          "aliases": [
+            "cation exchange",
+            "exchange",
+            "reactive transport",
+            "stagnant zone",
+            "stagnant zones",
+            "transport",
+            "停滞区",
+            "反应性运移",
+            "溶质运移",
+            "离子交换",
+            "阳离子交换"
+          ]
+        },
+        "keyword_hits": [
+          "TRANSPORT",
+          "EXCHANGE"
+        ],
+        "identifier_hits": [
+          "-stagnant"
+        ],
+        "input_found": true,
+        "coverage": 1.0,
+        "source_complete": true,
+        "latency_ms": 15.377
+      }
+    ]
+  },
+  "score": {
+    "retrieval_quality_0_to_100": 84.1,
+    "source_traceability_0_to_100": 100.0,
+    "overall_0_to_100": 86.5,
+    "latency_ms": {
+      "count": 23,
+      "mean": 3.469,
+      "p50": 3.437,
+      "p95": 7.218
+    }
+  },
+  "regression": {
+    "passed": true,
+    "checks": {
+      "overall_at_least_baseline": true,
+      "search_recall_at_least_baseline": true,
+      "source_traceability_complete": true,
+      "p95_latency_within_target": true
+    },
+    "thresholds": {
+      "min_overall": 82.1,
+      "min_search_recall": 0.237,
+      "min_source_traceability": 1.0,
+      "max_p95_ms": 10.0
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "surface complexation": {"aliases": ["surface complexation", "surface-complexation", "表面络合", "吸附"], "keywords": ["SURFACE"], "identifiers": ["-donnan", "-diffuse_layer", "-constant_charge", "-constant_capacitance", "-cd_music"]},
+  "donnan": {"aliases": ["donnan", "donnan model", "donnan 平衡"], "keywords": ["SURFACE"], "identifiers": ["-donnan"]},
+  "diffuse layer": {"aliases": ["diffuse layer", "diffuse-layer", "diffuse_layer", "扩散层"], "keywords": ["SURFACE"], "identifiers": ["-diffuse_layer"]},
+  "kinetics": {"aliases": ["kinetics", "kinetic", "kinetic reaction", "动力学"], "keywords": ["KINETICS", "RATES"]},
+  "rate equation": {"aliases": ["rate equation", "rate equations", "reaction rate", "速率方程"], "keywords": ["RATES", "KINETICS"]},
+  "cvode": {"aliases": ["cvode", "stiff integrator", "刚性积分器"], "keywords": ["KINETICS"], "identifiers": ["-cvode"]},
+  "cation exchange": {"aliases": ["cation exchange", "exchange", "阳离子交换", "离子交换"], "keywords": ["EXCHANGE"], "identifiers": ["-equilibrate"]},
+  "transport": {"aliases": ["transport", "reactive transport", "溶质运移", "反应性运移"], "keywords": ["TRANSPORT", "ADVECTION"]},
+  "stagnant zone": {"aliases": ["stagnant zone", "stagnant zones", "停滞区"], "keywords": ["TRANSPORT"], "identifiers": ["-stagnant"]},
+  "inverse modeling": {"aliases": ["inverse modeling", "inverse model", "地球化学反演", "反演建模"], "keywords": ["INVERSE_MODELING"]},
+  "uncertainty": {"aliases": ["uncertainty", "uncertainties", "不确定性"], "keywords": ["INVERSE_MODELING"], "identifiers": ["-uncertainty"]},
+  "isotope": {"aliases": ["isotope", "isotopes", "同位素"], "keywords": ["ISOTOPE_ALPHAS", "INVERSE_MODELING"]},
+  "gas phase": {"aliases": ["gas phase", "gas-phase", "气相", "气体平衡", "气相平衡"], "keywords": ["GAS_PHASE"]},
+  "fixed pressure": {"aliases": ["fixed pressure", "恒压", "固定压力"], "keywords": ["GAS_PHASE"], "identifiers": ["-fixed_pressure"]},
+  "saturation index": {"aliases": ["saturation index", "saturation indices", "饱和指数"], "keywords": ["SELECTED_OUTPUT"], "identifiers": ["-si"]},
+  "activity coefficient": {"aliases": ["activity coefficient", "activity coefficients", "活度系数", "平均活度系数"], "keywords": ["SOLUTION", "MEAN_GAMMAS"]}
+}

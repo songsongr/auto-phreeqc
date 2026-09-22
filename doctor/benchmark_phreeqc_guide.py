@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List
 
-from query_phreeqc_guide import context_chunks, examples, search_chunks, symbol_lookup
+from query_phreeqc_guide import context_chunks, examples, load_lexicon, search_chunks, symbol_lookup
 
 
 SYMBOL_CASES = [
@@ -67,6 +67,7 @@ def run(root: Path, limit: int) -> Dict[str, Any]:
     db_path = root / "docs" / "phreeqc-guide" / "knowledge" / "index.sqlite"
     connection = sqlite3.connect(db_path)
     connection.row_factory = sqlite3.Row
+    lexicon = load_lexicon(root)
     latencies: List[float] = []
     report: Dict[str, Any] = {"database": str(db_path), "limit": limit}
     try:
@@ -89,7 +90,7 @@ def run(root: Path, limit: int) -> Dict[str, Any]:
 
         search_results = []
         for query, expected_docs in SEARCH_CASES:
-            result, elapsed = latency_call(search_chunks, connection, query, limit)
+            result, elapsed = latency_call(search_chunks, connection, query, limit, lexicon=lexicon)
             latencies.append(elapsed)
             returned_doc_list = list(dict.fromkeys(item["doc_id"] for item in result))
             returned_docs = set(returned_doc_list)
@@ -112,7 +113,7 @@ def run(root: Path, limit: int) -> Dict[str, Any]:
 
         input_results = []
         for query, expected in INPUT_CASES:
-            result, elapsed = latency_call(search_chunks, connection, query, limit, input_only=True)
+            result, elapsed = latency_call(search_chunks, connection, query, limit, input_only=True, lexicon=lexicon)
             latencies.append(elapsed)
             matched = [
                 item for item in result

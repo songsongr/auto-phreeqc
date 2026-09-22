@@ -13,7 +13,7 @@
           "SOLUTION",
           "-solution"
         ],
-        "latency_ms": 2.714
+        "latency_ms": 2.501
       },
       {
         "query": "溶液",
@@ -23,7 +23,7 @@
         "returned": [
           "SOLUTION"
         ],
-        "latency_ms": 1.903
+        "latency_ms": 1.89
       },
       {
         "query": "-pH",
@@ -33,7 +33,7 @@
         "returned": [
           "-pH"
         ],
-        "latency_ms": 1.75
+        "latency_ms": 1.751
       },
       {
         "query": "GAS_PHASE",
@@ -44,7 +44,7 @@
           "GAS_PHASE",
           "-gas_phase"
         ],
-        "latency_ms": 1.777
+        "latency_ms": 1.771
       },
       {
         "query": "表面络合",
@@ -54,14 +54,14 @@
         "returned": [
           "SURFACE"
         ],
-        "latency_ms": 1.747
+        "latency_ms": 1.728
       }
     ]
   },
   "search": {
     "hit_rate": 1.0,
-    "mean_precision_at_k": 0.854,
-    "mean_recall_at_k": 0.617,
+    "mean_precision_at_k": 0.521,
+    "mean_recall_at_k": 0.475,
     "cases": [
       {
         "query": "surface complexation",
@@ -71,15 +71,15 @@
           "phreeqc3-76"
         ],
         "returned_docs": [
-          "phreeqc3-2",
+          "phreeqc3-52",
           "phreeqc3-70",
-          "phreeqc3-76",
-          "phreeqc3-53"
+          "phreeqc3-2",
+          "phreeqc3-76"
         ],
         "hit": true,
         "precision_at_k": 0.75,
         "recall_at_k": 1.0,
-        "latency_ms": 1.895
+        "latency_ms": 9.223
       },
       {
         "query": "inverse modeling",
@@ -93,13 +93,14 @@
         ],
         "returned_docs": [
           "phreeqc3-20",
-          "phreeqc3-5",
-          "phreeqc3-2"
+          "phreeqc3-2",
+          "phreeqc3-38",
+          "phreeqc3-45"
         ],
         "hit": true,
-        "precision_at_k": 0.667,
+        "precision_at_k": 0.5,
         "recall_at_k": 0.333,
-        "latency_ms": 1.795
+        "latency_ms": 3.977
       },
       {
         "query": "gas phase",
@@ -112,13 +113,14 @@
           "phreeqc3-91"
         ],
         "returned_docs": [
-          "phreeqc3-5",
-          "phreeqc3-17"
+          "phreeqc3-17",
+          "phreeqc3-10",
+          "phreeqc3-11"
         ],
         "hit": true,
-        "precision_at_k": 1.0,
-        "recall_at_k": 0.333,
-        "latency_ms": 2.779
+        "precision_at_k": 0.333,
+        "recall_at_k": 0.167,
+        "latency_ms": 2.698
       },
       {
         "query": "activity coefficient",
@@ -130,15 +132,15 @@
           "phreeqc3-37"
         ],
         "returned_docs": [
-          "phreeqc3-37",
-          "phreeqc3-16",
-          "phreeqc3-26",
-          "mean_gammas"
+          "mean_gammas",
+          "phreeqc3-47",
+          "phreeqc3-14",
+          "phreeqc3-16"
         ],
         "hit": true,
-        "precision_at_k": 1.0,
-        "recall_at_k": 0.8,
-        "latency_ms": 1.549
+        "precision_at_k": 0.5,
+        "recall_at_k": 0.4,
+        "latency_ms": 3.989
       }
     ]
   },
@@ -149,14 +151,14 @@
         "query": "GAS_PHASE",
         "expected": "GAS_PHASE",
         "returned": [
-          "phreeqc3-17::example-data-block-3",
-          "phreeqc3-17::example-data-block-2",
           "phreeqc3-17::example-data-block-1",
-          "phreeqc3-30::example-data-block",
-          "phreeqc3-91::example-data-block"
+          "phreeqc3-17::example-data-block-2",
+          "phreeqc3-17::example-data-block-3",
+          "phreeqc3-10::example-data-block",
+          "phreeqc3-11::example-data-block"
         ],
         "hit": true,
-        "latency_ms": 1.252
+        "latency_ms": 5.025
       },
       {
         "query": "TRANSPORT",
@@ -164,25 +166,25 @@
         "returned": [
           "phreeqc3-56::example-data-block",
           "phreeqc3-73::example-11-transport-and-cation-exchange",
-          "phreeqc3-75::stagnant-zone-calculation-using-the-first-order-exchange-approximation-with-implicit-mixing-factors",
-          "phreeqc3-77::input-file",
-          "phreeqc3-75::stagnant-zone-calculation-using-the-first-order-exchange-approximation-with-explicit-mixing-factors"
+          "phreeqc3-14::notes-2",
+          "phreeqc3-5::conventions-for-data-input",
+          "phreeqc3-63::1-023"
         ],
         "hit": true,
-        "latency_ms": 2.144
+        "latency_ms": 6.096
       },
       {
         "query": "-punch_cells",
         "expected": "-punch_cells",
         "returned": [
-          "phreeqc3-6::example-data-block",
           "phreeqc3-56::example-data-block",
+          "phreeqc3-6::example-data-block",
           "phreeqc3-73::example-11-transport-and-cation-exchange",
-          "phreeqc3-75::stagnant-zone-calculation-using-the-first-order-exchange-approximation-with-implicit-mixing-factors",
-          "phreeqc3-5::conventions-for-data-input"
+          "phreeqc3-5::conventions-for-data-input",
+          "phreeqc3-75::stagnant-zone-calculation-using-the-first-order-exchange-approximation-with-implicit-mixing-factors"
         ],
         "hit": true,
-        "latency_ms": 0.722
+        "latency_ms": 2.837
       },
       {
         "query": "SURFACE",
@@ -190,12 +192,12 @@
         "returned": [
           "phreeqc3-52::example-data-block-1",
           "phreeqc3-52::example-data-block-2",
+          "phreeqc3-103::example-data-block",
           "phreeqc3-34::example-data-block",
-          "phreeqc3-53::example-data-block",
-          "phreeqc3-54::example-data-block-1"
+          "phreeqc3-53::example-data-block"
         ],
         "hit": true,
-        "latency_ms": 1.583
+        "latency_ms": 6.594
       }
     ]
   },
@@ -212,7 +214,7 @@
           "13",
           "14"
         ],
-        "latency_ms": 1.046
+        "latency_ms": 0.377
       },
       {
         "simulation_type": "inverse_modeling",
@@ -223,7 +225,7 @@
           "17",
           "18"
         ],
-        "latency_ms": 0.302
+        "latency_ms": 0.258
       },
       {
         "simulation_type": "kinetics",
@@ -234,7 +236,7 @@
           "9",
           "15"
         ],
-        "latency_ms": 0.226
+        "latency_ms": 0.245
       },
       {
         "simulation_type": "surface_complexation",
@@ -247,7 +249,7 @@
           "19",
           "21"
         ],
-        "latency_ms": 0.22
+        "latency_ms": 0.253
       },
       {
         "simulation_type": "gas_phase",
@@ -258,7 +260,7 @@
           "9",
           "22"
         ],
-        "latency_ms": 0.221
+        "latency_ms": 0.238
       }
     ]
   },
@@ -274,7 +276,7 @@
         ],
         "target_present": true,
         "same_doc": true,
-        "latency_ms": 0.967
+        "latency_ms": 0.522
       },
       {
         "chunk_id": "phreeqc3-63::example-1-speciation-calculation",
@@ -285,15 +287,15 @@
         ],
         "target_present": true,
         "same_doc": true,
-        "latency_ms": 0.278
+        "latency_ms": 0.263
       }
     ]
   },
   "latency_ms": {
     "count": 20,
-    "mean_ms": 1.343,
-    "p50_ms": 1.566,
-    "p95_ms": 2.779,
-    "max_ms": 2.779
+    "mean_ms": 2.612,
+    "p50_ms": 1.83,
+    "p95_ms": 9.223,
+    "max_ms": 9.223
   }
 }

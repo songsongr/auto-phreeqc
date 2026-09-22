@@ -36,6 +36,30 @@ description: 使用 phreeqc_auto 包生成、运行、解析和可视化 PHREEQC
 - 编写 `SOLUTION`、`EQUILIBRIUM_PHASES` 或 `SELECTED_OUTPUT` 时，阅读 [输入与输出模式](references/input-patterns.md)。
 - 处理 Cd 等表面络合问题时，阅读 [表面络合说明](references/surface-complexation.md)。
 
+## PHREEQC 官方知识库检索
+
+PHREEQC 语法、关键词、identifier、官方示例和输入模板优先从仓库知识库检索，不要默认把完整 `full.md` 加载进上下文。知识库面向 Agent，详细策略见 `docs/phreeqc-guide/knowledge/retrieval-policy.md`。
+
+推荐顺序：
+
+1. 读取 `docs/phreeqc-guide/knowledge/manifest.json`，确认来源和索引版本。
+2. 使用 `docs/phreeqc-guide/knowledge/query-lexicon.json` 将自然语言拆解为概念、PHREEQC 关键词和 identifier。
+3. 关键词、identifier 或中文术语先调用精确符号检索，再使用混合全文检索补充解释和示例。
+4. 需要可执行输入时使用 `--input`，只接受 `phreeqc_input` 且 `input` 非空的结果。
+5. 需要上下文时使用 `--context` 或按同一 `doc_id` 扩展，不要无条件加载整页。
+6. 最终回答保留每条结果的 `source`/`source_url`，必要时回到官方 HTML 核验。
+
+查询入口：
+
+```text
+python doctor/query_phreeqc_guide.py --symbol SOLUTION
+python doctor/query_phreeqc_guide.py --search "surface complexation Donnan diffuse layer" --limit 10
+python doctor/query_phreeqc_guide.py --input "KINETICS -cvode" --limit 10
+python doctor/query_phreeqc_guide.py --context "phreeqc3-52::example-data-block-1" --radius 1
+```
+
+修改知识库导入器、词典或检索器后，运行 `python doctor/benchmark_advanced_retrieval.py --check` 做回归检查；不要把基准报告当作模拟结果交付。
+
 运行代码的唯一来源是仓库根目录的 `phreeqc_auto/` 包；不要在 Skill 目录中复制脚本，以免两份实现不同步。
 
 使用公开运行库完成以下步骤：

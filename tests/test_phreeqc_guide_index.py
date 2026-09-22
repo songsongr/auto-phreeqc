@@ -39,3 +39,17 @@ def test_extract_tables_preserves_rows_and_cells():
 
 def test_query_fts_expression_is_agent_safe():
     assert QUERY.fts_expression("surface complexation") == '("surface"* AND "complexation"* OR "surface_complexation"*)'
+
+
+def test_query_plan_maps_domain_terms_to_phreeqc_controls():
+    lexicon = QUERY.load_lexicon(Path(__file__).parents[1])
+    plan = QUERY.build_query_plan("surface complexation Donnan diffuse layer", lexicon)
+    assert "SURFACE" in plan["keywords"]
+    assert "-donnan" in plan["identifiers"]
+    assert "-diffuse_layer" in plan["identifiers"]
+
+
+def test_query_plan_maps_activity_coefficients_to_mean_gammas():
+    lexicon = QUERY.load_lexicon(Path(__file__).parents[1])
+    plan = QUERY.build_query_plan("activity coefficient", lexicon)
+    assert "MEAN_GAMMAS" in plan["keywords"]

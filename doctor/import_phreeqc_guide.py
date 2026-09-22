@@ -27,7 +27,7 @@ from urllib.request import Request, urlopen
 BASE_URL = "https://water.usgs.gov/water-resources/software/PHREEQC/documentation/phreeqc3-html/"
 ENTRY_URL = urljoin(BASE_URL, "phreeqc3.htm")
 RETRIEVED = time.strftime("%Y-%m-%d", time.gmtime())
-SCHEMA_VERSION = "0.2"
+SCHEMA_VERSION = "0.3"
 
 ZH_ALIASES = {
     "SOLUTION": ["溶液", "水溶液", "speciation", "形态分布"],
@@ -680,15 +680,17 @@ def build_agent_indexes(
         """# Agent 检索策略
 
 1. 先读取 manifest.json，确认知识库版本和来源。
-2. PHREEQC 关键词、-identifier 或中文术语优先查 symbols 表。
-3. 自然语言解释使用 chunks_fts，按 type 过滤并优先返回 keyword、explanation、note。
-4. 需要完整上下文时，根据 doc_id、parent_id 和 section_path 扩展到同一页面。
-5. 需要可执行输入时只返回 type=phreeqc_input 且 input 非空的块。
-6. 表格优先查 tables 表或 tables.jsonl；反应式、计算式优先查 equations 表或 equations.jsonl。
-7. 示例选择优先查 examples.jsonl 的 simulation_types，再取对应 example 页的输入块。
-8. 最终回答必须携带 source_url；不要把 full.md 作为默认上下文。
+2. 先用 query-lexicon.json 拆解自然语言，得到 concepts、keywords 和 identifiers。
+3. PHREEQC 关键词、-identifier 或中文术语优先查 symbols 表。
+4. 简单查询优先精确标题/关键词；复杂查询使用核心概念的混合检索，不要求所有原词同时出现。
+5. 自然语言解释使用 chunks_fts，按 type 过滤并优先返回 keyword、phreeqc_input、explanation、note。
+6. 需要完整上下文时，根据 doc_id、parent_id 和 section_path 扩展到同一页面。
+7. 需要可执行输入时只返回 type=phreeqc_input 且 input 非空的块。
+8. 表格优先查 tables 表或 tables.jsonl；反应式、计算式优先查 equations 表或 equations.jsonl。
+9. 示例选择优先查 examples.jsonl 的 simulation_types，再取对应 example 页的输入块。
+10. 最终回答必须携带 source_url；不要把 full.md 作为默认上下文。
 
-推荐查询顺序：symbol lookup → query_phreeqc_guide.py → small-to-big context expansion → 原始 HTML 核验。
+推荐查询顺序：query plan → symbol lookup → hybrid search → input/example filter → small-to-big context expansion → 原始 HTML 核验。
 """,
         encoding="utf-8",
     )
@@ -717,6 +719,10 @@ def main() -> int:
         knowledge_dir / "equations",
     ):
         directory.mkdir(parents=True, exist_ok=True)
+    lexicon_source = root / "doctor" / "query-lexicon.json"
+    lexicon_target = knowledge_dir / "query-lexicon.json"
+    if lexicon_source.exists():
+        shutil.copyfile(lexicon_source, lexicon_target)
 
     cached_homepage = source_dir / "phreeqc3.htm"
     if args.reuse_source and cached_homepage.exists():
@@ -909,12 +915,15 @@ def main() -> int:
             "- chunks.jsonl：章节级 JSONL 记录，字段包括 type、keyword、content 和 source_url。",
             "- terms.json：关键词到来源页的符号映射。",
             "- symbols.json：关键词、-identifier 和中文别名的精确查找表。",
+            "- query-lexicon.json：自然语言概念到 PHREEQC 关键词和 identifier 的查询映射。",
             "- index.sqlite：Agent 默认入口，包含 documents、chunks、symbols、relations 和 chunks_fts。",
             "- relations.jsonl：关键词之间的 related_to 关系。",
             "- tables.jsonl：从官方 HTML 表格抽取的行列数据；SQLite 中对应 tables 表。",
             "- equations.jsonl：从章节和输入块抽取的反应式/计算式；SQLite 中对应 equations 表。",
             "- examples.jsonl：示例编号、模拟类型、表格数和可执行输入块数。",
             "- benchmark-latest.json：最近一次检索准确性、覆盖率和延迟评测结果。",
+            "- benchmark-advanced-latest.json：复杂查询和答案级覆盖评测结果。",
+            "- 高级基准可用 `python doctor/benchmark_advanced_retrieval.py --check` 执行回归门禁。",
             "- manifest.json：知识库版本、统计和来源清单。",
             "- retrieval-policy.md：Agent 检索和上下文扩展规则。",
             "- keywords/：关键词数据块。",
